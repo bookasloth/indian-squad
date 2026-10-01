@@ -71,7 +71,17 @@ const EMBLEMS: Record<string, { anim: string; svg: React.ReactNode }> = {
   },
 };
 
-export function SportEmblem({ sport, size = 40, className }: { sport: string; size?: number; className?: string }) {
+export function SportEmblem({
+  sport,
+  size = 40,
+  animate = true,
+  className,
+}: {
+  sport: string;
+  size?: number;
+  animate?: boolean;
+  className?: string;
+}) {
   const emblem = EMBLEMS[sport];
   if (!emblem) return null;
   return (
@@ -82,7 +92,7 @@ export function SportEmblem({ sport, size = 40, className }: { sport: string; si
       fill="none"
       strokeLinejoin="round"
       aria-hidden
-      className={cn("text-brand", emblem.anim, className)}
+      className={cn("text-brand", animate && emblem.anim, className)}
     >
       {emblem.svg}
     </svg>

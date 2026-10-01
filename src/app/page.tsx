@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { SportEmblem } from "@/components/community/sport-emblem";
 import { SPORTS } from "@/lib/site";
 
 const FEATURES = [
@@ -40,10 +40,14 @@ export default function Home() {
         <h2 className="font-display text-2xl font-semibold tracking-tight">The sports we follow</h2>
         <div className="flex flex-wrap gap-2">
           {SPORTS.map((s) => (
-            <Link key={s.slug} href={`/community/${s.slug}`}>
-              <Badge variant="outline" className="text-sm transition-ui hover:bg-accent">
-                {s.label}
-              </Badge>
+            <Link
+              key={s.slug}
+              href={`/community/${s.slug}`}
+              data-sport={s.slug}
+              className="group flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm transition-ui hover:border-brand hover:bg-accent"
+            >
+              <SportEmblem sport={s.slug} size={18} animate={false} className="transition-transform group-hover:scale-110" />
+              {s.label}
             </Link>
           ))}
         </div>

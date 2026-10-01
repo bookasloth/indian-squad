@@ -535,7 +535,7 @@ function PostView({
   menu?: { canReport: boolean; canDelete: boolean; onReport?: () => void; onDelete?: () => void };
 }) {
   return (
-    <div className={cn("flex gap-3", post.pending && "opacity-60")}>
+    <div className={cn("post-row -mx-2 flex gap-3 px-2 py-1.5", post.pending && "opacity-60")}>
       <CommunityAvatar seed={post.username ?? post.authorName} src={post.avatarUrl} size={40} />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">

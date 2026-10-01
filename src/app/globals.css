@@ -913,3 +913,26 @@
     animation: none;
   }
 }
+
+/* Entrance + hover polish */
+@keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.anim-fade-up { animation: fade-up 0.5s var(--ease-out-quint) both; }
+
+/* Sport hero: faded oversized emblem watermark + soft brand wash */
+.sport-hero { position: relative; }
+.sport-hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--brand) 14%, transparent), transparent 60%);
+  pointer-events: none;
+}
+.sport-hero-mark {
+  position: absolute; right: -8px; top: 50%; transform: translateY(-50%);
+  opacity: 0.08; pointer-events: none;
+}
+
+/* Feed post hover lift */
+.post-row { transition: background-color var(--dur-base) var(--ease-out-quint); border-radius: var(--radius-card); }
+.post-row:hover { background-color: color-mix(in srgb, var(--muted) 55%, transparent); }
+
+@media (prefers-reduced-motion: reduce) { .anim-fade-up { animation: none; } }

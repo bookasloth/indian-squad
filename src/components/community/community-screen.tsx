@@ -31,11 +31,12 @@ export async function CommunityScreen({ sport, tab }: { sport?: string; tab?: st
   return (
     <div className="flex flex-col gap-6" data-sport={sport || undefined}>
       {sport ? (
-        <header className="flex items-center gap-4 overflow-hidden rounded-card border border-border bg-[color-mix(in_srgb,var(--brand)_10%,transparent)] p-5">
-          <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--brand)_18%,transparent)]">
+        <header className="sport-hero anim-fade-up flex items-center gap-4 overflow-hidden rounded-card border border-border bg-[color-mix(in_srgb,var(--brand)_10%,transparent)] p-5">
+          <SportEmblem sport={sport} size={150} className="sport-hero-mark" />
+          <span className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--brand)_18%,transparent)]">
             <SportEmblem sport={sport} size={34} />
           </span>
-          <div className="flex flex-col gap-0.5">
+          <div className="relative flex flex-col gap-0.5">
             <h1 className="font-display text-2xl font-bold tracking-tight">{heading}</h1>
             <p className="text-sm text-muted-foreground">Talk {sportLabel(sport)} with other fans.</p>
           </div>

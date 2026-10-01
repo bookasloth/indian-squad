@@ -35,19 +35,23 @@ export function CommunityFeed({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  async function reportPost(id: string) {
-    setNotice(null);
-    try {
-      const res = await fetch("/api/reports", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId: id }),
-      });
-      if (!res.ok) throw new Error();
-      setNotice("Reported. Thanks — a moderator will take a look.");
-    } catch {
-      setError("Could not file report.");
-    }
+  function reportPost(id: string) {
+    // Optimistic: confirm immediately, file in the background.
+    setError(null);
+    setNotice("Reported. Thanks — a moderator will take a look.");
+    void (async () => {
+      try {
+        const res = await fetch("/api/reports", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ postId: id }),
+        });
+        if (!res.ok) throw new Error();
+      } catch {
+        setNotice(null);
+        setError("Could not file report.");
+      }
+    })();
   }
 
   async function deletePost(id: string) {
@@ -209,12 +213,12 @@ export function CommunityFeed({
   const repliesOf = (id: string) =>
     posts.filter((p) => p.parentId === id).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
-  async function submit(
+  function submit(
     parentId: string | null,
     body: string,
     pollOptions?: string[],
-    imageUrls?: string[],
-  ): Promise<boolean> {
+    files?: File[],
+  ): boolean {
     if (!viewer) return false;
     setError(null);
     const clean = sanitize(body);
@@ -224,6 +228,9 @@ export function CommunityFeed({
     }
 
     const tempId = `temp-${crypto.randomUUID()}`;
+    // Show image previews instantly from local blobs; the real URLs swap in once
+    // the background upload finishes.
+    const previews = files?.map((f) => URL.createObjectURL(f)) ?? null;
     const temp: CommunityPost = {
       rowId: tempId,
       id: tempId,
@@ -251,37 +258,60 @@ export function CommunityFeed({
               viewerChoice: null,
             }
           : null,
-      images: imageUrls && imageUrls.length ? imageUrls : null,
+      images: previews && previews.length ? previews : null,
       pending: true,
     };
     setPosts((cur) => [...cur, temp]);
 
-    try {
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          body: clean,
-          parent_id: parentId,
-          poll: pollOptions && pollOptions.length >= 2 ? pollOptions : undefined,
-          images: imageUrls && imageUrls.length ? imageUrls : undefined,
-        }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Could not post.");
-      setPosts((cur) =>
-        cur.map((p) =>
-          p.id === temp.id
-            ? { ...p, rowId: json.post.id, id: json.post.id, createdAt: json.post.created_at, pending: false }
-            : p,
-        ),
-      );
-      return true;
-    } catch (e) {
-      setPosts((cur) => cur.filter((p) => p.id !== temp.id));
-      setError(e instanceof Error ? e.message : "Could not post.");
-      return false;
-    }
+    // Upload (if any) + create the post in the background; reconcile the temp row.
+    void (async () => {
+      try {
+        let imageUrls: string[] | undefined;
+        if (files && files.length) {
+          const fd = new FormData();
+          files.forEach((f) => fd.append("files", f));
+          const up = await fetch("/api/upload", { method: "POST", body: fd });
+          const uj = await up.json();
+          if (!up.ok) throw new Error(uj.error ?? "Upload failed.");
+          imageUrls = uj.urls as string[];
+        }
+
+        const res = await fetch("/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            body: clean,
+            parent_id: parentId,
+            poll: pollOptions && pollOptions.length >= 2 ? pollOptions : undefined,
+            images: imageUrls && imageUrls.length ? imageUrls : undefined,
+          }),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error ?? "Could not post.");
+
+        setPosts((cur) =>
+          cur.map((p) =>
+            p.id === tempId
+              ? {
+                  ...p,
+                  rowId: json.post.id,
+                  id: json.post.id,
+                  createdAt: json.post.created_at,
+                  images: imageUrls ?? p.images,
+                  pending: false,
+                }
+              : p,
+          ),
+        );
+        previews?.forEach((u) => URL.revokeObjectURL(u));
+      } catch (e) {
+        setPosts((cur) => cur.filter((p) => p.id !== tempId));
+        previews?.forEach((u) => URL.revokeObjectURL(u));
+        setError(e instanceof Error ? e.message : "Could not post.");
+      }
+    })();
+
+    return true;
   }
 
   async function toggleLike(id: string) {
@@ -623,14 +653,13 @@ function Composer({
   submitLabel: string;
   compact?: boolean;
   allowPoll?: boolean;
-  onSubmit: (body: string, pollOptions?: string[], imageUrls?: string[]) => Promise<boolean>;
+  onSubmit: (body: string, pollOptions?: string[], files?: File[]) => boolean | Promise<boolean>;
 }) {
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [pollMode, setPollMode] = useState(false);
   const [options, setOptions] = useState<string[]>(["", ""]);
   const [files, setFiles] = useState<File[]>([]);
-  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const pollOptions = options.map((o) => o.trim()).filter(Boolean);
   const pollReady = !pollMode || pollOptions.length >= 2;
@@ -639,25 +668,9 @@ function Composer({
   async function handle() {
     if (busy || !body.trim() || !pollReady) return;
     setBusy(true);
-    setUploadError(null);
-
-    let imageUrls: string[] | undefined;
-    if (files.length) {
-      const fd = new FormData();
-      files.forEach((f) => fd.append("files", f));
-      try {
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.error ?? "Upload failed.");
-        imageUrls = json.urls as string[];
-      } catch (e) {
-        setUploadError(e instanceof Error ? e.message : "Upload failed.");
-        setBusy(false);
-        return;
-      }
-    }
-
-    const ok = await onSubmit(body, pollMode ? pollOptions : undefined, imageUrls);
+    // The post appears instantly (optimistic); the upload + create run in the
+    // background inside onSubmit.
+    const ok = await onSubmit(body, pollMode ? pollOptions : undefined, files.length ? files : undefined);
     setBusy(false);
     if (ok) {
       setBody("");
@@ -735,8 +748,6 @@ function Composer({
             ))}
           </div>
         )}
-
-        {uploadError && <p className="text-sm text-danger">{uploadError}</p>}
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

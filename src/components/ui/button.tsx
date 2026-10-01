@@ -29,7 +29,7 @@ const buttonVariants = cva(
         destructive:
           "bg-danger text-danger-foreground shadow-xs hover:shadow-sm",
         brand:
-          "bg-[#FE5100] text-white shadow-xs hover:bg-[#FE5100]/90 active:bg-[#FE5100]",
+          "bg-[#CE2B37] text-white shadow-xs hover:bg-[#CE2B37]/90 active:bg-[#CE2B37]",
       },
       size: {
         sm: "h-8 px-3 text-xs [&_svg]:size-3.5",

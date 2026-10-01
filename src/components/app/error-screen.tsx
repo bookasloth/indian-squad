@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 
 // Orange-weighted, like the source; a few off-palette colours for variety.
 const COLORS = [
-  "#FE5100", "#FE5100", "#FE5100", "#FE5100", "#FE5100",
+  "#CE2B37", "#CE2B37", "#CE2B37", "#CE2B37", "#CE2B37",
   "#0F1111", "#1A1D24", "#F2F2F2", "#FF4D93", "#4AB765", "#FFCC1C", "#269CEF",
 ];
 const LIGHT = new Set(["#F2F2F2", "#FFCC1C"]);

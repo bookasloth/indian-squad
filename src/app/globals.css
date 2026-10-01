@@ -37,7 +37,7 @@
 
   /* Brand — the one color in the system. Only surfaces on user
      interaction (focus, selection, hover, scroll). Never decorative. */
-  --brand: #ff4800;
+  --brand: #CE2B37;
   --brand-foreground: #ffffff;
 
   /* Desaturated functional states (used sparingly, never decorative) */
@@ -92,7 +92,7 @@
   --ring: #fafafa;
 
   /* Brand holds the same value on dark — orange reads on black and white. */
-  --brand: #ff4800;
+  --brand: #CE2B37;
   --brand-foreground: #ffffff;
 
   --success: #4ea884;
@@ -322,7 +322,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-brand: var(--brand); /* orange #ff4800 — focus/selection/scroll + palette Insert */
+  --color-brand: var(--brand); /* orange #CE2B37 — focus/selection/scroll + palette Insert */
   --color-brand-foreground: var(--brand-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
@@ -788,7 +788,7 @@
 
 /* ================================================================== */
 /*  ADMIN SCOPE — internal tool. Layers on base tokens; overrides only  */
-/*  the accent + interaction borders. #FE5100 is admin-only and never   */
+/*  the accent + interaction borders. #CE2B37 is admin-only and never   */
 /*  applies outside [data-admin]. Dark inherits via base tokens.        */
 /* ================================================================== */
 [data-admin] {
@@ -803,7 +803,7 @@
 
   /* Borders — default gray; hover/active become accent */
   --admin-border: var(--border);
-  --admin-accent: #fe5100;
+  --admin-accent: #CE2B37;
   --admin-accent-fg: #ffffff;
   --admin-border-hover: var(--admin-accent);
   --admin-border-active: var(--admin-accent);
@@ -822,12 +822,12 @@
 }
 
 /* ================================================================== */
-/*  MEMBERS SCOPE — member workspace. Monochrome base; the #FE5100      */
+/*  MEMBERS SCOPE — member workspace. Monochrome base; the #CE2B37      */
 /*  accent flows through the existing --brand token (focus, selection,  */
 /*  hover borders) and never applies outside [data-members].            */
 /* ================================================================== */
 [data-members] {
-  --brand: #fe5100;
+  --brand: #CE2B37;
 }
 
 /* ================================================================== */

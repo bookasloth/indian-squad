@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
  * full viewport height (100dvh — vh is broken by mobile browser chrome).
  *
  * Left inputs get a tighter 4px radius (`[&_input]:rounded-btn`), scoped here so
- * only the auth forms change. The right panel is #FE5100 with faint white
+ * only the auth forms change. The right panel is #CE2B37 with faint white
  * line-art (grid, crosshairs, concentric circles, a triangle) and the wordmark.
  */
 export function AuthShell({ children }: { children: ReactNode }) {
@@ -25,7 +25,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
 
       <div className="relative hidden overflow-hidden bg-[#0f0f10] lg:block" aria-hidden>
         <svg
-          className="absolute inset-0 h-full w-full text-[#FE5100]"
+          className="absolute inset-0 h-full w-full text-[#CE2B37]"
           viewBox="0 0 400 600"
           preserveAspectRatio="xMidYMid slice"
           fill="none"

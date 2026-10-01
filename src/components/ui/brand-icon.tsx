@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Brand-button icon. Renders a linear (regular-weight) Phosphor glyph by
- * default and cross-fades to the solid (fill) glyph tinted #ff4800 when the
+ * default and cross-fades to the solid (fill) glyph tinted #CE2B37 when the
  * enclosing brand button is hovered. Relies on the button carrying the
  * `group/btn` class (see buttonVariants). Names mirror the lucide icons they
  * replace at the call sites, so swaps stay one-for-one.
@@ -50,7 +50,7 @@ export function BrandIcon({
       />
       <Glyph
         weight="fill"
-        className="absolute inset-0 text-[#ff4800] opacity-0 transition-opacity duration-150 group-hover/btn:opacity-100"
+        className="absolute inset-0 text-[#CE2B37] opacity-0 transition-opacity duration-150 group-hover/btn:opacity-100"
       />
     </span>
   );

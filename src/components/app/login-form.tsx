@@ -180,13 +180,13 @@ function CredentialsForm({
           <Checkbox
             name="remember"
             defaultChecked
-            className="data-[state=checked]:!border-[#FE5100] data-[state=checked]:!bg-[#FE5100] data-[state=checked]:!text-white"
+            className="data-[state=checked]:!border-[#CE2B37] data-[state=checked]:!bg-[#CE2B37] data-[state=checked]:!text-white"
           />
           Remember me
         </label>
         <Link
           href="/forgot-password"
-          className="text-sm font-medium text-[#FE5100] underline-offset-4 hover:underline"
+          className="text-sm font-medium text-[#CE2B37] underline-offset-4 hover:underline"
         >
           Forgot password?
         </Link>
@@ -214,7 +214,7 @@ function CredentialsForm({
         <button
           type="button"
           onClick={onMagic}
-          className="font-medium text-[#FE5100] underline-offset-4 hover:underline"
+          className="font-medium text-[#CE2B37] underline-offset-4 hover:underline"
         >
           Email me a sign-in link instead
         </button>
@@ -223,7 +223,7 @@ function CredentialsForm({
           className="text-muted-foreground underline-offset-4 hover:text-foreground"
         >
           New here?{" "}
-          <span className="font-medium text-[#FE5100] hover:underline">Create a free account</span>
+          <span className="font-medium text-[#CE2B37] hover:underline">Create a free account</span>
         </Link>
       </div>
     </form>

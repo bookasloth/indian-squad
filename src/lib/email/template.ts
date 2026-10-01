@@ -13,7 +13,7 @@ export const EMAIL_BRAND = {
   logoFooter: "https://company-assets.bookasloth.in/images/sd/email/shubham-logo-secondary.png",
   welcomeGif: "https://company-assets.bookasloth.in/images/sd/email/welcome.gif",
   unsubscribeGif: "https://company-assets.bookasloth.in/images/sd/email/unsubscribe.gif",
-  accent: "#ff4800",
+  accent: "#CE2B37",
   linkColor: "#c43700",
   company: ["Timewheel Internet Pvt Ltd", "2nd Floor, Eureka Coworking", "Mate Sqr, Nagpur, 440030"],
   links: [

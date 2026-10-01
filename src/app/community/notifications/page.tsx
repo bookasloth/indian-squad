@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Heart, MessageCircle, UserPlus } from "lucide-react";
+import { Heart, MessageCircle, UserPlus, Repeat2 } from "lucide-react";
 import { requireMember } from "@/lib/members/session";
 import { getNotifications, markAllRead, type CommunityNotification } from "@/lib/community-notify";
 import { CommunityAvatar } from "@/components/community/community-avatar";
@@ -13,9 +13,10 @@ const VERB: Record<CommunityNotification["type"], string> = {
   like: "liked your post",
   reply: "replied to your post",
   follow: "followed you",
+  reblog: "reblogged your post",
 };
 
-const ICON = { like: Heart, reply: MessageCircle, follow: UserPlus } as const;
+const ICON = { like: Heart, reply: MessageCircle, follow: UserPlus, reblog: Repeat2 } as const;
 
 export default async function NotificationsPage() {
   await requireMember("/community/notifications");

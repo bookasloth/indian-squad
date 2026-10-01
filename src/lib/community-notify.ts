@@ -2,7 +2,7 @@ import "server-only";
 
 import { supabaseAdmin, createClient } from "@/lib/supabase/server";
 
-export type NotificationType = "like" | "reply" | "follow";
+export type NotificationType = "like" | "reply" | "follow" | "reblog";
 
 export interface CommunityNotification {
   id: string;

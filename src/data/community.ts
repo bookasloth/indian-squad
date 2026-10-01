@@ -1,4 +1,7 @@
 export interface CommunityPost {
+  /** Unique feed-row key. Equals id for a normal row; a reblog row of the same
+   *  post gets its own key so both can coexist. */
+  rowId: string;
   id: string;
   body: string;
   parentId: string | null;
@@ -12,6 +15,10 @@ export interface CommunityPost {
   likeCount: number;
   likedByViewer: boolean;
   bookmarkedByViewer: boolean;
+  reblogCount: number;
+  rebloggedByViewer: boolean;
+  /** Username of the reblogger when this row is a reblog, else null. */
+  rebloggedBy: string | null;
   // client-only optimistic flag
   pending?: boolean;
 }

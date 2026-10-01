@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, MessageCircle, Bookmark } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Repeat2 } from "lucide-react";
 import { cn, timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CommunityAvatar } from "@/components/community/community-avatar";
@@ -59,6 +59,41 @@ export function CommunityFeed({
     return { following: following.has(post.userId), onToggle: () => toggleFollow(post.userId!) };
   }
 
+  async function toggleReblog(id: string) {
+    if (!viewer) {
+      setError("Sign in to reblog.");
+      return;
+    }
+    const post = posts.find((p) => p.id === id);
+    if (!post || post.pending) return;
+    const next = !post.rebloggedByViewer;
+    // Update every row that shows this post (base + any reblog rows).
+    setPosts((cur) =>
+      cur.map((p) =>
+        p.id === id
+          ? { ...p, rebloggedByViewer: next, reblogCount: p.reblogCount + (next ? 1 : -1) }
+          : p,
+      ),
+    );
+    try {
+      const res = await fetch("/api/reblogs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId: id, reblog: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setPosts((cur) =>
+        cur.map((p) =>
+          p.id === id
+            ? { ...p, rebloggedByViewer: !next, reblogCount: p.reblogCount + (next ? -1 : 1) }
+            : p,
+        ),
+      );
+      setError("Could not reblog.");
+    }
+  }
+
   async function toggleBookmark(id: string) {
     if (!viewer) {
       setError("Sign in to save posts.");
@@ -96,8 +131,10 @@ export function CommunityFeed({
       return false;
     }
 
+    const tempId = `temp-${crypto.randomUUID()}`;
     const temp: CommunityPost = {
-      id: `temp-${crypto.randomUUID()}`,
+      rowId: tempId,
+      id: tempId,
       body: clean,
       parentId,
       createdAt: new Date().toISOString(),
@@ -108,6 +145,9 @@ export function CommunityFeed({
       likeCount: 0,
       likedByViewer: false,
       bookmarkedByViewer: false,
+      reblogCount: 0,
+      rebloggedByViewer: false,
+      rebloggedBy: null,
       pending: true,
     };
     setPosts((cur) => [...cur, temp]);
@@ -123,7 +163,7 @@ export function CommunityFeed({
       setPosts((cur) =>
         cur.map((p) =>
           p.id === temp.id
-            ? { ...p, id: json.post.id, createdAt: json.post.created_at, pending: false }
+            ? { ...p, rowId: json.post.id, id: json.post.id, createdAt: json.post.created_at, pending: false }
             : p,
         ),
       );
@@ -203,11 +243,12 @@ export function CommunityFeed({
           {[...posts]
             .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
             .map((post) => (
-              <li key={post.id}>
+              <li key={post.rowId}>
                 <PostView
                   post={post}
                   onLike={() => toggleLike(post.id)}
                   onBookmark={() => toggleBookmark(post.id)}
+                  onReblog={() => toggleReblog(post.id)}
                   canReply={false}
                   follow={followProps(post)}
                 />
@@ -219,28 +260,43 @@ export function CommunityFeed({
       ) : (
         <ul className="flex flex-col gap-6">
           {tops.map((post) => (
-            <li key={post.id} className="flex flex-col gap-3">
-              <PostView post={post} onLike={() => toggleLike(post.id)} onBookmark={() => toggleBookmark(post.id)} canReply={!!viewer} onReply={() => { setReplyTo(replyTo === post.id ? null : post.id); setError(null); }} follow={followProps(post)} />
+            <li key={post.rowId} className="flex flex-col gap-3">
+              {post.rebloggedBy && (
+                <span className="flex items-center gap-1.5 pl-1 text-xs text-muted-foreground">
+                  <Repeat2 className="size-3.5" /> Reblogged by @{post.rebloggedBy}
+                </span>
+              )}
+              <PostView
+                post={post}
+                onLike={() => toggleLike(post.id)}
+                onBookmark={() => toggleBookmark(post.id)}
+                onReblog={() => toggleReblog(post.id)}
+                canReply={!post.rebloggedBy && !!viewer}
+                onReply={() => { setReplyTo(replyTo === post.rowId ? null : post.rowId); setError(null); }}
+                follow={followProps(post)}
+              />
 
-              <div className="ml-6 flex flex-col gap-3 border-l border-border pl-4">
-                {repliesOf(post.id).map((reply) => (
-                  <PostView key={reply.id} post={reply} onLike={() => toggleLike(reply.id)} onBookmark={() => toggleBookmark(reply.id)} canReply={false} follow={followProps(reply)} />
-                ))}
+              {!post.rebloggedBy && (
+                <div className="ml-6 flex flex-col gap-3 border-l border-border pl-4">
+                  {repliesOf(post.id).map((reply) => (
+                    <PostView key={reply.rowId} post={reply} onLike={() => toggleLike(reply.id)} onBookmark={() => toggleBookmark(reply.id)} onReblog={() => toggleReblog(reply.id)} canReply={false} follow={followProps(reply)} />
+                  ))}
 
-                {viewer && replyTo === post.id && (
-                  <Composer
-                    avatar={<CommunityAvatar seed={viewer.username} src={viewer.avatarUrl} size={32} />}
-                    placeholder={`Reply to ${post.authorName}…`}
-                    submitLabel="Reply"
-                    compact
-                    onSubmit={async (body) => {
-                      const ok = await submit(post.id, body);
-                      if (ok) setReplyTo(null);
-                      return ok;
-                    }}
-                  />
-                )}
-              </div>
+                  {viewer && replyTo === post.rowId && (
+                    <Composer
+                      avatar={<CommunityAvatar seed={viewer.username} src={viewer.avatarUrl} size={32} />}
+                      placeholder={`Reply to ${post.authorName}…`}
+                      submitLabel="Reply"
+                      compact
+                      onSubmit={async (body) => {
+                        const ok = await submit(post.id, body);
+                        if (ok) setReplyTo(null);
+                        return ok;
+                      }}
+                    />
+                  )}
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -253,6 +309,7 @@ function PostView({
   post,
   onLike,
   onBookmark,
+  onReblog,
   canReply,
   onReply,
   follow,
@@ -260,6 +317,7 @@ function PostView({
   post: CommunityPost;
   onLike: () => void;
   onBookmark: () => void;
+  onReblog: () => void;
   canReply: boolean;
   onReply?: () => void;
   follow?: { following: boolean; onToggle: () => void } | null;
@@ -324,6 +382,18 @@ function PostView({
               Reply
             </button>
           )}
+          <button
+            type="button"
+            onClick={onReblog}
+            aria-pressed={post.rebloggedByViewer}
+            className={cn(
+              "inline-flex items-center gap-1.5 transition-ui hover:text-foreground",
+              post.rebloggedByViewer && "text-success",
+            )}
+          >
+            <Repeat2 className="size-4" />
+            {post.reblogCount > 0 && <span>{post.reblogCount}</span>}
+          </button>
           <button
             type="button"
             onClick={onBookmark}

@@ -18,12 +18,41 @@ type PostRow = {
   user_id: string | null;
   author: ProfileEmbed;
   likes: { count: number }[];
+  reblogs: { count: number }[];
 };
 
 const POST_SELECT =
   "id, body, parent_id, created_at, author_name, user_id, " +
   "author:is_profiles!is_posts_user_id_fkey(username, display_name, avatar_url), " +
-  "likes:is_post_reactions(count)";
+  "likes:is_post_reactions(count), reblogs:is_reblogs(count)";
+
+type ViewerSets = {
+  likedIds: Set<string>;
+  bookmarkedIds: Set<string>;
+  rebloggedIds: Set<string>;
+};
+
+function mapPostRow(r: PostRow, sets: ViewerSets): CommunityPost {
+  const displayName =
+    r.author?.display_name?.trim() || r.author?.username || r.author_name || "Member";
+  return {
+    rowId: r.id,
+    id: r.id,
+    body: r.body,
+    parentId: r.parent_id,
+    createdAt: r.created_at,
+    userId: r.user_id,
+    authorName: displayName,
+    username: r.author?.username ?? null,
+    avatarUrl: r.author?.avatar_url ?? null,
+    likeCount: r.likes?.[0]?.count ?? 0,
+    likedByViewer: sets.likedIds.has(r.id),
+    bookmarkedByViewer: sets.bookmarkedIds.has(r.id),
+    reblogCount: r.reblogs?.[0]?.count ?? 0,
+    rebloggedByViewer: sets.rebloggedIds.has(r.id),
+    rebloggedBy: null,
+  };
+}
 
 export async function getFeed(opts?: { following?: boolean; saved?: boolean }): Promise<{
   posts: CommunityPost[];
@@ -43,6 +72,7 @@ export async function getFeed(opts?: { following?: boolean; saved?: boolean }): 
   let viewer: Viewer | null = null;
   const likedIds = new Set<string>();
   const bookmarkedIds = new Set<string>();
+  const rebloggedIds = new Set<string>();
   const followingIds: string[] = [];
 
   if (user) {
@@ -72,8 +102,12 @@ export async function getFeed(opts?: { following?: boolean; saved?: boolean }): 
 
     const { data: bms } = await sb.from("is_bookmarks").select("post_id").eq("user_id", user.id);
     for (const r of bms ?? []) bookmarkedIds.add(r.post_id as string);
+
+    const { data: rbs } = await sb.from("is_reblogs").select("post_id").eq("user_id", user.id);
+    for (const r of rbs ?? []) rebloggedIds.add(r.post_id as string);
   }
 
+  const sets: ViewerSets = { likedIds, bookmarkedIds, rebloggedIds };
   let query = sb.from("is_posts").select(POST_SELECT).is("deleted_at", null);
 
   // "Following" feed: only posts from people you follow, plus your own.
@@ -86,26 +120,38 @@ export async function getFeed(opts?: { following?: boolean; saved?: boolean }): 
   }
 
   const { data } = await query.order("created_at", { ascending: true });
+  const base = ((data as PostRow[] | null) ?? []).map((r) => mapPostRow(r, sets));
 
-  const posts = ((data as PostRow[] | null) ?? []).map((r): CommunityPost => {
-    const displayName =
-      r.author?.display_name?.trim() || r.author?.username || r.author_name || "Member";
-    return {
-      id: r.id,
-      body: r.body,
-      parentId: r.parent_id,
-      createdAt: r.created_at,
-      userId: r.user_id,
-      authorName: displayName,
-      username: r.author?.username ?? null,
-      avatarUrl: r.author?.avatar_url ?? null,
-      likeCount: r.likes?.[0]?.count ?? 0,
-      likedByViewer: likedIds.has(r.id),
-      bookmarkedByViewer: bookmarkedIds.has(r.id),
+  // Surface reblogs as extra feed rows in the main feed (not in following/saved).
+  let reblogRows: CommunityPost[] = [];
+  if (!opts?.following && !opts?.saved) {
+    type RbRow = {
+      created_at: string;
+      reblogger: { username: string | null } | null;
+      source: (PostRow & { deleted_at: string | null }) | null;
     };
-  });
+    const { data: rbData } = await sb
+      .from("is_reblogs")
+      .select(
+        "created_at, reblogger:is_profiles!is_reblogs_user_id_fkey(username), " +
+          `source:is_posts!is_reblogs_post_id_fkey(${POST_SELECT}, deleted_at)`,
+      )
+      .order("created_at", { ascending: false })
+      .limit(50);
+    reblogRows = ((rbData as RbRow[] | null) ?? [])
+      .filter((r) => r.source && r.source.deleted_at === null && r.source.parent_id === null)
+      .map((r) => {
+        const mapped = mapPostRow(r.source as PostRow, sets);
+        return {
+          ...mapped,
+          rowId: `rb:${r.reblogger?.username}:${mapped.id}`,
+          rebloggedBy: r.reblogger?.username ?? null,
+          createdAt: r.created_at,
+        };
+      });
+  }
 
-  return { posts, viewer, followingIds, configured: true };
+  return { posts: [...base, ...reblogRows], viewer, followingIds, configured: true };
 }
 
 export interface ProfileView {
@@ -154,6 +200,7 @@ export async function getProfile(username: string): Promise<{
   let viewer: Viewer | null = null;
   const likedIds = new Set<string>();
   const bookmarkedIds = new Set<string>();
+  const rebloggedIds = new Set<string>();
   const followingIds: string[] = [];
   let viewerFollows = false;
 
@@ -170,14 +217,16 @@ export async function getProfile(username: string): Promise<{
       displayName: vp?.display_name?.trim() || vp?.username || fallback,
       avatarUrl: vp?.avatar_url ?? null,
     };
-    const [{ data: likes }, { data: bms }, { data: follows }] = await Promise.all([
+    const [{ data: likes }, { data: bms }, { data: follows }, { data: rbs }] = await Promise.all([
       sb.from("is_post_reactions").select("post_id").eq("user_id", user.id),
       sb.from("is_bookmarks").select("post_id").eq("user_id", user.id),
       sb.from("is_follows").select("followee_id").eq("follower_id", user.id),
+      sb.from("is_reblogs").select("post_id").eq("user_id", user.id),
     ]);
     for (const r of likes ?? []) likedIds.add(r.post_id as string);
     for (const r of bms ?? []) bookmarkedIds.add(r.post_id as string);
     for (const r of follows ?? []) followingIds.push(r.followee_id as string);
+    for (const r of rbs ?? []) rebloggedIds.add(r.post_id as string);
     viewerFollows = followingIds.includes(prof.id as string);
   }
 
@@ -189,23 +238,8 @@ export async function getProfile(username: string): Promise<{
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
-  const posts = ((data as PostRow[] | null) ?? []).map((r): CommunityPost => {
-    const displayName =
-      r.author?.display_name?.trim() || r.author?.username || r.author_name || "Member";
-    return {
-      id: r.id,
-      body: r.body,
-      parentId: r.parent_id,
-      createdAt: r.created_at,
-      userId: r.user_id,
-      authorName: displayName,
-      username: r.author?.username ?? null,
-      avatarUrl: r.author?.avatar_url ?? null,
-      likeCount: r.likes?.[0]?.count ?? 0,
-      likedByViewer: likedIds.has(r.id),
-      bookmarkedByViewer: bookmarkedIds.has(r.id),
-    };
-  });
+  const sets: ViewerSets = { likedIds, bookmarkedIds, rebloggedIds };
+  const posts = ((data as PostRow[] | null) ?? []).map((r) => mapPostRow(r, sets));
 
   const profile: ProfileView = {
     userId: prof.id as string,

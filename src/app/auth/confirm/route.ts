@@ -34,28 +34,17 @@ export async function GET(request: NextRequest) {
       // Non-fatal — verification succeeded regardless.
     }
 
-    // Newcomers (not yet onboarded) get the welcome mail once and go to /welcome.
-    // Keying on onboarded_at (not link type) means a resend confirmation is
-    // treated identically to a first signup click.
-    const { data: prof } = await supabaseAdmin()
-      .from("profiles")
-      .select("onboarded_at")
-      .eq("id", data.user.id)
-      .maybeSingle();
-
-    if (!prof?.onboarded_at) {
-      if (data.user.email) {
-        try {
-          await sendTemplate(data.user.email, accountWelcome({ name: data.user.user_metadata?.full_name ?? null }));
-        } catch {
-          // Confirmation must succeed even if the welcome mail fails.
-        }
+    // First signup confirmation → branded welcome, once. Magic-link logins skip
+    // it. Best-effort: no-ops without SMTP, and confirmation must succeed either
+    // way. (No onboarding wizard in this app, so new users land straight in.)
+    if (type === "signup" && data.user.email) {
+      try {
+        await sendTemplate(data.user.email, accountWelcome({ name: data.user.user_metadata?.full_name ?? null }));
+      } catch {
+        // Confirmation must succeed even if the welcome mail fails.
       }
-      const safe = safeNext(next);
-      const params = safe ? `?next=${encodeURIComponent(safe)}` : "";
-      return NextResponse.redirect(`${origin}/welcome${params}`);
     }
-    // Already onboarded (e.g. a later magiclink) — just land them.
+
     return NextResponse.redirect(`${origin}${safeNext(next) ?? loginDestination(null, data.user.email)}`);
   }
 

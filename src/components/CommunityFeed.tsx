@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, MessageCircle, Bookmark, Repeat2, BarChart3 } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Repeat2, BarChart3, Image as ImageIcon } from "lucide-react";
 import { cn, timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CommunityAvatar } from "@/components/community/community-avatar";
@@ -163,7 +163,12 @@ export function CommunityFeed({
   const repliesOf = (id: string) =>
     posts.filter((p) => p.parentId === id).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
-  async function submit(parentId: string | null, body: string, pollOptions?: string[]): Promise<boolean> {
+  async function submit(
+    parentId: string | null,
+    body: string,
+    pollOptions?: string[],
+    imageUrls?: string[],
+  ): Promise<boolean> {
     if (!viewer) return false;
     setError(null);
     const clean = sanitize(body);
@@ -200,6 +205,7 @@ export function CommunityFeed({
               viewerChoice: null,
             }
           : null,
+      images: imageUrls && imageUrls.length ? imageUrls : null,
       pending: true,
     };
     setPosts((cur) => [...cur, temp]);
@@ -212,6 +218,7 @@ export function CommunityFeed({
           body: clean,
           parent_id: parentId,
           poll: pollOptions && pollOptions.length >= 2 ? pollOptions : undefined,
+          images: imageUrls && imageUrls.length ? imageUrls : undefined,
         }),
       });
       const json = await res.json();
@@ -277,7 +284,7 @@ export function CommunityFeed({
           placeholder="Share something about Indian sport…"
           submitLabel="Post"
           allowPoll
-          onSubmit={(body, poll) => submit(null, body, poll)}
+          onSubmit={(body, poll, images) => submit(null, body, poll, images)}
         />
       ) : (
         <div className="flex flex-col items-start gap-3 rounded-card border border-border bg-card p-6">
@@ -476,6 +483,19 @@ function PostView({
           )}
         </div>
         <p className="mt-1 whitespace-pre-wrap break-words">{post.body}</p>
+        {post.images && post.images.length > 0 && (
+          <div className={cn("mt-2 grid gap-2", post.images.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
+            {post.images.map((src, idx) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={idx}
+                src={src}
+                alt=""
+                className="max-h-80 w-full rounded-input border border-border object-cover"
+              />
+            ))}
+          </div>
+        )}
         {post.poll && <PollView poll={post.poll} canVote={canVote} onVote={onVote} />}
         <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
           <button
@@ -542,25 +562,47 @@ function Composer({
   submitLabel: string;
   compact?: boolean;
   allowPoll?: boolean;
-  onSubmit: (body: string, pollOptions?: string[]) => Promise<boolean>;
+  onSubmit: (body: string, pollOptions?: string[], imageUrls?: string[]) => Promise<boolean>;
 }) {
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [pollMode, setPollMode] = useState(false);
   const [options, setOptions] = useState<string[]>(["", ""]);
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const pollOptions = options.map((o) => o.trim()).filter(Boolean);
   const pollReady = !pollMode || pollOptions.length >= 2;
+  const previews = files.map((f) => URL.createObjectURL(f));
 
   async function handle() {
     if (busy || !body.trim() || !pollReady) return;
     setBusy(true);
-    const ok = await onSubmit(body, pollMode ? pollOptions : undefined);
+    setUploadError(null);
+
+    let imageUrls: string[] | undefined;
+    if (files.length) {
+      const fd = new FormData();
+      files.forEach((f) => fd.append("files", f));
+      try {
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error ?? "Upload failed.");
+        imageUrls = json.urls as string[];
+      } catch (e) {
+        setUploadError(e instanceof Error ? e.message : "Upload failed.");
+        setBusy(false);
+        return;
+      }
+    }
+
+    const ok = await onSubmit(body, pollMode ? pollOptions : undefined, imageUrls);
     setBusy(false);
     if (ok) {
       setBody("");
       setPollMode(false);
       setOptions(["", ""]);
+      setFiles([]);
     }
   }
 
@@ -614,22 +656,60 @@ function Composer({
           </div>
         )}
 
+        {previews.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {previews.map((src, idx) => (
+              <div key={idx} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt="" className="size-20 rounded-input object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setFiles((cur) => cur.filter((_, i) => i !== idx))}
+                  className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-foreground text-xs text-background"
+                  aria-label="Remove image"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {uploadError && <p className="text-sm text-danger">{uploadError}</p>}
+
         <div className="flex items-center justify-between">
-          {allowPoll ? (
-            <button
-              type="button"
-              onClick={() => setPollMode((v) => !v)}
-              className={cn(
-                "inline-flex items-center gap-1.5 text-sm transition-ui hover:text-foreground",
-                pollMode ? "text-foreground" : "text-muted-foreground",
-              )}
-            >
-              <BarChart3 className="size-4" />
-              Poll
-            </button>
-          ) : (
-            <span />
-          )}
+          <div className="flex items-center gap-3">
+            {allowPoll && (
+              <button
+                type="button"
+                onClick={() => setPollMode((v) => !v)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 text-sm transition-ui hover:text-foreground",
+                  pollMode ? "text-foreground" : "text-muted-foreground",
+                )}
+              >
+                <BarChart3 className="size-4" />
+                Poll
+              </button>
+            )}
+            {allowPoll && (
+              <label className="inline-flex cursor-pointer items-center gap-1.5 text-sm text-muted-foreground transition-ui hover:text-foreground">
+                <ImageIcon className="size-4" />
+                Photos
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const picked = Array.from(e.target.files ?? []);
+                    setFiles((cur) => [...cur, ...picked].slice(0, 4));
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            )}
+          </div>
           <Button
             type="button"
             onClick={handle}

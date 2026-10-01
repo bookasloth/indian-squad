@@ -21,6 +21,7 @@ type PostRow = {
   likes: { count: number }[];
   reblogs: { count: number }[];
   poll: PollEmbed;
+  images: string[] | null;
 };
 
 type PollEmbed =
@@ -29,7 +30,7 @@ type PollEmbed =
   | null;
 
 const POST_SELECT =
-  "id, body, parent_id, created_at, author_name, user_id, " +
+  "id, body, parent_id, created_at, author_name, user_id, images, " +
   "author:is_profiles!is_posts_user_id_fkey(username, display_name, avatar_url), " +
   "likes:is_post_reactions(count), reblogs:is_reblogs(count), poll:is_polls(options, closes_at)";
 
@@ -59,6 +60,7 @@ function mapPostRow(r: PostRow, sets: ViewerSets): CommunityPost {
     reblogCount: r.reblogs?.[0]?.count ?? 0,
     rebloggedByViewer: sets.rebloggedIds.has(r.id),
     rebloggedBy: null,
+    images: r.images ?? null,
     poll: pollEmbed
       ? {
           options: pollEmbed.options,

@@ -20,6 +20,7 @@ export interface CommunityPost {
   /** Username of the reblogger when this row is a reblog, else null. */
   rebloggedBy: string | null;
   poll: Poll | null;
+  images: string[] | null;
   // client-only optimistic flag
   pending?: boolean;
 }

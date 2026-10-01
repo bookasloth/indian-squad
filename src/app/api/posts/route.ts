@@ -44,11 +44,25 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
-  const { body, parent_id, poll } = (payload ?? {}) as Record<string, unknown>;
+  const { body, parent_id, poll, images } = (payload ?? {}) as Record<string, unknown>;
 
   const result = validateBody(body);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
+  }
+
+  // Optional images — must be URLs in our own community bucket (uploaded via
+  // /api/upload), capped at 4.
+  let imageUrls: string[] | null = null;
+  if (images != null) {
+    if (
+      !Array.isArray(images) ||
+      images.length > 4 ||
+      !images.every((u) => typeof u === "string" && u.includes("/is-community-media/"))
+    ) {
+      return NextResponse.json({ error: "Invalid images." }, { status: 400 });
+    }
+    if (images.length > 0) imageUrls = images as string[];
   }
 
   // Optional poll (top-level posts only).
@@ -85,7 +99,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await sb
     .from("is_posts")
-    .insert({ user_id: user.id, body: result.body, parent_id: parent })
+    .insert({ user_id: user.id, body: result.body, parent_id: parent, images: imageUrls })
     .select("id, created_at")
     .single();
 

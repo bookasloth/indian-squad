@@ -1,40 +1,32 @@
 import type { Metadata } from "next";
-import { getSupabase } from "@/lib/supabase";
+import { getFeed } from "@/lib/community-data";
 import { CommunityFeed } from "@/components/CommunityFeed";
-import type { Post } from "@/data/community";
 
 export const metadata: Metadata = {
   title: "Community",
-  description: "Talk Indian cricket with other fans. No sign-up required.",
+  description: "Talk Indian sport with other fans.",
 };
 
-// Feed reflects the latest posts on each request.
 export const dynamic = "force-dynamic";
 
 export default async function CommunityPage() {
-  const sb = getSupabase();
-  let posts: Post[] = [];
-  if (sb) {
-    const { data } = await sb
-      .from("is_posts")
-      .select("id,author_name,body,parent_id,created_at")
-      .order("created_at", { ascending: true });
-    posts = (data as Post[] | null) ?? [];
-  }
+  const { posts, viewer, configured } = await getFeed();
 
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Community</h1>
-        <p className="text-muted-foreground">Talk cricket with other fans. No sign-up — just a name.</p>
+        <h1 className="font-display text-3xl font-bold tracking-tight">Community</h1>
+        <p className="text-muted-foreground">
+          Talk cricket — and all of Indian sport — with other fans.
+        </p>
       </header>
 
-      {sb ? (
-        <CommunityFeed initialPosts={posts} />
+      {configured ? (
+        <CommunityFeed initialPosts={posts} viewer={viewer} />
       ) : (
-        <p className="rounded-lg border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
-          The community feed isn&apos;t configured yet. Set the Supabase environment
-          variables and apply the migration to enable it.
+        <p className="rounded-card border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+          The community feed isn&apos;t configured yet. Set the Supabase environment variables and
+          apply the migrations to enable it.
         </p>
       )}
     </div>

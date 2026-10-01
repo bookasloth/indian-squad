@@ -1,35 +1,42 @@
-export interface Post {
+export interface CommunityPost {
   id: string;
-  author_name: string;
   body: string;
-  parent_id: string | null;
-  created_at: string;
+  parentId: string | null;
+  createdAt: string;
+  // author
+  userId: string | null;
+  authorName: string; // resolved display name (profile, or legacy author_name)
+  username: string | null; // for profile links; null for legacy name-only posts
+  avatarUrl: string | null;
+  // engagement
+  likeCount: number;
+  likedByViewer: boolean;
+  // client-only optimistic flag
+  pending?: boolean;
 }
 
-export const NAME_MAX = 40;
+/** The signed-in viewer, as the feed needs it. */
+export interface Viewer {
+  userId: string;
+  username: string;
+  displayName: string;
+  avatarUrl: string | null;
+}
+
 export const BODY_MAX = 1000;
 
-// Collapse whitespace and trim. Stored text is rendered as text (React escapes
-// it on output), so no HTML is ever interpreted — this just normalizes input.
+/** Normalize whitespace + trim. Stored as text; React escapes on render. */
 export function sanitize(s: string): string {
   return s.replace(/\s+/g, " ").trim();
 }
 
-export type ValidatedPost =
-  | { ok: true; name: string; body: string }
-  | { ok: false; error: string };
+export type ValidatedBody = { ok: true; body: string } | { ok: false; error: string };
 
-export function validatePost(rawName: unknown, rawBody: unknown): ValidatedPost {
-  if (typeof rawName !== "string" || typeof rawBody !== "string") {
-    return { ok: false, error: "Name and message are required." };
-  }
-  const name = sanitize(rawName);
-  const body = sanitize(rawBody);
-  if (name.length < 1 || name.length > NAME_MAX) {
-    return { ok: false, error: `Name must be 1–${NAME_MAX} characters.` };
-  }
+export function validateBody(raw: unknown): ValidatedBody {
+  if (typeof raw !== "string") return { ok: false, error: "A message is required." };
+  const body = sanitize(raw);
   if (body.length < 1 || body.length > BODY_MAX) {
     return { ok: false, error: `Message must be 1–${BODY_MAX} characters.` };
   }
-  return { ok: true, name, body };
+  return { ok: true, body };
 }

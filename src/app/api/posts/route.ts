@@ -1,36 +1,39 @@
 import { NextResponse } from "next/server";
-import { getSupabase } from "@/lib/supabase";
-import { validatePost } from "@/data/community";
+import { createClient } from "@/lib/supabase/server";
+import { validateBody } from "@/data/community";
 
-const COLUMNS = "id,author_name,body,parent_id,created_at";
-
-// ponytail: in-memory per-IP rate limit. Resets per server instance / cold
-// start, so it's best-effort — fine for a fan feed. Move to Upstash or a
-// Supabase counter if it's ever actually abused.
+// ponytail: in-memory per-user rate limit. Best-effort (resets per instance);
+// fine for a fan feed. Move to a DB counter if abused.
 const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 5;
+const MAX_PER_WINDOW = 8;
 const hits = new Map<string, number[]>();
 
-function rateLimited(ip: string): boolean {
+function rateLimited(key: string): boolean {
   const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
   if (recent.length >= MAX_PER_WINDOW) {
-    hits.set(ip, recent);
+    hits.set(key, recent);
     return true;
   }
   recent.push(now);
-  hits.set(ip, recent);
+  hits.set(key, recent);
   return false;
 }
 
 export async function POST(request: Request) {
-  const sb = getSupabase();
-  if (!sb) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return NextResponse.json({ error: "Community is not configured yet." }, { status: 503 });
   }
 
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (rateLimited(ip)) {
+  const sb = await createClient();
+  const {
+    data: { user },
+  } = await sb.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in to post." }, { status: 401 });
+  }
+
+  if (rateLimited(user.id)) {
     return NextResponse.json({ error: "Slow down — too many posts." }, { status: 429 });
   }
 
@@ -40,9 +43,9 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
-  const { author_name, body, parent_id } = (payload ?? {}) as Record<string, unknown>;
+  const { body, parent_id } = (payload ?? {}) as Record<string, unknown>;
 
-  const result = validatePost(author_name, body);
+  const result = validateBody(body);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
   }
@@ -55,7 +58,7 @@ export async function POST(request: Request) {
     }
     const { data: found } = await sb
       .from("is_posts")
-      .select("id,parent_id")
+      .select("id, parent_id")
       .eq("id", parent_id)
       .single();
     if (!found || found.parent_id !== null) {
@@ -66,8 +69,8 @@ export async function POST(request: Request) {
 
   const { data, error } = await sb
     .from("is_posts")
-    .insert({ author_name: result.name, body: result.body, parent_id: parent })
-    .select(COLUMNS)
+    .insert({ user_id: user.id, body: result.body, parent_id: parent })
+    .select("id, created_at")
     .single();
 
   if (error) {

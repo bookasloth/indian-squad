@@ -1,7 +1,8 @@
 import "server-only";
 
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
-import type { CommunityPost, Viewer } from "@/data/community";
+import type { CommunityPost, Viewer, PollOption } from "@/data/community";
 
 type ProfileEmbed = {
   username: string | null;
@@ -19,12 +20,18 @@ type PostRow = {
   author: ProfileEmbed;
   likes: { count: number }[];
   reblogs: { count: number }[];
+  poll: PollEmbed;
 };
+
+type PollEmbed =
+  | { options: PollOption[]; closes_at: string | null }
+  | { options: PollOption[]; closes_at: string | null }[]
+  | null;
 
 const POST_SELECT =
   "id, body, parent_id, created_at, author_name, user_id, " +
   "author:is_profiles!is_posts_user_id_fkey(username, display_name, avatar_url), " +
-  "likes:is_post_reactions(count), reblogs:is_reblogs(count)";
+  "likes:is_post_reactions(count), reblogs:is_reblogs(count), poll:is_polls(options, closes_at)";
 
 type ViewerSets = {
   likedIds: Set<string>;
@@ -35,6 +42,7 @@ type ViewerSets = {
 function mapPostRow(r: PostRow, sets: ViewerSets): CommunityPost {
   const displayName =
     r.author?.display_name?.trim() || r.author?.username || r.author_name || "Member";
+  const pollEmbed = Array.isArray(r.poll) ? (r.poll[0] ?? null) : r.poll;
   return {
     rowId: r.id,
     id: r.id,
@@ -51,7 +59,51 @@ function mapPostRow(r: PostRow, sets: ViewerSets): CommunityPost {
     reblogCount: r.reblogs?.[0]?.count ?? 0,
     rebloggedByViewer: sets.rebloggedIds.has(r.id),
     rebloggedBy: null,
+    poll: pollEmbed
+      ? {
+          options: pollEmbed.options,
+          closesAt: pollEmbed.closes_at,
+          closed: pollEmbed.closes_at ? new Date(pollEmbed.closes_at) < new Date() : false,
+          counts: {},
+          total: 0,
+          viewerChoice: null,
+        }
+      : null,
   };
+}
+
+/** Fill poll vote tallies + the viewer's choice for the posts that carry a poll. */
+async function fillPolls(
+  posts: CommunityPost[],
+  sb: SupabaseClient,
+  userId: string | null,
+): Promise<void> {
+  const ids = posts.filter((p) => p.poll).map((p) => p.id);
+  if (ids.length === 0) return;
+  const { data: votes } = await sb
+    .from("is_poll_votes")
+    .select("post_id, option_index, user_id")
+    .in("post_id", ids);
+
+  const byPost = new Map<string, { counts: Record<number, number>; total: number; mine: number | null }>();
+  for (const v of votes ?? []) {
+    const pid = v.post_id as string;
+    const e = byPost.get(pid) ?? { counts: {}, total: 0, mine: null };
+    const idx = v.option_index as number;
+    e.counts[idx] = (e.counts[idx] ?? 0) + 1;
+    e.total++;
+    if (userId && v.user_id === userId) e.mine = idx;
+    byPost.set(pid, e);
+  }
+  for (const p of posts) {
+    if (!p.poll) continue;
+    const e = byPost.get(p.id);
+    if (e) {
+      p.poll.counts = e.counts;
+      p.poll.total = e.total;
+      p.poll.viewerChoice = e.mine;
+    }
+  }
 }
 
 export async function getFeed(opts?: { following?: boolean; saved?: boolean }): Promise<{
@@ -151,7 +203,9 @@ export async function getFeed(opts?: { following?: boolean; saved?: boolean }): 
       });
   }
 
-  return { posts: [...base, ...reblogRows], viewer, followingIds, configured: true };
+  const posts = [...base, ...reblogRows];
+  await fillPolls(posts, sb, user?.id ?? null);
+  return { posts, viewer, followingIds, configured: true };
 }
 
 export interface ProfileView {
@@ -240,6 +294,7 @@ export async function getProfile(username: string): Promise<{
 
   const sets: ViewerSets = { likedIds, bookmarkedIds, rebloggedIds };
   const posts = ((data as PostRow[] | null) ?? []).map((r) => mapPostRow(r, sets));
+  await fillPolls(posts, sb, user?.id ?? null);
 
   const profile: ProfileView = {
     userId: prof.id as string,

@@ -19,8 +19,38 @@ export interface CommunityPost {
   rebloggedByViewer: boolean;
   /** Username of the reblogger when this row is a reblog, else null. */
   rebloggedBy: string | null;
+  poll: Poll | null;
   // client-only optimistic flag
   pending?: boolean;
+}
+
+export interface PollOption {
+  i: number;
+  label: string;
+}
+
+export interface Poll {
+  options: PollOption[];
+  closesAt: string | null;
+  closed: boolean;
+  counts: Record<number, number>;
+  total: number;
+  viewerChoice: number | null;
+}
+
+export const POLL_MIN_OPTIONS = 2;
+export const POLL_MAX_OPTIONS = 4;
+export const POLL_OPTION_MAX = 80;
+
+/** Validate + normalize composer poll options. Returns trimmed non-empty labels. */
+export function validatePollOptions(raw: unknown): { ok: true; options: string[] } | { ok: false; error: string } {
+  if (!Array.isArray(raw)) return { ok: false, error: "Invalid poll." };
+  const options = raw
+    .map((o) => (typeof o === "string" ? o.replace(/\s+/g, " ").trim() : ""))
+    .filter((o) => o.length > 0 && o.length <= POLL_OPTION_MAX);
+  if (options.length < POLL_MIN_OPTIONS) return { ok: false, error: "A poll needs at least two options." };
+  if (options.length > POLL_MAX_OPTIONS) return { ok: false, error: "A poll can have at most four options." };
+  return { ok: true, options };
 }
 
 /** The signed-in viewer, as the feed needs it. */

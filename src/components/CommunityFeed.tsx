@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, MessageCircle, Bookmark, Repeat2 } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Repeat2, BarChart3 } from "lucide-react";
 import { cn, timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CommunityAvatar } from "@/components/community/community-avatar";
-import { type CommunityPost, type Viewer, BODY_MAX, sanitize } from "@/data/community";
+import {
+  type CommunityPost,
+  type Viewer,
+  type Poll,
+  BODY_MAX,
+  POLL_MAX_OPTIONS,
+  sanitize,
+} from "@/data/community";
 
 export function CommunityFeed({
   initialPosts,
@@ -94,6 +101,40 @@ export function CommunityFeed({
     }
   }
 
+  async function votePoll(postId: string, optionIndex: number) {
+    if (!viewer) {
+      setError("Sign in to vote.");
+      return;
+    }
+    const prev = posts.find((p) => p.id === postId)?.poll ?? null;
+    if (!prev || prev.closed || prev.viewerChoice === optionIndex) return;
+
+    setPosts((cur) =>
+      cur.map((p) => {
+        if (p.id !== postId || !p.poll) return p;
+        const counts = { ...p.poll.counts };
+        const old = p.poll.viewerChoice;
+        let total = p.poll.total;
+        if (old != null) counts[old] = Math.max(0, (counts[old] ?? 0) - 1);
+        else total += 1;
+        counts[optionIndex] = (counts[optionIndex] ?? 0) + 1;
+        return { ...p, poll: { ...p.poll, counts, total, viewerChoice: optionIndex } };
+      }),
+    );
+
+    try {
+      const res = await fetch("/api/poll-votes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId, optionIndex }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setPosts((cur) => cur.map((p) => (p.id === postId && p.poll ? { ...p, poll: prev } : p)));
+      setError("Could not record your vote.");
+    }
+  }
+
   async function toggleBookmark(id: string) {
     if (!viewer) {
       setError("Sign in to save posts.");
@@ -122,7 +163,7 @@ export function CommunityFeed({
   const repliesOf = (id: string) =>
     posts.filter((p) => p.parentId === id).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
-  async function submit(parentId: string | null, body: string): Promise<boolean> {
+  async function submit(parentId: string | null, body: string, pollOptions?: string[]): Promise<boolean> {
     if (!viewer) return false;
     setError(null);
     const clean = sanitize(body);
@@ -148,6 +189,17 @@ export function CommunityFeed({
       reblogCount: 0,
       rebloggedByViewer: false,
       rebloggedBy: null,
+      poll:
+        pollOptions && pollOptions.length >= 2
+          ? {
+              options: pollOptions.map((label, i) => ({ i, label })),
+              closesAt: null,
+              closed: false,
+              counts: {},
+              total: 0,
+              viewerChoice: null,
+            }
+          : null,
       pending: true,
     };
     setPosts((cur) => [...cur, temp]);
@@ -156,7 +208,11 @@ export function CommunityFeed({
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: clean, parent_id: parentId }),
+        body: JSON.stringify({
+          body: clean,
+          parent_id: parentId,
+          poll: pollOptions && pollOptions.length >= 2 ? pollOptions : undefined,
+        }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Could not post.");
@@ -220,7 +276,8 @@ export function CommunityFeed({
           avatar={<CommunityAvatar seed={viewer.username} src={viewer.avatarUrl} size={40} />}
           placeholder="Share something about Indian sport…"
           submitLabel="Post"
-          onSubmit={(body) => submit(null, body)}
+          allowPoll
+          onSubmit={(body, poll) => submit(null, body, poll)}
         />
       ) : (
         <div className="flex flex-col items-start gap-3 rounded-card border border-border bg-card p-6">
@@ -249,6 +306,8 @@ export function CommunityFeed({
                   onLike={() => toggleLike(post.id)}
                   onBookmark={() => toggleBookmark(post.id)}
                   onReblog={() => toggleReblog(post.id)}
+                  onVote={(i) => votePoll(post.id, i)}
+                  canVote={!!viewer}
                   canReply={false}
                   follow={followProps(post)}
                 />
@@ -271,6 +330,8 @@ export function CommunityFeed({
                 onLike={() => toggleLike(post.id)}
                 onBookmark={() => toggleBookmark(post.id)}
                 onReblog={() => toggleReblog(post.id)}
+                onVote={(i) => votePoll(post.id, i)}
+                canVote={!!viewer}
                 canReply={!post.rebloggedBy && !!viewer}
                 onReply={() => { setReplyTo(replyTo === post.rowId ? null : post.rowId); setError(null); }}
                 follow={followProps(post)}
@@ -279,7 +340,7 @@ export function CommunityFeed({
               {!post.rebloggedBy && (
                 <div className="ml-6 flex flex-col gap-3 border-l border-border pl-4">
                   {repliesOf(post.id).map((reply) => (
-                    <PostView key={reply.rowId} post={reply} onLike={() => toggleLike(reply.id)} onBookmark={() => toggleBookmark(reply.id)} onReblog={() => toggleReblog(reply.id)} canReply={false} follow={followProps(reply)} />
+                    <PostView key={reply.rowId} post={reply} onLike={() => toggleLike(reply.id)} onBookmark={() => toggleBookmark(reply.id)} onReblog={() => toggleReblog(reply.id)} onVote={(i) => votePoll(reply.id, i)} canVote={!!viewer} canReply={false} follow={followProps(reply)} />
                   ))}
 
                   {viewer && replyTo === post.rowId && (
@@ -305,11 +366,65 @@ export function CommunityFeed({
   );
 }
 
+function PollView({
+  poll,
+  canVote,
+  onVote,
+}: {
+  poll: Poll;
+  canVote: boolean;
+  onVote: (optionIndex: number) => void;
+}) {
+  const showResults = poll.viewerChoice != null || poll.closed || !canVote;
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      {poll.options.map((opt) => {
+        const count = poll.counts[opt.i] ?? 0;
+        const pct = poll.total ? Math.round((count / poll.total) * 100) : 0;
+        const mine = poll.viewerChoice === opt.i;
+        if (showResults) {
+          return (
+            <div
+              key={opt.i}
+              className="relative overflow-hidden rounded-input border border-border px-3 py-2 text-sm"
+            >
+              <div className="absolute inset-y-0 left-0 bg-muted" style={{ width: `${pct}%` }} aria-hidden />
+              <div className="relative flex items-center justify-between">
+                <span className={cn(mine && "font-semibold")}>
+                  {opt.label}
+                  {mine && " ✓"}
+                </span>
+                <span className="text-muted-foreground">{pct}%</span>
+              </div>
+            </div>
+          );
+        }
+        return (
+          <button
+            key={opt.i}
+            type="button"
+            onClick={() => onVote(opt.i)}
+            className="rounded-input border border-border px-3 py-2 text-left text-sm transition-ui hover:border-foreground hover:bg-accent"
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+      <span className="text-xs text-muted-foreground">
+        {poll.total} vote{poll.total === 1 ? "" : "s"}
+        {poll.closed && " · closed"}
+      </span>
+    </div>
+  );
+}
+
 function PostView({
   post,
   onLike,
   onBookmark,
   onReblog,
+  onVote,
+  canVote,
   canReply,
   onReply,
   follow,
@@ -318,6 +433,8 @@ function PostView({
   onLike: () => void;
   onBookmark: () => void;
   onReblog: () => void;
+  onVote: (optionIndex: number) => void;
+  canVote: boolean;
   canReply: boolean;
   onReply?: () => void;
   follow?: { following: boolean; onToggle: () => void } | null;
@@ -359,6 +476,7 @@ function PostView({
           )}
         </div>
         <p className="mt-1 whitespace-pre-wrap break-words">{post.body}</p>
+        {post.poll && <PollView poll={post.poll} canVote={canVote} onVote={onVote} />}
         <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
           <button
             type="button"
@@ -416,23 +534,34 @@ function Composer({
   placeholder,
   submitLabel,
   compact,
+  allowPoll,
   onSubmit,
 }: {
   avatar: React.ReactNode;
   placeholder: string;
   submitLabel: string;
   compact?: boolean;
-  onSubmit: (body: string) => Promise<boolean>;
+  allowPoll?: boolean;
+  onSubmit: (body: string, pollOptions?: string[]) => Promise<boolean>;
 }) {
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pollMode, setPollMode] = useState(false);
+  const [options, setOptions] = useState<string[]>(["", ""]);
+
+  const pollOptions = options.map((o) => o.trim()).filter(Boolean);
+  const pollReady = !pollMode || pollOptions.length >= 2;
 
   async function handle() {
-    if (busy || !body.trim()) return;
+    if (busy || !body.trim() || !pollReady) return;
     setBusy(true);
-    const ok = await onSubmit(body);
+    const ok = await onSubmit(body, pollMode ? pollOptions : undefined);
     setBusy(false);
-    if (ok) setBody("");
+    if (ok) {
+      setBody("");
+      setPollMode(false);
+      setOptions(["", ""]);
+    }
   }
 
   return (
@@ -447,16 +576,70 @@ function Composer({
           rows={compact ? 2 : 3}
           className="resize-y rounded-input border border-border bg-background px-3 py-2 text-sm outline-none focus:border-foreground"
         />
-        <Button
-          type="button"
-          onClick={handle}
-          disabled={busy || !body.trim()}
-          variant="brand"
-          size="sm"
-          className="self-end"
-        >
-          {busy ? "Posting…" : submitLabel}
-        </Button>
+
+        {pollMode && (
+          <div className="flex flex-col gap-2">
+            {options.map((opt, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <input
+                  value={opt}
+                  onChange={(e) =>
+                    setOptions((cur) => cur.map((o, i) => (i === idx ? e.target.value : o)))
+                  }
+                  maxLength={80}
+                  placeholder={`Option ${idx + 1}`}
+                  className="flex-1 rounded-input border border-border bg-background px-3 py-1.5 text-sm outline-none focus:border-foreground"
+                />
+                {options.length > 2 && (
+                  <button
+                    type="button"
+                    onClick={() => setOptions((cur) => cur.filter((_, i) => i !== idx))}
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                    aria-label="Remove option"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
+            {options.length < POLL_MAX_OPTIONS && (
+              <button
+                type="button"
+                onClick={() => setOptions((cur) => [...cur, ""])}
+                className="self-start text-sm text-muted-foreground hover:text-foreground"
+              >
+                + Add option
+              </button>
+            )}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
+          {allowPoll ? (
+            <button
+              type="button"
+              onClick={() => setPollMode((v) => !v)}
+              className={cn(
+                "inline-flex items-center gap-1.5 text-sm transition-ui hover:text-foreground",
+                pollMode ? "text-foreground" : "text-muted-foreground",
+              )}
+            >
+              <BarChart3 className="size-4" />
+              Poll
+            </button>
+          ) : (
+            <span />
+          )}
+          <Button
+            type="button"
+            onClick={handle}
+            disabled={busy || !body.trim() || !pollReady}
+            variant="brand"
+            size="sm"
+          >
+            {busy ? "Posting…" : submitLabel}
+          </Button>
+        </div>
       </div>
     </div>
   );

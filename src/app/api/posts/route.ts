@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { validateBody } from "@/data/community";
+import { validateBody, validatePollOptions } from "@/data/community";
 import { notify } from "@/lib/community-notify";
 
 // ponytail: in-memory per-user rate limit. Best-effort (resets per instance);
@@ -44,11 +44,24 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
-  const { body, parent_id } = (payload ?? {}) as Record<string, unknown>;
+  const { body, parent_id, poll } = (payload ?? {}) as Record<string, unknown>;
 
   const result = validateBody(body);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
+  }
+
+  // Optional poll (top-level posts only).
+  let pollOptions: string[] | null = null;
+  if (poll != null) {
+    if (parent_id != null) {
+      return NextResponse.json({ error: "Replies can't carry a poll." }, { status: 400 });
+    }
+    const pv = validatePollOptions(poll);
+    if (!pv.ok) {
+      return NextResponse.json({ error: pv.error }, { status: 400 });
+    }
+    pollOptions = pv.options;
   }
 
   // Replies are one level deep: a parent must exist and itself be top-level.
@@ -78,6 +91,18 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json({ error: "Could not save your post." }, { status: 500 });
+  }
+
+  // Attach a poll if one was supplied.
+  if (pollOptions && data?.id) {
+    const options = pollOptions.map((label, i) => ({ i, label }));
+    const { error: pollErr } = await sb
+      .from("is_polls")
+      .insert({ post_id: data.id, options });
+    if (pollErr) {
+      // The post is saved; surface a soft failure so the client can note it.
+      return NextResponse.json({ post: data, pollError: true }, { status: 201 });
+    }
   }
 
   // Notify the parent author of a reply.

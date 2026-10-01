@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 const NAV = [
@@ -14,7 +13,7 @@ const NAV = [
   { href: "/about", label: "About" },
 ] as const;
 
-export function Header() {
+export function Header({ userSlot }: { userSlot?: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
@@ -45,12 +44,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link href="/login">Log in</Link>
-          </Button>
-          <Button asChild variant="brand" size="sm">
-            <Link href="/register">Sign up</Link>
-          </Button>
+          {userSlot}
         </div>
       </div>
     </header>

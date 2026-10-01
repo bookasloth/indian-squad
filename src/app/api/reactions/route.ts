@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { notify } from "@/lib/community-notify";
 
 // Toggle a like on a post. { postId, like: boolean }.
 export async function POST(request: Request) {
@@ -40,5 +41,12 @@ export async function POST(request: Request) {
   if (error) {
     return NextResponse.json({ error: "Could not update." }, { status: 500 });
   }
+
+  // Notify the post's author when newly liked.
+  if (like) {
+    const { data: post } = await sb.from("is_posts").select("user_id").eq("id", postId).single();
+    if (post?.user_id) await notify(post.user_id as string, user.id, "like", postId);
+  }
+
   return NextResponse.json({ ok: true });
 }

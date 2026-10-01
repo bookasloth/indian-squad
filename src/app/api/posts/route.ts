@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { validateBody } from "@/data/community";
+import { notify } from "@/lib/community-notify";
 
 // ponytail: in-memory per-user rate limit. Best-effort (resets per instance);
 // fine for a fan feed. Move to a DB counter if abused.
@@ -52,19 +53,21 @@ export async function POST(request: Request) {
 
   // Replies are one level deep: a parent must exist and itself be top-level.
   let parent: string | null = null;
+  let parentAuthor: string | null = null;
   if (parent_id != null) {
     if (typeof parent_id !== "string") {
       return NextResponse.json({ error: "Invalid parent." }, { status: 400 });
     }
     const { data: found } = await sb
       .from("is_posts")
-      .select("id, parent_id")
+      .select("id, parent_id, user_id")
       .eq("id", parent_id)
       .single();
     if (!found || found.parent_id !== null) {
       return NextResponse.json({ error: "Invalid parent." }, { status: 400 });
     }
     parent = parent_id;
+    parentAuthor = (found.user_id as string | null) ?? null;
   }
 
   const { data, error } = await sb
@@ -76,5 +79,11 @@ export async function POST(request: Request) {
   if (error) {
     return NextResponse.json({ error: "Could not save your post." }, { status: 500 });
   }
+
+  // Notify the parent author of a reply.
+  if (parentAuthor && data?.id) {
+    await notify(parentAuthor, user.id, "reply", data.id as string);
+  }
+
   return NextResponse.json({ post: data }, { status: 201 });
 }

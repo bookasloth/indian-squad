@@ -1,5 +1,22 @@
-import { Placeholder } from "@/components/Placeholder";
+import type { Metadata } from "next";
+import { XIBuilder } from "@/components/XIBuilder";
+
+export const metadata: Metadata = {
+  title: "Playing XI — Indian Squad",
+  description: "Pick your India Playing XI, validate the squad, and share it as an image.",
+};
 
 export default function XIPage() {
-  return <Placeholder title="Playing XI" />;
+  return (
+    <div className="flex flex-col gap-8">
+      <header className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight">Playing XI</h1>
+        <p className="text-muted">
+          Pick exactly 11 with at least one wicketkeeper. Your selection is saved on this
+          device.
+        </p>
+      </header>
+      <XIBuilder />
+    </div>
+  );
 }

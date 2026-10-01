@@ -6,12 +6,12 @@
  */
 export function postLoginPath(email: string | null | undefined): string {
   return !!process.env.ADMIN_EMAIL && email === process.env.ADMIN_EMAIL
-    ? "/admin"
-    : "/members";
+    ? "/community/moderation"
+    : "/community";
 }
 
 /** Authed subtrees a post-login `next` may return to. Anything else is dropped. */
-const NEXT_ALLOWED = ["/admin", "/members", "/games", "/community", "/tools/kalamai"];
+const NEXT_ALLOWED = ["/community"];
 
 /**
  * Validate a `next` return path. Returns the path only if it points at one of

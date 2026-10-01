@@ -105,6 +105,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
+    console.error("[api/posts] insert error:", JSON.stringify(error));
     return NextResponse.json({ error: "Could not save your post." }, { status: 500 });
   }
 

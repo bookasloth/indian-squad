@@ -15,9 +15,13 @@ create index if not exists is_posts_created_at_idx on is_posts (created_at);
 
 alter table is_posts enable row level security;
 
--- anon may read everything and insert new posts; no updates or deletes.
-create policy is_posts_select_anon on is_posts
-  for select to anon using (true);
+-- Everyone (anon + authenticated) may read posts. (Role-less so logged-in users
+-- can read the feed and read a row back after inserting it.)
+drop policy if exists is_posts_select_anon on is_posts;
+drop policy if exists is_posts_select_all on is_posts;
+create policy is_posts_select_all on is_posts
+  for select using (true);
 
+drop policy if exists is_posts_insert_anon on is_posts;
 create policy is_posts_insert_anon on is_posts
   for insert to anon with check (true);

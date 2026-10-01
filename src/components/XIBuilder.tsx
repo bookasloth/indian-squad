@@ -93,12 +93,12 @@ export function XIBuilder() {
               className={`flex items-center justify-between rounded-lg border p-4 text-left transition-colors ${
                 isSelected
                   ? "border-foreground bg-foreground text-background"
-                  : "border-border hover:bg-surface"
+                  : "border-border hover:bg-muted"
               } ${atCap ? "cursor-not-allowed opacity-40" : ""}`}
             >
               <span className="min-w-0">
                 <span className="block truncate font-semibold">{player.name}</span>
-                <span className={`block text-sm ${isSelected ? "opacity-80" : "text-muted"}`}>
+                <span className={`block text-sm ${isSelected ? "opacity-80" : "text-muted-foreground"}`}>
                   {ROLE_LABEL[player.role]}
                 </span>
               </span>
@@ -113,7 +113,7 @@ export function XIBuilder() {
           type="button"
           onClick={() => setXI([])}
           disabled={selected.length === 0}
-          className="rounded-md border border-border px-4 py-2 text-sm hover:bg-surface disabled:opacity-40"
+          className="rounded-md border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-40"
         >
           Clear
         </button>
@@ -147,11 +147,11 @@ function StatusBar({
         ? "Add at least one wicketkeeper."
         : "";
   return (
-    <div className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3">
-      <span className="font-heading text-lg font-bold">
+    <div className="flex items-center justify-between rounded-lg border border-border bg-muted px-4 py-3">
+      <span className="font-display text-lg font-bold">
         {count}/{MAX}
       </span>
-      <span className={`text-sm ${valid ? "text-foreground" : "text-muted"}`}>{msg}</span>
+      <span className={`text-sm ${valid ? "text-foreground" : "text-muted-foreground"}`}>{msg}</span>
     </div>
   );
 }

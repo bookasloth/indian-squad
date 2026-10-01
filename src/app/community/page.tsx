@@ -4,7 +4,7 @@ import { CommunityFeed } from "@/components/CommunityFeed";
 import type { Post } from "@/data/community";
 
 export const metadata: Metadata = {
-  title: "Community — Indian Squad",
+  title: "Community",
   description: "Talk Indian cricket with other fans. No sign-up required.",
 };
 
@@ -26,13 +26,13 @@ export default async function CommunityPage() {
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Community</h1>
-        <p className="text-muted">Talk cricket with other fans. No sign-up — just a name.</p>
+        <p className="text-muted-foreground">Talk cricket with other fans. No sign-up — just a name.</p>
       </header>
 
       {sb ? (
         <CommunityFeed initialPosts={posts} />
       ) : (
-        <p className="rounded-lg border border-border bg-surface px-4 py-3 text-sm text-muted">
+        <p className="rounded-lg border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
           The community feed isn&apos;t configured yet. Set the Supabase environment
           variables and apply the migration to enable it.
         </p>

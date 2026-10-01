@@ -67,7 +67,7 @@ export function CommunityFeed({ initialPosts }: { initialPosts: Post[] }) {
       {error && <p className="text-sm text-foreground">{error}</p>}
 
       {tops.length === 0 ? (
-        <p className="text-muted">No posts yet. Be the first.</p>
+        <p className="text-muted-foreground">No posts yet. Be the first.</p>
       ) : (
         <ul className="flex flex-col gap-6">
           {tops.map((post) => (
@@ -99,7 +99,7 @@ export function CommunityFeed({ initialPosts }: { initialPosts: Post[] }) {
                       setReplyTo(post.id);
                       setError(null);
                     }}
-                    className="self-start text-sm text-muted hover:text-foreground"
+                    className="self-start text-sm text-muted-foreground hover:text-foreground"
                   >
                     Reply
                   </button>
@@ -119,7 +119,7 @@ function PostView({ post }: { post: Post }) {
     <div className={pending ? "opacity-60" : undefined}>
       <div className="flex items-baseline gap-2">
         <span className="font-semibold">{post.author_name}</span>
-        <span className="text-xs text-muted">{formatTime(post.created_at)}</span>
+        <span className="text-xs text-muted-foreground">{formatTime(post.created_at)}</span>
       </div>
       <p className="mt-1 whitespace-pre-wrap break-words">{post.body}</p>
     </div>

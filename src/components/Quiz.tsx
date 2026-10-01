@@ -30,7 +30,7 @@ export function Quiz() {
   if (phase === "intro") {
     return (
       <Panel>
-        <p className="text-muted">
+        <p className="text-muted-foreground">
           {quiz.length} questions on Indian cricket, shuffled every round. Pick an answer to
           see if you got it right.
         </p>
@@ -46,10 +46,10 @@ export function Quiz() {
     );
     return (
       <Panel>
-        <div className="font-heading text-5xl font-bold">
+        <div className="font-display text-5xl font-bold">
           {score}/{order.length}
         </div>
-        <p className="text-muted">{verdict(score, order.length)}</p>
+        <p className="text-muted-foreground">{verdict(score, order.length)}</p>
         <PrimaryButton onClick={start}>Play again</PrimaryButton>
       </Panel>
     );
@@ -72,7 +72,7 @@ export function Quiz() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between text-sm text-muted">
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
           Question {idx + 1} of {order.length}
         </span>
@@ -85,7 +85,7 @@ export function Quiz() {
         {q.options.map((option, i) => {
           const isCorrect = i === q.correctIndex;
           const isPicked = i === picked;
-          let cls = "border-border hover:bg-surface";
+          let cls = "border-border hover:bg-muted";
           if (answered) {
             if (isCorrect) cls = "border-foreground bg-foreground text-background";
             else if (isPicked) cls = "border-foreground line-through opacity-60";
@@ -109,7 +109,7 @@ export function Quiz() {
 
       {answered && (
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted">
+          <span className="text-sm text-muted-foreground">
             {picked === q.correctIndex ? "Correct." : "Not quite."}
           </span>
           <PrimaryButton onClick={next}>{isLast ? "See score" : "Next"}</PrimaryButton>

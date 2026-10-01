@@ -1,39 +1,886 @@
 @import "tailwindcss";
 
-/* Monochrome tokens. Light default, dark via prefers-color-scheme. */
+/* ------------------------------------------------------------------ */
+/*  Dark mode = class strategy (driven by next-themes), not media query */
+/* ------------------------------------------------------------------ */
+@custom-variant dark (&:where(.dark, .dark *, .torch, .torch *));
+
+/* ================================================================== */
+/*  DESIGN TOKENS — Pure monochrome. Black / white / gray only.       */
+/*  Functional status tones are intentionally desaturated.            */
+/* ================================================================== */
 :root {
+  /* Surfaces */
   --background: #ffffff;
   --foreground: #0a0a0a;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --surface: #f5f5f5;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+
+  /* Brand-neutral primary (ink) */
+  --primary: #0a0a0a;
+  --primary-foreground: #fafafa;
+
+  /* Secondary / muted / accent (all grayscale) */
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b6b73;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+
+  /* Lines + focus */
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #0a0a0a;
+
+  /* Brand — the one color in the system. Only surfaces on user
+     interaction (focus, selection, hover, scroll). Never decorative. */
+  --brand: #ff4800;
+  --brand-foreground: #ffffff;
+
+  /* Desaturated functional states (used sparingly, never decorative) */
+  --success: #2f7d57;
+  --success-foreground: #ffffff;
+  --warning: #8a6d1f;
+  --warning-foreground: #ffffff;
+  --danger: #b23b30;
+  --danger-foreground: #ffffff;
+  --gold: #d4af37; /* community founder badge tick */
+
+  /* Radii — exact spec: btn 4 / input 8 / card 12 / img 12 */
+  --radius-btn: 4px;
+  --radius-input: 8px;
+  --radius-card: 8px;
+  --radius-img: 8px;
+
+  /* Elevation — paper floating above glass (very subtle) */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 6px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.12), 0 4px 12px -4px rgb(0 0 0 / 0.06);
+
+  /* Shared motion language */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-slow: 300ms;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #fafafa;
-    --muted: #9ca3af;
-    --border: #262626;
-    --surface: #141414;
+.dark,
+.torch {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #101012;
+  --card-foreground: #fafafa;
+  --popover: #101012;
+  --popover-foreground: #fafafa;
+
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+
+  --secondary: #1b1b1f;
+  --secondary-foreground: #fafafa;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --accent: #1b1b1f;
+  --accent-foreground: #fafafa;
+
+  --border: #27272a;
+  --input: #2a2a2e;
+  --ring: #fafafa;
+
+  /* Brand holds the same value on dark — orange reads on black and white. */
+  --brand: #ff4800;
+  --brand-foreground: #ffffff;
+
+  --success: #4ea884;
+  --warning: #c9a94a;
+  --danger: #e0695e;
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.55), 0 2px 6px -2px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 4px 12px -4px rgb(0 0 0 / 0.45);
+}
+
+/* ================================================================== */
+/*  TORCH — "extra dark". Pure black + diya cursor. The <TorchOverlay> */
+/*  paints a radial flame-glow that follows the cursor.               */
+/* ================================================================== */
+.torch {
+  --background: #000000;
+  --card: #050505;
+  --popover: #050505;
+  color-scheme: dark;
+}
+/* Hide the native cursor everywhere in torch — the diya element in
+   <TorchOverlay> is the cursor. (SVG data-URI cursors don't render in Chrome.) */
+.torch,
+.torch * {
+  cursor: none !important;
+}
+
+/* Diya visuals — used by <TorchOverlay>. left/top set inline (px or CSS var). */
+.diya-mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-20px, -6px); /* flame tip -> the point */
+  filter: drop-shadow(0 0 6px var(--diya-glow, rgba(255, 150, 50, 0.9)));
+}
+.diya-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: diya-flame 0.28s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+/* Jyoti — the flame core. Its own flicker on top of the group's sway. */
+.diya-jyoti {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: diya-jyoti 0.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.diya-aura {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 360px;
+  height: 360px;
+  margin-left: -180px; /* center the 360px circle on the point */
+  margin-top: -186px; /* +6px so glow sits over the flame, not the base */
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--aura-strong, rgba(255, 150, 50, 0.28)),
+    var(--aura-soft, rgba(255, 120, 30, 0.08)) 42%,
+    transparent 68%
+  );
+  animation: diya-aura 3s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+/* Subtle warm smear that lags behind the diya — leftover warmth. Positioned at
+   the live cursor var, but transitioned so it drifts in behind the flame. */
+.diya-trail {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  margin-left: -110px;
+  margin-top: -110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--trail-color, rgba(255, 150, 50, 0.1)), transparent 60%);
+  transition: left 0.45s ease-out, top 0.45s ease-out;
+}
+/* Snuffed diya: a breathing ember + a wisp of smoke rising off the wick. */
+.diya-ember {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: diya-ember 1.6s ease-in-out infinite;
+}
+.diya-smoke {
+  transform-box: fill-box;
+  animation: diya-smoke 2.4s ease-out infinite;
+}
+@keyframes diya-ember {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes diya-smoke {
+  0% {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes diya-flame {
+  0% {
+    transform: scaleY(1) scaleX(1) skewX(0deg);
+    opacity: 1;
+  }
+  35% {
+    transform: scaleY(1.09) scaleX(0.96) skewX(2deg);
+    opacity: 0.95;
+  }
+  70% {
+    transform: scaleY(1.16) scaleX(0.91) skewX(-3deg);
+    opacity: 0.87;
+  }
+  100% {
+    transform: scaleY(1.06) scaleX(0.97) skewX(1deg);
+    opacity: 0.94;
+  }
+}
+@keyframes diya-jyoti {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0.82;
+  }
+  50% {
+    transform: scaleY(1.14);
+    opacity: 1;
+  }
+}
+@keyframes diya-aura {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.14);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .diya-flame,
+  .diya-jyoti,
+  .diya-aura,
+  .diya-ember,
+  .diya-smoke {
+    animation: none;
+  }
+  .diya-trail {
+    transition: none;
   }
 }
 
+/* ================================================================== */
+/*  Scroll reveal — CSS + IntersectionObserver (see motion/reveal.tsx) */
+/*  Replaces framer-motion on marketing pages; no animation-lib JS.    */
+/* ================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 16px));
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal-group > .reveal-item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-group.is-visible > .reveal-item {
+  opacity: 1;
+  transform: none;
+}
+/* Stagger: each child trails the previous as the group reveals. */
+.reveal-group.is-visible > .reveal-item:nth-child(1) { transition-delay: 50ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(2) { transition-delay: 130ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(3) { transition-delay: 210ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(4) { transition-delay: 290ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(5) { transition-delay: 370ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(6) { transition-delay: 450ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(7) { transition-delay: 530ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(8) { transition-delay: 610ms; }
+.reveal-group.is-visible > .reveal-item:nth-child(n + 9) { transition-delay: 690ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-group > .reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ================================================================== */
+/*  Tailwind theme mapping — exposes tokens as utilities              */
+/* ================================================================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
-  --color-surface: var(--surface);
-  --font-sans: var(--font-sans);
-  --font-heading: var(--font-heading);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--brand); /* orange #ff4800 — focus/selection/scroll + palette Insert */
+  --color-brand-foreground: var(--brand-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-gold: var(--gold);
+
+  /* Admin scope colors (only used under [data-admin]) */
+  --color-admin-bg: var(--admin-bg);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-surface-hover: var(--admin-surface-hover);
+  --color-admin-border: var(--admin-border);
+  --color-admin-border-hover: var(--admin-border-hover);
+  --color-admin-border-active: var(--admin-border-active);
+  --color-admin-text: var(--admin-text);
+  --color-admin-text-muted: var(--admin-text-muted);
+  --color-admin-accent: var(--admin-accent);
+  --color-admin-accent-fg: var(--admin-accent-fg);
+  --color-admin-success: var(--admin-success);
+  --color-admin-warning: var(--admin-warning);
+  --color-admin-danger: var(--admin-danger);
+  --color-admin-info: var(--admin-info);
+
+  --radius-btn: var(--radius-btn);
+  --radius-input: var(--radius-input);
+  --radius-card: var(--radius-card);
+  --radius-img: var(--radius-img);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  /* Fonts — Plus Jakarta Sans (display / h1–h4), Poppins (body / UI) */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Content width ceilings */
+  --container-prose: 720px;
+  --container-page: 1280px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+/* ================================================================== */
+/*  Base layer                                                        */
+/* ================================================================== */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
+  }
+
+  /* `scrollbar-gutter: stable` already reserves the scrollbar space, so the
+     page never shifts when a dialog/menu locks scroll. Cancel the extra
+     compensation react-remove-scroll (Radix) adds, which would double-shift. */
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  /* Brand focus ring — the color only shows when you tab in (WCAG AA). */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  /* Remove the ring for mouse users who didn't tab in */
+  :focus:not(:focus-visible) { outline: none; }
+
+  /* Selecting text washes it brand — the "ohhh, there's the color" moment. */
+  ::selection {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  /* Thin monochrome scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 999px;
+    border: 3px solid var(--background);
+  }
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
+/* ================================================================== */
+/*  Motion — one shared language. Respects reduced-motion.            */
+/* ================================================================== */
+@layer utilities {
+  .transition-ui {
+    transition-property: color, background-color, border-color, box-shadow,
+      transform, opacity;
+    transition-timing-function: var(--ease-out-quint);
+    transition-duration: var(--dur-base);
+  }
+
+  /* Community engagement click feedback: heart pops, rotten egg wobbles. */
+  @keyframes community-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+  @keyframes community-wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-14deg); }
+    75% { transform: rotate(14deg); }
+  }
+  .animate-pop { animation: community-pop 320ms var(--ease-out-quint); }
+  .animate-wobble { animation: community-wobble 380ms var(--ease-out-quint); }
+
+  /* Reblog: one crisp 360° spin the moment it's activated. */
+  @keyframes community-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-reblog-spin { animation: community-spin 500ms var(--ease-out-quint); }
+
+  /* Like burst: an expanding ring + sparks flung outward from the heart —
+     the little dopamine hit that makes a like feel worth clicking. */
+  .like-burst {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+  .like-ring {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 2px solid var(--brand);
+    animation: like-ring 480ms var(--ease-out-quint) forwards;
+  }
+  @keyframes like-ring {
+    0% { transform: scale(0.3); opacity: 0.85; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .like-spark {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--brand);
+    /* --a set inline per spark → each flings along its own spoke. */
+    animation: like-spark 480ms var(--ease-out-quint) forwards;
+  }
+  @keyframes like-spark {
+    0% { transform: rotate(var(--a)) translateY(-3px) scale(1); opacity: 1; }
+    100% { transform: rotate(var(--a)) translateY(-16px) scale(0); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pop,
+    .animate-wobble,
+    .animate-reblog-spin { animation: none; }
+    .like-burst { display: none; }
+  }
+
+  /* Editorial reading column */
+  .prose-column { max-width: var(--container-prose); }
+
+  /* Infinite marquee for tickers (testimonials, logos) */
+  @keyframes marquee-x {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+  }
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  /* Subtle grid/dot background used on hero + section dividers */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--foreground) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 5%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .bg-dots {
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--foreground) 9%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  /* Games — Alfazy tile reveal + invalid-guess shake (reduced-motion safe via the global rule). */
+  @keyframes alfazy-flip {
+    0% { transform: rotateX(0); }
+    50% { transform: rotateX(90deg); }
+    100% { transform: rotateX(0); }
+  }
+  .animate-tile-flip { animation: alfazy-flip 0.5s var(--ease-out-quint) both; }
+
+  @keyframes alfazy-shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+  }
+  .animate-shake { animation: alfazy-shake 0.4s both; }
+
+  /* Alfazy themed tiles — depth + texture via CSS vars from ThemeProvider */
+  .alfazy-tile {
+    position: relative;
+    transition: background-color 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+
+  .alfazy-tile--correct {
+    background: var(--alfazy-correct-base);
+    border-color: var(--alfazy-correct-base);
+    color: var(--alfazy-correct-text, #fff);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255,255,255,0.2),
+      0 2px 4px -1px rgba(0,0,0,0.2),
+      0 0 8px 0 var(--alfazy-correct-glow);
+  }
+
+  .alfazy-tile--present {
+    background: var(--alfazy-present-base);
+    border-color: var(--alfazy-present-base);
+    color: var(--alfazy-present-text, #fff);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255,255,255,0.2),
+      0 2px 4px -1px rgba(0,0,0,0.2),
+      0 0 8px 0 var(--alfazy-present-glow);
+  }
+
+  .alfazy-tile--absent {
+    background: var(--alfazy-absent-base);
+    border-color: var(--alfazy-absent-base);
+    color: var(--alfazy-absent-text, #fff);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255,255,255,0.1),
+      0 2px 4px -1px rgba(0,0,0,0.15),
+      0 0 4px 0 var(--alfazy-absent-glow);
+  }
+
+  /* Colourblind icon overlay */
+  .alfazy-tile__icon {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    font-size: 0.55rem;
+    opacity: 0.7;
+    line-height: 1;
+  }
+  .alfazy-tile--correct .alfazy-tile__icon::after { content: var(--alfazy-cb-correct-icon); }
+  .alfazy-tile--present .alfazy-tile__icon::after { content: var(--alfazy-cb-present-icon); }
+  .alfazy-tile--absent .alfazy-tile__icon::after { content: var(--alfazy-cb-absent-icon); }
+
+  /* Keyboard keys — themed states */
+  .alfazy-key--correct {
+    background: var(--alfazy-correct-base);
+    color: var(--alfazy-correct-text, #fff);
+  }
+  .alfazy-key--present {
+    background: var(--alfazy-present-base);
+    color: var(--alfazy-present-text, #fff);
+  }
+  .alfazy-key--absent {
+    background: var(--alfazy-absent-base);
+    color: var(--alfazy-absent-text, #fff);
+  }
+
+  /* ---- Integra (daily math) — static accessible palette, no per-day theming ---- */
+  /* Game-native colours (green/purple/black), the one allowed exception to the
+     monochrome chrome. Dark-mode variants below; colourblind shapes as overlay. */
+  .integra-tile {
+    position: relative;
+    transition: background-color 0.25s, border-color 0.25s, box-shadow 0.25s;
+    --integra-correct: #16a34a;
+    --integra-present: #7c3aed;
+    --integra-absent: #52525b;
+  }
+  .integra-key { --integra-correct: #16a34a; --integra-present: #7c3aed; --integra-absent: #52525b; }
+  :is(.dark) .integra-tile, :is(.dark) .integra-key {
+    --integra-correct: #22c55e;
+    --integra-present: #8b5cf6;
+    --integra-absent: #3f3f46;
+  }
+  .integra-tile--correct { background: var(--integra-correct); border-color: var(--integra-correct); color: #fff; }
+  .integra-tile--present { background: var(--integra-present); border-color: var(--integra-present); color: #fff; }
+  .integra-tile--absent  { background: var(--integra-absent);  border-color: var(--integra-absent);  color: #fff; }
+  .integra-key--correct { background: var(--integra-correct); color: #fff; }
+  .integra-key--present { background: var(--integra-present); color: #fff; }
+  .integra-key--absent  { background: var(--integra-absent);  color: #fff; }
+
+  /* Colourblind shape overlay (toggled by .integra-cb on the board wrapper) */
+  .integra-tile__icon { position: absolute; top: 2px; right: 3px; font-size: 0.55rem; opacity: 0.75; line-height: 1; }
+  .integra-cb .integra-tile--correct .integra-tile__icon::after { content: "\25C6"; } /* ◆ */
+  .integra-cb .integra-tile--present .integra-tile__icon::after { content: "\25CF"; } /* ● */
+  .integra-cb .integra-tile--absent  .integra-tile__icon::after { content: "\2715"; } /* ✕ */
+
+  @keyframes integra-bounce {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    60% { transform: translateY(-3px); }
+  }
+  .animate-bounce-win { animation: integra-bounce 0.6s var(--ease-out-quint) both; }
+}
+
+/* ================================================================== */
+/*  Radix overlay enter/exit — one shared animation vocabulary.        */
+/*  Radix waits for these CSS animations before unmounting.            */
+/* ================================================================== */
+@layer components {
+  @keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes overlay-out { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes pop-in {
+    from { opacity: 0; transform: translateY(4px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes pop-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(4px) scale(0.98); }
+  }
+  @keyframes sheet-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes sheet-out-right { from { transform: translateX(0); } to { transform: translateX(100%); } }
+  @keyframes sheet-in-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+  @keyframes sheet-out-left { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+  @keyframes accordion-down { from { height: 0; } to { height: var(--radix-accordion-content-height); } }
+  @keyframes accordion-up { from { height: var(--radix-accordion-content-height); } to { height: 0; } }
+
+  .overlay-anim[data-state="open"] { animation: overlay-in var(--dur-base) ease; }
+  .overlay-anim[data-state="closed"] { animation: overlay-out var(--dur-fast) ease; }
+  .pop-anim[data-state="open"] { animation: pop-in var(--dur-base) var(--ease-out-quint); }
+  .pop-anim[data-state="closed"] { animation: pop-out var(--dur-fast) ease-in; }
+  .sheet-anim[data-state="open"] { animation: sheet-in-right var(--dur-slow) var(--ease-out-quint); }
+  .sheet-anim[data-state="closed"] { animation: sheet-out-right var(--dur-base) ease-in; }
+  .drawer-right[data-state="open"] { animation: sheet-in-right var(--dur-slow) var(--ease-out-quint); }
+  .drawer-right[data-state="closed"] { animation: sheet-out-right var(--dur-base) ease-in; }
+  .drawer-left[data-state="open"] { animation: sheet-in-left var(--dur-slow) var(--ease-out-quint); }
+  .drawer-left[data-state="closed"] { animation: sheet-out-left var(--dur-base) ease-in; }
+  .acc-anim[data-state="open"] { animation: accordion-down var(--dur-base) var(--ease-out-quint); }
+  /* height:0 persists the collapsed state (the animation alone reverts to auto
+     on end). Needed once AccordionContent uses forceMount — which keeps closed
+     answers in the server HTML for crawlers — so they stay visually collapsed.
+     No effect on non-forceMount accordions: they unmount closed content. */
+  .acc-anim[data-state="closed"] { height: 0; animation: accordion-up var(--dur-fast) var(--ease-out-quint); }
+
+  @keyframes collapsible-down { from { height: 0; } to { height: var(--radix-collapsible-content-height); } }
+  @keyframes collapsible-up { from { height: var(--radix-collapsible-content-height); } to { height: 0; } }
+  .collapsible-anim[data-state="open"] { animation: collapsible-down var(--dur-base) var(--ease-out-quint); }
+  .collapsible-anim[data-state="closed"] { animation: collapsible-up var(--dur-fast) var(--ease-out-quint); }
+
+  @keyframes progress-indeterminate {
+    0% { left: -45%; }
+    100% { left: 100%; }
+  }
+  .progress-indeterminate {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 45%;
+    animation: progress-indeterminate 1.2s ease-in-out infinite;
+  }
+
+  /* Smart links in article/blog content: orange underline wipes in on hover. */
+  .smart-link {
+    position: relative;
+    font-weight: 500;
+    color: var(--foreground);
+    text-decoration: none;
+    padding-bottom: 2px;
+  }
+  .smart-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--brand);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+  .smart-link:hover::after,
+  .smart-link:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  /* Header burger surface: a curtain that drops from the top, full width. */
+  @keyframes curtain-in { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+  @keyframes curtain-out { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+
+  .burger-anim { transform-origin: top; }
+  .burger-anim[data-state="open"] { animation: curtain-in var(--dur-slow) var(--ease-out-quint); }
+  .burger-anim[data-state="closed"] { animation: curtain-out var(--dur-base) ease-in; }
+
+  /* Logged-in "Welcome, name" CTA: rings ripple continuously from within the
+     pill (clipped by overflow-hidden), never behind it. Global reduced-motion
+     rule stills them. */
+  @keyframes welcome-ripple {
+    0% { transform: scale(0.15); opacity: 0; }
+    25% { opacity: 0.55; }
+    100% { transform: scale(2.8); opacity: 0; }
+  }
+  .welcome-ripple > .ripple {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--primary-foreground) 50%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
+    animation: welcome-ripple 3s var(--ease-out-quint) infinite;
+  }
+  .welcome-ripple > .ripple:nth-child(2) { animation-delay: 1s; }
+  .welcome-ripple > .ripple:nth-child(3) { animation-delay: 2s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ================================================================== */
+/*  ADMIN SCOPE — internal tool. Layers on base tokens; overrides only  */
+/*  the accent + interaction borders. #FE5100 is admin-only and never   */
+/*  applies outside [data-admin]. Dark inherits via base tokens.        */
+/* ================================================================== */
+[data-admin] {
+  /* Surfaces — reuse base so light/dark come for free */
+  --admin-bg: var(--background);
+  --admin-surface: var(--card);
+  --admin-surface-hover: var(--muted);
+
+  /* Text */
+  --admin-text: var(--foreground);
+  --admin-text-muted: var(--muted-foreground);
+
+  /* Borders — default gray; hover/active become accent */
+  --admin-border: var(--border);
+  --admin-accent: #fe5100;
+  --admin-accent-fg: #ffffff;
+  --admin-border-hover: var(--admin-accent);
+  --admin-border-active: var(--admin-accent);
+
+  /* Status — reuse desaturated base functional tones */
+  --admin-success: var(--success);
+  --admin-warning: var(--warning);
+  --admin-danger: var(--danger);
+  --admin-info: #3b6ea5;
+}
+
+.dark [data-admin] {
+  /* Accent holds on dark (orange reads on black + white). Only override
+     info to a lighter tone for AA on dark surfaces. */
+  --admin-info: #6ea8dc;
+}
+
+/* ================================================================== */
+/*  MEMBERS SCOPE — member workspace. Monochrome base; the #FE5100      */
+/*  accent flows through the existing --brand token (focus, selection,  */
+/*  hover borders) and never applies outside [data-members].            */
+/* ================================================================== */
+[data-members] {
+  --brand: #fe5100;
+}
+
+/* ================================================================== */
+/*  GAMES SCOPE — daily games platform. Brand orange is retired here;   */
+/*  each game owns its logo colour as the accent via a per-game --brand */
+/*  override (same mechanism as [data-members], so every existing       */
+/*  ring-brand / focus:border-brand / accent-brand utility follows).    */
+/*  [data-games] default = platform violet for game-neutral surfaces    */
+/*  (the /games hub, cross-game leaderboard).                           */
+/* ================================================================== */
+[data-games] { --brand: #7c3aed; }
+[data-game="alfazy"] { --brand: #16a34a; }        /* leaf green — word */
+[data-game="hit-and-blow"] { --brand: #2563eb; }  /* cobalt blue — code */
+[data-game="integra"] { --brand: #7c3aed; }       /* violet — math */
+[data-game="court-piece"] { --brand: #a06a08; }   /* royal amber — cards */
+
+/* Lighter tints in dark/torch so the accent stays legible on black. */
+.dark [data-games], .torch [data-games] { --brand: #8b5cf6; }
+.dark [data-game="alfazy"], .torch [data-game="alfazy"] { --brand: #22c55e; }
+.dark [data-game="hit-and-blow"], .torch [data-game="hit-and-blow"] { --brand: #3b82f6; }
+.dark [data-game="integra"], .torch [data-game="integra"] { --brand: #8b5cf6; }
+.dark [data-game="court-piece"], .torch [data-game="court-piece"] { --brand: #e6b04a; }
+
+/* ---- Court Piece table motion ---- */
+.cp-felt {
+  background: radial-gradient(120% 90% at 50% 40%, color-mix(in srgb, var(--brand) 8%, var(--card)) 0%, var(--card) 62%);
+}
+@keyframes cp-deal { from { opacity: 0; transform: translateY(34px) rotate(-11deg) scale(.93); } to { opacity: 1; } }
+.cp-deal > * { animation: cp-deal .4s cubic-bezier(.2,.8,.25,1) backwards; }
+@keyframes cp-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 24%, transparent); }
+  50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+.cp-pulse { animation: cp-pulse 1.8s ease-in-out infinite; }
+@keyframes cp-play { from { opacity: 0; transform: translateY(6px) scale(.7); } to { opacity: 1; transform: none; } }
+.cp-play { animation: cp-play .26s cubic-bezier(.2,.8,.25,1); }
+@keyframes cp-sweep { to { transform: scale(.55); opacity: 0; } }
+.cp-sweep { animation: cp-sweep .5s ease forwards; }
+@keyframes cp-court { 0% { opacity: 0; transform: scale(.7); } 25% { opacity: 1; transform: scale(1.06); } 80% { opacity: 1; } 100% { opacity: 0; } }
+.cp-court { animation: cp-court 1.7s ease forwards; }
+@media (prefers-reduced-motion: reduce) {
+  .cp-deal > *, .cp-pulse, .cp-play, .cp-sweep, .cp-court { animation: none !important; }
+}
+
+/* ================================================================== */
+/*  View Transitions — kill all motion under reduced-motion so the     */
+/*  shared-element morph degrades to an instant, browser-default swap.  */
+/* ================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
 }

@@ -1,0 +1,80 @@
+"use server";
+
+import { headers } from "next/headers";
+import { supabaseAdmin } from "@/lib/supabase/server";
+import { allow, clientIp } from "@/lib/rate-limit";
+import { sendTemplate } from "@/lib/email/send-template";
+import { newsletterWelcome, unsubscribed } from "@/lib/email/templates/newsletter";
+import { EMAIL_RE } from "@/lib/validation/email";
+
+/** Public newsletter signup. Anon insert; duplicate email is treated as success. */
+export async function subscribe(
+  email: string,
+  source = "newsletter-form",
+): Promise<{ ok: boolean; error?: string }> {
+  const e = email.trim().toLowerCase();
+  if (!EMAIL_RE.test(e)) return { ok: false, error: "Enter a valid email address." };
+
+  // Rate-limit by IP so the list can't be script-poisoned with junk addresses.
+  // This is the ONLY insert path now: anon direct-INSERT via PostgREST is revoked
+  // (migration 20260806000003), so the write goes through service-role here after
+  // validation + throttling rather than being open on the table.
+  if (!(await allow(`subscribe:${clientIp(await headers())}`, 5, 60_000))) {
+    return { ok: false, error: "Too many attempts. Please wait a minute." };
+  }
+
+  const { error } = await supabaseAdmin().from("is_subscribers").insert({ email: e, source });
+  if (error && error.code !== "23505") {
+    return { ok: false, error: "Something went wrong. Please try again." };
+  }
+
+  // Welcome a genuinely new subscriber only — `error === null` means the row was
+  // inserted; 23505 is a duplicate re-submit and was already welcomed.
+  if (!error) await sendWelcomeEmail(e);
+
+  return { ok: true };
+}
+
+/** Branded newsletter welcome. Fires once on a fresh subscribe. Fail-safe; no-ops without SMTP. */
+async function sendWelcomeEmail(email: string): Promise<void> {
+  try {
+    await sendTemplate(email, newsletterWelcome({ email }));
+  } catch (e) {
+    console.warn("[subscribers] welcome email threw:", (e as Error).message);
+  }
+}
+
+/**
+ * Mark a subscriber unsubscribed. Returns a generic success regardless of
+ * whether the email existed (no enumeration). Kit's own unsubscribe handles
+ * the newsletter side; this updates our Supabase record.
+ */
+export async function unsubscribe(email: string): Promise<{ ok: boolean }> {
+  const e = email.trim().toLowerCase();
+  if (!EMAIL_RE.test(e)) return { ok: false };
+
+  const { data, error } = await supabaseAdmin()
+    .from("is_subscribers")
+    .update({ status: "unsubscribed" })
+    .eq("email", e)
+    .select("id");
+  if (error) console.warn("[subscribers] unsubscribe failed:", error.message);
+
+  // Send the confirmation only if the address was actually on the list
+  // (avoids emailing strangers who type a random address). Fail-safe.
+  if (!error && (data?.length ?? 0) > 0) {
+    await sendUnsubscribeEmail(e);
+  }
+
+  // Always report success — don't reveal whether the address was on the list.
+  return { ok: true };
+}
+
+/** Branded "you've been unsubscribed" confirmation. Fail-safe; no-ops without SMTP. */
+async function sendUnsubscribeEmail(email: string): Promise<void> {
+  try {
+    await sendTemplate(email, unsubscribed());
+  } catch (e) {
+    console.warn("[subscribers] unsubscribe email threw:", (e as Error).message);
+  }
+}

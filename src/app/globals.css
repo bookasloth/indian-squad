@@ -884,3 +884,32 @@
     animation-delay: 0s !important;
   }
 }
+
+/* ================================================================== */
+/*  PER-SPORT THEMING — each sport community tints the brand accent    */
+/*  (Post button, badges, active chips) and animates its own emblem.   */
+/* ================================================================== */
+[data-sport="cricket"]   { --brand: #1d4ed8; --brand-foreground: #ffffff; } /* pitch blue */
+[data-sport="hockey"]    { --brand: #0d9488; --brand-foreground: #ffffff; } /* turf teal */
+[data-sport="kabaddi"]   { --brand: #b45309; --brand-foreground: #ffffff; } /* mat amber */
+[data-sport="badminton"] { --brand: #15803d; --brand-foreground: #ffffff; } /* court green */
+[data-sport="football"]  { --brand: #6d28d9; --brand-foreground: #ffffff; } /* violet */
+[data-sport="f1"]        { --brand: #dc2626; --brand-foreground: #ffffff; } /* racing red */
+
+@keyframes sport-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes sport-spin   { to { transform: rotate(360deg); } }
+@keyframes sport-swing  { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } }
+@keyframes sport-arc    { 0% { transform: translate(-6px, 4px); } 50% { transform: translate(0, -5px); } 100% { transform: translate(6px, 4px); } }
+@keyframes sport-wave   { 0%, 100% { transform: skewX(0) scaleX(1); } 50% { transform: skewX(-8deg) scaleX(0.96); } }
+
+.sport-anim-bounce { animation: sport-bounce 1.2s ease-in-out infinite; }
+.sport-anim-spin   { animation: sport-spin 6s linear infinite; }
+.sport-anim-swing  { transform-origin: top center; animation: sport-swing 1.8s ease-in-out infinite; }
+.sport-anim-arc    { animation: sport-arc 1.6s ease-in-out infinite; }
+.sport-anim-wave   { transform-origin: left center; animation: sport-wave 1.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sport-anim-bounce, .sport-anim-spin, .sport-anim-swing, .sport-anim-arc, .sport-anim-wave {
+    animation: none;
+  }
+}

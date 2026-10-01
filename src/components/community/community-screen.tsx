@@ -4,6 +4,7 @@ import { SPORTS, sportLabel } from "@/lib/site";
 import { getFeed } from "@/lib/community-data";
 import { getMemberContext } from "@/lib/members/session";
 import { CommunityFeed } from "@/components/CommunityFeed";
+import { SportEmblem } from "@/components/community/sport-emblem";
 
 export async function CommunityScreen({ sport, tab }: { sport?: string; tab?: string }) {
   const following = tab === "following";
@@ -28,15 +29,25 @@ export async function CommunityScreen({ sport, tab }: { sport?: string; tab?: st
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2">
-        <h1 className="font-display text-3xl font-bold tracking-tight">{heading}</h1>
-        <p className="text-muted-foreground">
-          {sport
-            ? `Talk ${sportLabel(sport)} with other fans.`
-            : "Talk cricket — and all of Indian sport — with other fans."}
-        </p>
-      </header>
+    <div className="flex flex-col gap-6" data-sport={sport || undefined}>
+      {sport ? (
+        <header className="flex items-center gap-4 overflow-hidden rounded-card border border-border bg-[color-mix(in_srgb,var(--brand)_10%,transparent)] p-5">
+          <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--brand)_18%,transparent)]">
+            <SportEmblem sport={sport} size={34} />
+          </span>
+          <div className="flex flex-col gap-0.5">
+            <h1 className="font-display text-2xl font-bold tracking-tight">{heading}</h1>
+            <p className="text-sm text-muted-foreground">Talk {sportLabel(sport)} with other fans.</p>
+          </div>
+        </header>
+      ) : (
+        <header className="flex flex-col gap-2">
+          <h1 className="font-display text-3xl font-bold tracking-tight">{heading}</h1>
+          <p className="text-muted-foreground">
+            Talk cricket — and all of Indian sport — with other fans.
+          </p>
+        </header>
+      )}
 
       {/* Sport chips */}
       <nav className="flex flex-wrap gap-2">
@@ -96,7 +107,7 @@ function SportChip({ href, active, children }: { href: string; active: boolean; 
       className={cn(
         "rounded-full border px-3 py-1 text-sm transition-ui",
         active
-          ? "border-foreground bg-foreground text-background"
+          ? "border-brand bg-brand text-brand-foreground"
           : "border-border text-muted-foreground hover:bg-accent",
       )}
     >

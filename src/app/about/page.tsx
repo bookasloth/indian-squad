@@ -32,8 +32,8 @@ export default function AboutPage() {
       <h2 className="font-display text-xl font-semibold tracking-tight">The sports we follow</h2>
       <div className="flex flex-wrap gap-2">
         {SPORTS.map((s) => (
-          <Badge key={s} variant="outline">
-            {s}
+          <Badge key={s.slug} variant="outline">
+            {s.label}
           </Badge>
         ))}
       </div>

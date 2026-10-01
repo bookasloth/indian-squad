@@ -18,10 +18,18 @@ export const site = {
 
 /** The sports the fan club follows. Cricket is the flagship (full features today). */
 export const SPORTS = [
-  "Cricket",
-  "Hockey",
-  "Kabaddi",
-  "Badminton",
-  "Football",
-  "F1",
+  { slug: "cricket", label: "Cricket" },
+  { slug: "hockey", label: "Hockey" },
+  { slug: "kabaddi", label: "Kabaddi" },
+  { slug: "badminton", label: "Badminton" },
+  { slug: "football", label: "Football" },
+  { slug: "f1", label: "F1" },
 ] as const;
+
+export type SportSlug = (typeof SPORTS)[number]["slug"];
+
+export const SPORT_SLUGS = SPORTS.map((s) => s.slug) as SportSlug[];
+
+export function sportLabel(slug: string | null | undefined): string | null {
+  return SPORTS.find((s) => s.slug === slug)?.label ?? null;
+}

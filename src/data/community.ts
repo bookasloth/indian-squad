@@ -21,6 +21,7 @@ export interface CommunityPost {
   rebloggedBy: string | null;
   poll: Poll | null;
   images: string[] | null;
+  sport: string | null;
   // client-only optimistic flag
   pending?: boolean;
 }

@@ -381,3 +381,12 @@ drop policy if exists is_posts_update_own on is_posts;
 create policy is_posts_update_own on is_posts
   for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 
+-- ============================================================
+-- 0012_is_posts_sport.sql
+-- ============================================================
+-- Per-sport community: tag each post with a sport. Prefixed is_ (shared project).
+alter table is_posts add column if not exists sport text
+  check (sport in ('cricket', 'hockey', 'kabaddi', 'badminton', 'football', 'f1'));
+
+create index if not exists is_posts_sport_idx on is_posts (sport);
+

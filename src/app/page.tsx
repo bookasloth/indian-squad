@@ -40,9 +40,11 @@ export default function Home() {
         <h2 className="font-display text-2xl font-semibold tracking-tight">The sports we follow</h2>
         <div className="flex flex-wrap gap-2">
           {SPORTS.map((s) => (
-            <Badge key={s} variant="outline" className="text-sm">
-              {s}
-            </Badge>
+            <Link key={s.slug} href={`/community/${s.slug}`}>
+              <Badge variant="outline" className="text-sm transition-ui hover:bg-accent">
+                {s.label}
+              </Badge>
+            </Link>
           ))}
         </div>
         <p className="text-sm text-muted-foreground">

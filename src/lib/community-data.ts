@@ -22,6 +22,7 @@ type PostRow = {
   reblogs: { count: number }[];
   poll: PollEmbed;
   images: string[] | null;
+  sport: string | null;
 };
 
 type PollEmbed =
@@ -30,7 +31,7 @@ type PollEmbed =
   | null;
 
 const POST_SELECT =
-  "id, body, parent_id, created_at, author_name, user_id, images, " +
+  "id, body, parent_id, created_at, author_name, user_id, images, sport, " +
   "author:is_profiles!is_posts_user_id_fkey(username, display_name, avatar_url), " +
   "likes:is_post_reactions(count), reblogs:is_reblogs(count), poll:is_polls(options, closes_at)";
 
@@ -61,6 +62,7 @@ function mapPostRow(r: PostRow, sets: ViewerSets): CommunityPost {
     rebloggedByViewer: sets.rebloggedIds.has(r.id),
     rebloggedBy: null,
     images: r.images ?? null,
+    sport: r.sport ?? null,
     poll: pollEmbed
       ? {
           options: pollEmbed.options,
@@ -108,7 +110,11 @@ async function fillPolls(
   }
 }
 
-export async function getFeed(opts?: { following?: boolean; saved?: boolean }): Promise<{
+export async function getFeed(opts?: {
+  following?: boolean;
+  saved?: boolean;
+  sport?: string;
+}): Promise<{
   posts: CommunityPost[];
   viewer: Viewer | null;
   followingIds: string[];
@@ -164,6 +170,10 @@ export async function getFeed(opts?: { following?: boolean; saved?: boolean }): 
   const sets: ViewerSets = { likedIds, bookmarkedIds, rebloggedIds };
   let query = sb.from("is_posts").select(POST_SELECT).is("deleted_at", null);
 
+  // Per-sport feed.
+  if (opts?.sport) {
+    query = query.eq("sport", opts.sport);
+  }
   // "Following" feed: only posts from people you follow, plus your own.
   if (opts?.following && user) {
     query = query.in("user_id", [...followingIds, user.id]);

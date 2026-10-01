@@ -3,6 +3,7 @@ import { createClient, supabaseAdmin } from "@/lib/supabase/server";
 import { validateBody, validatePollOptions } from "@/data/community";
 import { notify } from "@/lib/community-notify";
 import { getMemberContext } from "@/lib/members/session";
+import { SPORT_SLUGS } from "@/lib/site";
 
 // ponytail: in-memory per-user rate limit. Best-effort (resets per instance);
 // fine for a fan feed. Move to a DB counter if abused.
@@ -45,11 +46,20 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
-  const { body, parent_id, poll, images } = (payload ?? {}) as Record<string, unknown>;
+  const { body, parent_id, poll, images, sport } = (payload ?? {}) as Record<string, unknown>;
 
   const result = validateBody(body);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
+  }
+
+  // Optional sport tag (top-level posts; replies inherit none).
+  let sportTag: string | null = null;
+  if (sport != null && sport !== "") {
+    if (typeof sport !== "string" || !SPORT_SLUGS.includes(sport as never)) {
+      return NextResponse.json({ error: "Invalid sport." }, { status: 400 });
+    }
+    sportTag = sport;
   }
 
   // Optional images — must be URLs in our own community bucket (uploaded via
@@ -100,7 +110,13 @@ export async function POST(request: Request) {
 
   const { data, error } = await sb
     .from("is_posts")
-    .insert({ user_id: user.id, body: result.body, parent_id: parent, images: imageUrls })
+    .insert({
+      user_id: user.id,
+      body: result.body,
+      parent_id: parent,
+      images: imageUrls,
+      sport: parent ? null : sportTag,
+    })
     .select("id, created_at")
     .single();
 

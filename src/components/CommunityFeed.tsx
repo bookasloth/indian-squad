@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Heart, MessageCircle, Bookmark, Repeat2, BarChart3, Image as ImageIcon } from "lucide-react";
 import { cn, timeAgo } from "@/lib/utils";
+import { SPORTS, sportLabel } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { CommunityAvatar } from "@/components/community/community-avatar";
 import { PostMenu } from "@/components/community/post-menu";
@@ -22,12 +23,14 @@ export function CommunityFeed({
   followingIds = [],
   flat = false,
   isAdmin = false,
+  defaultSport,
 }: {
   initialPosts: CommunityPost[];
   viewer: Viewer | null;
   followingIds?: string[];
   flat?: boolean;
   isAdmin?: boolean;
+  defaultSport?: string;
 }) {
   const [posts, setPosts] = useState<CommunityPost[]>(initialPosts);
   const [following, setFollowing] = useState<Set<string>>(() => new Set(followingIds));
@@ -218,6 +221,7 @@ export function CommunityFeed({
     body: string,
     pollOptions?: string[],
     files?: File[],
+    sport?: string,
   ): boolean {
     if (!viewer) return false;
     setError(null);
@@ -259,6 +263,7 @@ export function CommunityFeed({
             }
           : null,
       images: previews && previews.length ? previews : null,
+      sport: parentId ? null : sport ?? null,
       pending: true,
     };
     setPosts((cur) => [...cur, temp]);
@@ -284,6 +289,7 @@ export function CommunityFeed({
             parent_id: parentId,
             poll: pollOptions && pollOptions.length >= 2 ? pollOptions : undefined,
             images: imageUrls && imageUrls.length ? imageUrls : undefined,
+            sport: parentId ? undefined : sport,
           }),
         });
         const json = await res.json();
@@ -360,7 +366,8 @@ export function CommunityFeed({
           placeholder="Share something about Indian sport…"
           submitLabel="Post"
           allowPoll
-          onSubmit={(body, poll, images) => submit(null, body, poll, images)}
+          defaultSport={defaultSport}
+          onSubmit={(body, poll, images, sport) => submit(null, body, poll, images, sport)}
         />
       ) : (
         <div className="flex flex-col items-start gap-3 rounded-card border border-border bg-card p-6">
@@ -548,6 +555,14 @@ function PostView({
             </Link>
           )}
           <span className="text-xs text-muted-foreground">· {timeAgo(post.createdAt)}</span>
+          {post.sport && sportLabel(post.sport) && (
+            <Link
+              href={`/community/${post.sport}`}
+              className="rounded-btn bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-ui hover:text-foreground"
+            >
+              {sportLabel(post.sport)}
+            </Link>
+          )}
           {follow && (
             <button
               type="button"
@@ -646,6 +661,7 @@ function Composer({
   submitLabel,
   compact,
   allowPoll,
+  defaultSport,
   onSubmit,
 }: {
   avatar: React.ReactNode;
@@ -653,13 +669,20 @@ function Composer({
   submitLabel: string;
   compact?: boolean;
   allowPoll?: boolean;
-  onSubmit: (body: string, pollOptions?: string[], files?: File[]) => boolean | Promise<boolean>;
+  defaultSport?: string;
+  onSubmit: (
+    body: string,
+    pollOptions?: string[],
+    files?: File[],
+    sport?: string,
+  ) => boolean | Promise<boolean>;
 }) {
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [pollMode, setPollMode] = useState(false);
   const [options, setOptions] = useState<string[]>(["", ""]);
   const [files, setFiles] = useState<File[]>([]);
+  const [sport, setSport] = useState<string>(defaultSport ?? "cricket");
 
   const pollOptions = options.map((o) => o.trim()).filter(Boolean);
   const pollReady = !pollMode || pollOptions.length >= 2;
@@ -670,7 +693,12 @@ function Composer({
     setBusy(true);
     // The post appears instantly (optimistic); the upload + create run in the
     // background inside onSubmit.
-    const ok = await onSubmit(body, pollMode ? pollOptions : undefined, files.length ? files : undefined);
+    const ok = await onSubmit(
+      body,
+      pollMode ? pollOptions : undefined,
+      files.length ? files : undefined,
+      allowPoll ? sport : undefined,
+    );
     setBusy(false);
     if (ok) {
       setBody("");
@@ -751,6 +779,20 @@ function Composer({
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
+            {allowPoll && (
+              <select
+                value={sport}
+                onChange={(e) => setSport(e.target.value)}
+                className="rounded-btn border border-border bg-background px-2 py-1 text-sm outline-none focus:border-foreground"
+                aria-label="Sport"
+              >
+                {SPORTS.map((s) => (
+                  <option key={s.slug} value={s.slug}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            )}
             {allowPoll && (
               <button
                 type="button"

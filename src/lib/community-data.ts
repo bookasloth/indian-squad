@@ -25,13 +25,14 @@ const POST_SELECT =
   "author:is_profiles!is_posts_user_id_fkey(username, display_name, avatar_url), " +
   "likes:is_post_reactions(count)";
 
-export async function getFeed(): Promise<{
+export async function getFeed(opts?: { following?: boolean }): Promise<{
   posts: CommunityPost[];
   viewer: Viewer | null;
+  followingIds: string[];
   configured: boolean;
 }> {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return { posts: [], viewer: null, configured: false };
+    return { posts: [], viewer: null, followingIds: [], configured: false };
   }
 
   const sb = await createClient();
@@ -41,6 +42,7 @@ export async function getFeed(): Promise<{
 
   let viewer: Viewer | null = null;
   const likedIds = new Set<string>();
+  const followingIds: string[] = [];
 
   if (user) {
     const { data: prof } = await sb
@@ -60,13 +62,22 @@ export async function getFeed(): Promise<{
       .select("post_id")
       .eq("user_id", user.id);
     for (const r of likes ?? []) likedIds.add(r.post_id as string);
+
+    const { data: follows } = await sb
+      .from("is_follows")
+      .select("followee_id")
+      .eq("follower_id", user.id);
+    for (const r of follows ?? []) followingIds.push(r.followee_id as string);
   }
 
-  const { data } = await sb
-    .from("is_posts")
-    .select(POST_SELECT)
-    .is("deleted_at", null)
-    .order("created_at", { ascending: true });
+  let query = sb.from("is_posts").select(POST_SELECT).is("deleted_at", null);
+
+  // "Following" feed: only posts from people you follow, plus your own.
+  if (opts?.following && user) {
+    query = query.in("user_id", [...followingIds, user.id]);
+  }
+
+  const { data } = await query.order("created_at", { ascending: true });
 
   const posts = ((data as PostRow[] | null) ?? []).map((r): CommunityPost => {
     const displayName =
@@ -85,5 +96,5 @@ export async function getFeed(): Promise<{
     };
   });
 
-  return { posts, viewer, configured: true };
+  return { posts, viewer, followingIds, configured: true };
 }

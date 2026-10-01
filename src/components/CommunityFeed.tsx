@@ -11,13 +11,51 @@ import { type CommunityPost, type Viewer, BODY_MAX, sanitize } from "@/data/comm
 export function CommunityFeed({
   initialPosts,
   viewer,
+  followingIds = [],
 }: {
   initialPosts: CommunityPost[];
   viewer: Viewer | null;
+  followingIds?: string[];
 }) {
   const [posts, setPosts] = useState<CommunityPost[]>(initialPosts);
+  const [following, setFollowing] = useState<Set<string>>(() => new Set(followingIds));
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  async function toggleFollow(followeeId: string) {
+    if (!viewer) {
+      setError("Sign in to follow.");
+      return;
+    }
+    const next = !following.has(followeeId);
+    setFollowing((cur) => {
+      const s = new Set(cur);
+      if (next) s.add(followeeId);
+      else s.delete(followeeId);
+      return s;
+    });
+    try {
+      const res = await fetch("/api/follows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followeeId, follow: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setFollowing((cur) => {
+        const s = new Set(cur);
+        if (next) s.delete(followeeId);
+        else s.add(followeeId);
+        return s;
+      });
+      setError("Could not update follow.");
+    }
+  }
+
+  function followProps(post: CommunityPost) {
+    if (!viewer || !post.userId || post.userId === viewer.userId) return null;
+    return { following: following.has(post.userId), onToggle: () => toggleFollow(post.userId!) };
+  }
 
   const tops = posts
     .filter((p) => p.parentId === null)
@@ -141,11 +179,11 @@ export function CommunityFeed({
         <ul className="flex flex-col gap-6">
           {tops.map((post) => (
             <li key={post.id} className="flex flex-col gap-3">
-              <PostView post={post} onLike={() => toggleLike(post.id)} canReply={!!viewer} onReply={() => { setReplyTo(replyTo === post.id ? null : post.id); setError(null); }} />
+              <PostView post={post} onLike={() => toggleLike(post.id)} canReply={!!viewer} onReply={() => { setReplyTo(replyTo === post.id ? null : post.id); setError(null); }} follow={followProps(post)} />
 
               <div className="ml-6 flex flex-col gap-3 border-l border-border pl-4">
                 {repliesOf(post.id).map((reply) => (
-                  <PostView key={reply.id} post={reply} onLike={() => toggleLike(reply.id)} canReply={false} />
+                  <PostView key={reply.id} post={reply} onLike={() => toggleLike(reply.id)} canReply={false} follow={followProps(reply)} />
                 ))}
 
                 {viewer && replyTo === post.id && (
@@ -175,11 +213,13 @@ function PostView({
   onLike,
   canReply,
   onReply,
+  follow,
 }: {
   post: CommunityPost;
   onLike: () => void;
   canReply: boolean;
   onReply?: () => void;
+  follow?: { following: boolean; onToggle: () => void } | null;
 }) {
   return (
     <div className={cn("flex gap-3", post.pending && "opacity-60")}>
@@ -189,6 +229,20 @@ function PostView({
           <span className="font-semibold">{post.authorName}</span>
           {post.username && <span className="text-sm text-muted-foreground">@{post.username}</span>}
           <span className="text-xs text-muted-foreground">· {timeAgo(post.createdAt)}</span>
+          {follow && (
+            <button
+              type="button"
+              onClick={follow.onToggle}
+              className={cn(
+                "ml-auto rounded-btn border px-2.5 py-1 text-xs font-medium transition-ui",
+                follow.following
+                  ? "border-border text-muted-foreground hover:text-foreground"
+                  : "border-foreground text-foreground hover:bg-accent",
+              )}
+            >
+              {follow.following ? "Following" : "Follow"}
+            </button>
+          )}
         </div>
         <p className="mt-1 whitespace-pre-wrap break-words">{post.body}</p>
         <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">

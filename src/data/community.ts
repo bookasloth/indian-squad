@@ -11,6 +11,7 @@ export interface CommunityPost {
   // engagement
   likeCount: number;
   likedByViewer: boolean;
+  bookmarkedByViewer: boolean;
   // client-only optimistic flag
   pending?: boolean;
 }

@@ -18,7 +18,8 @@ export default async function CommunityPage({
 }) {
   const { tab } = await searchParams;
   const following = tab === "following";
-  const { posts, viewer, followingIds, configured } = await getFeed({ following });
+  const saved = tab === "saved";
+  const { posts, viewer, followingIds, configured } = await getFeed({ following, saved });
 
   return (
     <div className="flex flex-col gap-8">
@@ -33,11 +34,14 @@ export default async function CommunityPage({
         <>
           {viewer && (
             <div className="flex gap-1 border-b border-border">
-              <Tab href="/community" active={!following}>
+              <Tab href="/community" active={!following && !saved}>
                 Latest
               </Tab>
               <Tab href="/community?tab=following" active={following}>
                 Following
+              </Tab>
+              <Tab href="/community?tab=saved" active={saved}>
+                Saved
               </Tab>
             </div>
           )}
@@ -45,11 +49,14 @@ export default async function CommunityPage({
             <p className="text-muted-foreground">
               Nothing here yet. Follow some fans to fill your Following feed.
             </p>
+          ) : saved && posts.length === 0 ? (
+            <p className="text-muted-foreground">No saved posts yet. Tap the bookmark on any post.</p>
           ) : (
             <CommunityFeed
               initialPosts={posts}
               viewer={viewer}
               followingIds={followingIds}
+              flat={saved}
             />
           )}
         </>

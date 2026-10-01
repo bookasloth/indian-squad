@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, MessageCircle } from "lucide-react";
+import { Heart, MessageCircle, Bookmark } from "lucide-react";
 import { cn, timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CommunityAvatar } from "@/components/community/community-avatar";
@@ -12,10 +12,12 @@ export function CommunityFeed({
   initialPosts,
   viewer,
   followingIds = [],
+  flat = false,
 }: {
   initialPosts: CommunityPost[];
   viewer: Viewer | null;
   followingIds?: string[];
+  flat?: boolean;
 }) {
   const [posts, setPosts] = useState<CommunityPost[]>(initialPosts);
   const [following, setFollowing] = useState<Set<string>>(() => new Set(followingIds));
@@ -57,6 +59,28 @@ export function CommunityFeed({
     return { following: following.has(post.userId), onToggle: () => toggleFollow(post.userId!) };
   }
 
+  async function toggleBookmark(id: string) {
+    if (!viewer) {
+      setError("Sign in to save posts.");
+      return;
+    }
+    const post = posts.find((p) => p.id === id);
+    if (!post || post.pending) return;
+    const next = !post.bookmarkedByViewer;
+    setPosts((cur) => cur.map((p) => (p.id === id ? { ...p, bookmarkedByViewer: next } : p)));
+    try {
+      const res = await fetch("/api/bookmarks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId: id, bookmark: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setPosts((cur) => cur.map((p) => (p.id === id ? { ...p, bookmarkedByViewer: !next } : p)));
+      setError("Could not update saved.");
+    }
+  }
+
   const tops = posts
     .filter((p) => p.parentId === null)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
@@ -83,6 +107,7 @@ export function CommunityFeed({
       avatarUrl: viewer.avatarUrl,
       likeCount: 0,
       likedByViewer: false,
+      bookmarkedByViewer: false,
       pending: true,
     };
     setPosts((cur) => [...cur, temp]);
@@ -173,17 +198,33 @@ export function CommunityFeed({
 
       {error && <p className="text-sm text-danger">{error}</p>}
 
-      {tops.length === 0 ? (
+      {flat ? (
+        <ul className="flex flex-col gap-6">
+          {[...posts]
+            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+            .map((post) => (
+              <li key={post.id}>
+                <PostView
+                  post={post}
+                  onLike={() => toggleLike(post.id)}
+                  onBookmark={() => toggleBookmark(post.id)}
+                  canReply={false}
+                  follow={followProps(post)}
+                />
+              </li>
+            ))}
+        </ul>
+      ) : tops.length === 0 ? (
         <p className="text-muted-foreground">No posts yet. Be the first.</p>
       ) : (
         <ul className="flex flex-col gap-6">
           {tops.map((post) => (
             <li key={post.id} className="flex flex-col gap-3">
-              <PostView post={post} onLike={() => toggleLike(post.id)} canReply={!!viewer} onReply={() => { setReplyTo(replyTo === post.id ? null : post.id); setError(null); }} follow={followProps(post)} />
+              <PostView post={post} onLike={() => toggleLike(post.id)} onBookmark={() => toggleBookmark(post.id)} canReply={!!viewer} onReply={() => { setReplyTo(replyTo === post.id ? null : post.id); setError(null); }} follow={followProps(post)} />
 
               <div className="ml-6 flex flex-col gap-3 border-l border-border pl-4">
                 {repliesOf(post.id).map((reply) => (
-                  <PostView key={reply.id} post={reply} onLike={() => toggleLike(reply.id)} canReply={false} follow={followProps(reply)} />
+                  <PostView key={reply.id} post={reply} onLike={() => toggleLike(reply.id)} onBookmark={() => toggleBookmark(reply.id)} canReply={false} follow={followProps(reply)} />
                 ))}
 
                 {viewer && replyTo === post.id && (
@@ -211,12 +252,14 @@ export function CommunityFeed({
 function PostView({
   post,
   onLike,
+  onBookmark,
   canReply,
   onReply,
   follow,
 }: {
   post: CommunityPost;
   onLike: () => void;
+  onBookmark: () => void;
   canReply: boolean;
   onReply?: () => void;
   follow?: { following: boolean; onToggle: () => void } | null;
@@ -268,6 +311,17 @@ function PostView({
               Reply
             </button>
           )}
+          <button
+            type="button"
+            onClick={onBookmark}
+            aria-pressed={post.bookmarkedByViewer}
+            className={cn(
+              "inline-flex items-center gap-1.5 transition-ui hover:text-foreground",
+              post.bookmarkedByViewer && "text-foreground",
+            )}
+          >
+            <Bookmark className={cn("size-4", post.bookmarkedByViewer && "fill-current")} />
+          </button>
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ const POST_SELECT =
   "author:is_profiles!is_posts_user_id_fkey(username, display_name, avatar_url), " +
   "likes:is_post_reactions(count)";
 
-export async function getFeed(opts?: { following?: boolean }): Promise<{
+export async function getFeed(opts?: { following?: boolean; saved?: boolean }): Promise<{
   posts: CommunityPost[];
   viewer: Viewer | null;
   followingIds: string[];
@@ -42,6 +42,7 @@ export async function getFeed(opts?: { following?: boolean }): Promise<{
 
   let viewer: Viewer | null = null;
   const likedIds = new Set<string>();
+  const bookmarkedIds = new Set<string>();
   const followingIds: string[] = [];
 
   if (user) {
@@ -68,6 +69,9 @@ export async function getFeed(opts?: { following?: boolean }): Promise<{
       .select("followee_id")
       .eq("follower_id", user.id);
     for (const r of follows ?? []) followingIds.push(r.followee_id as string);
+
+    const { data: bms } = await sb.from("is_bookmarks").select("post_id").eq("user_id", user.id);
+    for (const r of bms ?? []) bookmarkedIds.add(r.post_id as string);
   }
 
   let query = sb.from("is_posts").select(POST_SELECT).is("deleted_at", null);
@@ -75,6 +79,10 @@ export async function getFeed(opts?: { following?: boolean }): Promise<{
   // "Following" feed: only posts from people you follow, plus your own.
   if (opts?.following && user) {
     query = query.in("user_id", [...followingIds, user.id]);
+  }
+  // "Saved" feed: only posts you've bookmarked.
+  if (opts?.saved && user) {
+    query = query.in("id", bookmarkedIds.size ? [...bookmarkedIds] : ["00000000-0000-0000-0000-000000000000"]);
   }
 
   const { data } = await query.order("created_at", { ascending: true });
@@ -93,6 +101,7 @@ export async function getFeed(opts?: { following?: boolean }): Promise<{
       avatarUrl: r.author?.avatar_url ?? null,
       likeCount: r.likes?.[0]?.count ?? 0,
       likedByViewer: likedIds.has(r.id),
+      bookmarkedByViewer: bookmarkedIds.has(r.id),
     };
   });
 

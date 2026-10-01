@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, supabaseAdmin } from "@/lib/supabase/server";
 import type { CommunityPost, Viewer, PollOption } from "@/data/community";
 
 type ProfileEmbed = {
@@ -311,4 +311,49 @@ export async function getProfile(username: string): Promise<{
   };
 
   return { profile, posts, viewer, followingIds, configured: true };
+}
+
+export interface OpenReport {
+  id: string;
+  reason: string | null;
+  createdAt: string;
+  postId: string | null;
+  postBody: string;
+  authorUsername: string | null;
+  reporterUsername: string | null;
+}
+
+type ReportRow = {
+  id: string;
+  reason: string | null;
+  created_at: string;
+  post: { id: string; body: string; author: { username: string | null } | null } | null;
+  reporter: { username: string | null } | null;
+};
+
+/** Open reports for admin review (service-role; call only from an admin-gated page). */
+export async function getOpenReports(): Promise<OpenReport[]> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return [];
+  }
+  const { data } = await supabaseAdmin()
+    .from("is_reports")
+    .select(
+      "id, reason, created_at, " +
+        "post:is_posts!is_reports_post_id_fkey(id, body, author:is_profiles!is_posts_user_id_fkey(username)), " +
+        "reporter:is_profiles!is_reports_reporter_id_fkey(username)",
+    )
+    .eq("status", "open")
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  return ((data as ReportRow[] | null) ?? []).map((r) => ({
+    id: r.id,
+    reason: r.reason,
+    createdAt: r.created_at,
+    postId: r.post?.id ?? null,
+    postBody: r.post?.body ?? "(removed)",
+    authorUsername: r.post?.author?.username ?? null,
+    reporterUsername: r.reporter?.username ?? null,
+  }));
 }

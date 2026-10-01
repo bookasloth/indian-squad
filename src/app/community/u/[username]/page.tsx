@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProfile } from "@/lib/community-data";
+import { getMemberContext } from "@/lib/members/session";
 import { CommunityFeed } from "@/components/CommunityFeed";
 import { CommunityAvatar } from "@/components/community/community-avatar";
 import { ProfileFollowButton } from "@/components/community/profile-follow-button";
@@ -24,6 +25,7 @@ export default async function ProfilePage({
 }) {
   const { username } = await params;
   const { profile, posts, viewer, followingIds, configured } = await getProfile(username);
+  const { role } = await getMemberContext();
 
   if (!configured) {
     return (
@@ -60,7 +62,13 @@ export default async function ProfilePage({
       {posts.length === 0 ? (
         <p className="text-muted-foreground">No posts yet.</p>
       ) : (
-        <CommunityFeed initialPosts={posts} viewer={viewer} followingIds={followingIds} flat />
+        <CommunityFeed
+          initialPosts={posts}
+          viewer={viewer}
+          followingIds={followingIds}
+          flat
+          isAdmin={role === "admin"}
+        />
       )}
     </div>
   );

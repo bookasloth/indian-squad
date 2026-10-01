@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getFeed } from "@/lib/community-data";
+import { getMemberContext } from "@/lib/members/session";
 import { CommunityFeed } from "@/components/CommunityFeed";
 
 export const metadata: Metadata = {
@@ -20,6 +21,8 @@ export default async function CommunityPage({
   const following = tab === "following";
   const saved = tab === "saved";
   const { posts, viewer, followingIds, configured } = await getFeed({ following, saved });
+  const { role } = await getMemberContext();
+  const isAdmin = role === "admin";
 
   return (
     <div className="flex flex-col gap-8">
@@ -43,6 +46,11 @@ export default async function CommunityPage({
               <Tab href="/community?tab=saved" active={saved}>
                 Saved
               </Tab>
+              {isAdmin && (
+                <Tab href="/community/moderation" active={false}>
+                  Moderation
+                </Tab>
+              )}
             </div>
           )}
           {following && posts.length === 0 ? (
@@ -57,6 +65,7 @@ export default async function CommunityPage({
               viewer={viewer}
               followingIds={followingIds}
               flat={saved}
+              isAdmin={isAdmin}
             />
           )}
         </>

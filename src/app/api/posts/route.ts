@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, supabaseAdmin } from "@/lib/supabase/server";
 import { validateBody, validatePollOptions } from "@/data/community";
 import { notify } from "@/lib/community-notify";
+import { getMemberContext } from "@/lib/members/session";
 
 // ponytail: in-memory per-user rate limit. Best-effort (resets per instance);
 // fine for a fan feed. Move to a DB counter if abused.
@@ -125,4 +126,47 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ post: data }, { status: 201 });
+}
+
+// Soft-delete a post: its author, or an admin. { postId }.
+export async function DELETE(request: Request) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return NextResponse.json({ error: "Not configured." }, { status: 503 });
+  }
+
+  const sb = await createClient();
+  const {
+    data: { user },
+  } = await sb.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in." }, { status: 401 });
+  }
+
+  let payload: unknown;
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  }
+  const { postId } = (payload ?? {}) as Record<string, unknown>;
+  if (typeof postId !== "string") {
+    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  }
+
+  const { role } = await getMemberContext();
+  const now = new Date().toISOString();
+
+  const { error } =
+    role === "admin"
+      ? await supabaseAdmin().from("is_posts").update({ deleted_at: now }).eq("id", postId)
+      : await sb
+          .from("is_posts")
+          .update({ deleted_at: now })
+          .eq("id", postId)
+          .eq("user_id", user.id);
+
+  if (error) {
+    return NextResponse.json({ error: "Could not delete." }, { status: 500 });
+  }
+  return NextResponse.json({ ok: true });
 }

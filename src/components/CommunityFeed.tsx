@@ -6,6 +6,7 @@ import { Heart, MessageCircle, Bookmark, Repeat2, BarChart3, Image as ImageIcon 
 import { cn, timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CommunityAvatar } from "@/components/community/community-avatar";
+import { PostMenu } from "@/components/community/post-menu";
 import {
   type CommunityPost,
   type Viewer,
@@ -20,16 +21,61 @@ export function CommunityFeed({
   viewer,
   followingIds = [],
   flat = false,
+  isAdmin = false,
 }: {
   initialPosts: CommunityPost[];
   viewer: Viewer | null;
   followingIds?: string[];
   flat?: boolean;
+  isAdmin?: boolean;
 }) {
   const [posts, setPosts] = useState<CommunityPost[]>(initialPosts);
   const [following, setFollowing] = useState<Set<string>>(() => new Set(followingIds));
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  async function reportPost(id: string) {
+    setNotice(null);
+    try {
+      const res = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId: id }),
+      });
+      if (!res.ok) throw new Error();
+      setNotice("Reported. Thanks — a moderator will take a look.");
+    } catch {
+      setError("Could not file report.");
+    }
+  }
+
+  async function deletePost(id: string) {
+    const removed = posts.filter((p) => p.id === id);
+    setPosts((cur) => cur.filter((p) => p.id !== id));
+    try {
+      const res = await fetch("/api/posts", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId: id }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setPosts((cur) => [...cur, ...removed]);
+      setError("Could not delete.");
+    }
+  }
+
+  function menuProps(post: CommunityPost) {
+    if (!viewer || post.pending) return { canReport: false, canDelete: false };
+    const isOwn = post.userId === viewer.userId;
+    return {
+      canReport: !!post.userId && !isOwn,
+      canDelete: isOwn || isAdmin,
+      onReport: () => reportPost(post.id),
+      onDelete: () => deletePost(post.id),
+    };
+  }
 
   async function toggleFollow(followeeId: string) {
     if (!viewer) {
@@ -301,6 +347,7 @@ export function CommunityFeed({
       )}
 
       {error && <p className="text-sm text-danger">{error}</p>}
+      {notice && <p className="text-sm text-muted-foreground">{notice}</p>}
 
       {flat ? (
         <ul className="flex flex-col gap-6">
@@ -317,6 +364,7 @@ export function CommunityFeed({
                   canVote={!!viewer}
                   canReply={false}
                   follow={followProps(post)}
+                  menu={menuProps(post)}
                 />
               </li>
             ))}
@@ -342,12 +390,13 @@ export function CommunityFeed({
                 canReply={!post.rebloggedBy && !!viewer}
                 onReply={() => { setReplyTo(replyTo === post.rowId ? null : post.rowId); setError(null); }}
                 follow={followProps(post)}
+                menu={menuProps(post)}
               />
 
               {!post.rebloggedBy && (
                 <div className="ml-6 flex flex-col gap-3 border-l border-border pl-4">
                   {repliesOf(post.id).map((reply) => (
-                    <PostView key={reply.rowId} post={reply} onLike={() => toggleLike(reply.id)} onBookmark={() => toggleBookmark(reply.id)} onReblog={() => toggleReblog(reply.id)} onVote={(i) => votePoll(reply.id, i)} canVote={!!viewer} canReply={false} follow={followProps(reply)} />
+                    <PostView key={reply.rowId} post={reply} onLike={() => toggleLike(reply.id)} onBookmark={() => toggleBookmark(reply.id)} onReblog={() => toggleReblog(reply.id)} onVote={(i) => votePoll(reply.id, i)} canVote={!!viewer} canReply={false} follow={followProps(reply)} menu={menuProps(reply)} />
                   ))}
 
                   {viewer && replyTo === post.rowId && (
@@ -435,6 +484,7 @@ function PostView({
   canReply,
   onReply,
   follow,
+  menu,
 }: {
   post: CommunityPost;
   onLike: () => void;
@@ -445,6 +495,7 @@ function PostView({
   canReply: boolean;
   onReply?: () => void;
   follow?: { following: boolean; onToggle: () => void } | null;
+  menu?: { canReport: boolean; canDelete: boolean; onReport?: () => void; onDelete?: () => void };
 }) {
   return (
     <div className={cn("flex gap-3", post.pending && "opacity-60")}>
@@ -480,6 +531,16 @@ function PostView({
             >
               {follow.following ? "Following" : "Follow"}
             </button>
+          )}
+          {menu && (menu.canReport || menu.canDelete) && (
+            <span className={cn(!follow && "ml-auto")}>
+              <PostMenu
+                canReport={menu.canReport}
+                canDelete={menu.canDelete}
+                onReport={menu.onReport ?? (() => {})}
+                onDelete={menu.onDelete ?? (() => {})}
+              />
+            </span>
           )}
         </div>
         <p className="mt-1 whitespace-pre-wrap break-words">{post.body}</p>

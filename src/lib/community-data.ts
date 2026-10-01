@@ -107,3 +107,117 @@ export async function getFeed(opts?: { following?: boolean; saved?: boolean }): 
 
   return { posts, viewer, followingIds, configured: true };
 }
+
+export interface ProfileView {
+  userId: string;
+  username: string;
+  displayName: string;
+  avatarUrl: string | null;
+  bio: string | null;
+  followerCount: number;
+  followingCount: number;
+  viewerFollows: boolean;
+  isSelf: boolean;
+}
+
+export async function getProfile(username: string): Promise<{
+  profile: ProfileView | null;
+  posts: CommunityPost[];
+  viewer: Viewer | null;
+  followingIds: string[];
+  configured: boolean;
+}> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return { profile: null, posts: [], viewer: null, followingIds: [], configured: false };
+  }
+
+  const sb = await createClient();
+  const {
+    data: { user },
+  } = await sb.auth.getUser();
+
+  const { data: prof } = await sb
+    .from("is_profiles")
+    .select("id, username, display_name, avatar_url, bio")
+    .eq("username", username)
+    .maybeSingle();
+
+  if (!prof) {
+    return { profile: null, posts: [], viewer: null, followingIds: [], configured: true };
+  }
+
+  const [{ count: followerCount }, { count: followingCount }] = await Promise.all([
+    sb.from("is_follows").select("follower_id", { count: "exact", head: true }).eq("followee_id", prof.id),
+    sb.from("is_follows").select("followee_id", { count: "exact", head: true }).eq("follower_id", prof.id),
+  ]);
+
+  let viewer: Viewer | null = null;
+  const likedIds = new Set<string>();
+  const bookmarkedIds = new Set<string>();
+  const followingIds: string[] = [];
+  let viewerFollows = false;
+
+  if (user) {
+    const { data: vp } = await sb
+      .from("is_profiles")
+      .select("username, display_name, avatar_url")
+      .eq("id", user.id)
+      .maybeSingle();
+    const fallback = user.email?.split("@")[0] ?? "me";
+    viewer = {
+      userId: user.id,
+      username: vp?.username ?? fallback,
+      displayName: vp?.display_name?.trim() || vp?.username || fallback,
+      avatarUrl: vp?.avatar_url ?? null,
+    };
+    const [{ data: likes }, { data: bms }, { data: follows }] = await Promise.all([
+      sb.from("is_post_reactions").select("post_id").eq("user_id", user.id),
+      sb.from("is_bookmarks").select("post_id").eq("user_id", user.id),
+      sb.from("is_follows").select("followee_id").eq("follower_id", user.id),
+    ]);
+    for (const r of likes ?? []) likedIds.add(r.post_id as string);
+    for (const r of bms ?? []) bookmarkedIds.add(r.post_id as string);
+    for (const r of follows ?? []) followingIds.push(r.followee_id as string);
+    viewerFollows = followingIds.includes(prof.id as string);
+  }
+
+  const { data } = await sb
+    .from("is_posts")
+    .select(POST_SELECT)
+    .eq("user_id", prof.id)
+    .is("parent_id", null)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false });
+
+  const posts = ((data as PostRow[] | null) ?? []).map((r): CommunityPost => {
+    const displayName =
+      r.author?.display_name?.trim() || r.author?.username || r.author_name || "Member";
+    return {
+      id: r.id,
+      body: r.body,
+      parentId: r.parent_id,
+      createdAt: r.created_at,
+      userId: r.user_id,
+      authorName: displayName,
+      username: r.author?.username ?? null,
+      avatarUrl: r.author?.avatar_url ?? null,
+      likeCount: r.likes?.[0]?.count ?? 0,
+      likedByViewer: likedIds.has(r.id),
+      bookmarkedByViewer: bookmarkedIds.has(r.id),
+    };
+  });
+
+  const profile: ProfileView = {
+    userId: prof.id as string,
+    username: prof.username as string,
+    displayName: (prof.display_name as string | null)?.trim() || (prof.username as string),
+    avatarUrl: (prof.avatar_url as string | null) ?? null,
+    bio: (prof.bio as string | null) ?? null,
+    followerCount: followerCount ?? 0,
+    followingCount: followingCount ?? 0,
+    viewerFollows,
+    isSelf: user?.id === prof.id,
+  };
+
+  return { profile, posts, viewer, followingIds, configured: true };
+}

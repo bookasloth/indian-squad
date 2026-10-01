@@ -269,8 +269,21 @@ function PostView({
       <CommunityAvatar seed={post.username ?? post.authorName} src={post.avatarUrl} size={40} />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
-          <span className="font-semibold">{post.authorName}</span>
-          {post.username && <span className="text-sm text-muted-foreground">@{post.username}</span>}
+          {post.username ? (
+            <Link href={`/community/u/${post.username}`} className="font-semibold hover:underline">
+              {post.authorName}
+            </Link>
+          ) : (
+            <span className="font-semibold">{post.authorName}</span>
+          )}
+          {post.username && (
+            <Link
+              href={`/community/u/${post.username}`}
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              @{post.username}
+            </Link>
+          )}
           <span className="text-xs text-muted-foreground">· {timeAgo(post.createdAt)}</span>
           {follow && (
             <button

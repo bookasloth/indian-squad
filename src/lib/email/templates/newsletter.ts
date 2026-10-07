@@ -14,13 +14,13 @@ export function newsletterWelcome(a: { email?: string } = {}): RenderedEmail {
     ? `${SITE}/unsubscribe?email=${encodeURIComponent(a.email)}`
     : `${SITE}/unsubscribe`;
   return {
-    subject: "You're on the Indian Squad newsletter.",
+    subject: "You're on the Indian Sports Club newsletter.",
     html: renderEmail({
       preheader: "Good stuff. Bad jokes. Useful things. Mostly in that order.",
-      title: "You're on the Indian Squad newsletter.",
+      title: "You're on the Indian Sports Club newsletter.",
       bodyHtml:
         p("Hey there,") +
-        p("You're officially on the Indian Squad newsletter.") +
+        p("You're officially on the Indian Sports Club newsletter.") +
         p("This means I'll occasionally appear in your inbox with things I found useful, built, broke, learned, or spent an unreasonable amount of time thinking about.") +
         p("Expect match takes, squad news, and fan-club updates across cricket, hockey, kabaddi, badminton, football and F1.") +
         p("I won't email you just because Tuesday exists.") +
@@ -32,7 +32,7 @@ export function newsletterWelcome(a: { email?: string } = {}): RenderedEmail {
           `Didn't sign up for this? No worries — someone may have typed your address by mistake. <a href="${unsubUrl}" style="color:#c43700; text-decoration:none;">Unsubscribe here</a> and you'll never hear from the list again.`,
         ),
     }),
-    text: `You're on the Indian Squad newsletter. Match takes, squad news, and fan-club updates. See what you've joined: ${SITE}/community\n\nDidn't sign up? Unsubscribe here: ${unsubUrl}`,
+    text: `You're on the Indian Sports Club newsletter. Match takes, squad news, and fan-club updates. See what you've joined: ${SITE}/community\n\nDidn't sign up? Unsubscribe here: ${unsubUrl}`,
   };
 }
 
@@ -97,13 +97,13 @@ export function unsubscribed(): RenderedEmail {
       title: "You escaped.",
       bodyHtml:
         p("You're unsubscribed.") +
-        p("No more emails from the Indian Squad newsletter.") +
+        p("No more emails from the Indian Sports Club newsletter.") +
         p("No guilt trip. No \"before you go\" questionnaire with 14 required fields.") +
         p("If you ever change your mind, the door will still be there.") +
         p("Probably unlocked."),
       cta: { label: "I changed my mind", href: `${SITE}/newsletter` },
       afterCta: emailGif(EMAIL_GIFS.unsubscribe, "A friendly goodbye wave"),
     }),
-    text: `You're unsubscribed — no more emails from the Indian Squad newsletter. No guilt trip. Changed your mind? The door's unlocked: ${SITE}/newsletter`,
+    text: `You're unsubscribed — no more emails from the Indian Sports Club newsletter. No guilt trip. Changed your mind? The door's unlocked: ${SITE}/newsletter`,
   };
 }

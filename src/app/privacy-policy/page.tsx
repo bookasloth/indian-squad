@@ -3,7 +3,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "What Indian Squad collects, why, who processes it, and how to get it deleted.",
+  description: "What Indian Sports Club collects, why, who processes it, and how to get it deleted.",
 };
 
 const H2 = "font-display text-xl font-semibold tracking-tight";

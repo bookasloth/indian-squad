@@ -1,4 +1,4 @@
-# Indian Squad
+# Indian Sports Club
 
 Fan hub for the Indian cricket squad: player profiles, a Playing XI builder, a
 quiz, and a no-sign-up community feed.

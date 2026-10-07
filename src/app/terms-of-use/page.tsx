@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
-  description: "The rules for using Indian Squad and its community.",
+  description: "The rules for using Indian Sports Club and its community.",
 };
 
 const H2 = "font-display text-xl font-semibold tracking-tight";

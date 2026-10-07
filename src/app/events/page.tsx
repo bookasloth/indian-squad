@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Events",
-  description: "Indian Squad watch-parties, box cricket and fan meetups. Pay by UPI or card.",
+  description: "Indian Sports Club watch-parties, box cricket and fan meetups. Pay by UPI or card.",
 };
 
 export default async function EventsPage() {

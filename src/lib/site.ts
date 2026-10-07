@@ -1,19 +1,19 @@
 /**
- * Single source of truth for site-wide identity. Reskinned for indian-squad
+ * Single source of truth for site-wide identity. Reskinned for Indian Sports Club
  * (the source site's extra nav/company config was dropped).
  */
 export const site = {
-  name: "Indian Squad",
-  alias: "Indian Squad",
-  shortName: "IS",
+  name: "Indian Sports Club",
+  alias: "Indian Sports Club",
+  shortName: "ISC",
   role: "The 12th Man of Indian sport",
-  domain: "indian-squad.vercel.app",
-  url: "https://indian-squad.vercel.app",
-  email: "hello@indian-squad.app",
+  domain: "sports-club-djlaxne-4073.vercel.app",
+  url: "https://sports-club-djlaxne-4073.vercel.app",
+  email: "isc@shubhamdatarkar.com",
   location: "India",
   tagline: "We stand united. We are the 12th Man.",
   description:
-    "Indian Squad — a fan club for Indian sport. A passionate community backing Team India across cricket, hockey, kabaddi, badminton, football, and F1.",
+    "Indian Sports Club — a fan club for Indian sport. A passionate community backing Team India across cricket, hockey, kabaddi, badminton, football, and F1.",
 } as const;
 
 /** The sports the fan club follows. Cricket is the flagship (full features today). */

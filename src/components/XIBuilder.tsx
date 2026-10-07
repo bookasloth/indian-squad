@@ -182,7 +182,7 @@ function shareAsPng(chosen: Player[]) {
   ctx.fillText("My India Playing XI", PAD, 72);
   ctx.fillStyle = "#6b7280";
   ctx.font = "400 16px system-ui, sans-serif";
-  ctx.fillText("indian-squad", PAD, 104);
+  ctx.fillText("Indian Sports Club", PAD, 104);
 
   chosen.forEach((p, i) => {
     const y = headerH + i * lineH;

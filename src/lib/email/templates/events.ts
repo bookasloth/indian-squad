@@ -18,7 +18,7 @@ export function eventTicket(a: {
     subject: `You're in: ${a.title}`,
     html: renderEmail({
       preheader: `Ticket confirmed for ${a.title}, ${when}.`,
-      headerTagline: "<strong>Indian Squad</strong>",
+      headerTagline: "<strong>Indian Sports Club</strong>",
       title: "Your ticket is confirmed",
       footerNote: TXN_FOOTER,
       bodyHtml:

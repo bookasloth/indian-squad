@@ -27,7 +27,7 @@ export const EMAIL_FIELDS: {
   { key: "port", label: "Port", secret: false, help: "465 for SSL/TLS, 587 for STARTTLS." },
   { key: "user", label: "Username", secret: false, help: "Usually your full email address." },
   { key: "pass", label: "Password", secret: true, help: "SMTP password or app-specific password." },
-  { key: "fromName", label: "From name", secret: false, help: "Display name on outgoing mail, e.g. Indian Squad." },
+  { key: "fromName", label: "From name", secret: false, help: "Display name on outgoing mail, e.g. Indian Sports Club." },
   { key: "fromEmail", label: "From email", secret: false, help: "Sender address — must be allowed by your SMTP host." },
   { key: "toEmail", label: "Notify email", secret: false, help: "Where contact-form submissions are emailed to you." },
 ];

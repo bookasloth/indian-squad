@@ -9,7 +9,7 @@ export const MAIL_PROVIDERS: readonly MailProvider[] = [
   {
     key: "gmail",
     label: "Gmail",
-    url: "https://mail.google.com/mail/u/0/#search/from%3A%22Indian+Squad%22+in%3Aanywhere",
+    url: "https://mail.google.com/mail/u/0/#search/from%3A%22Indian+Sports+Club%22+in%3Aanywhere",
     domains: ["gmail.com", "googlemail.com"],
   },
   {

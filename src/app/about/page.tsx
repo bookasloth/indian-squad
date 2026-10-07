@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Indian Squad is a fan club for Indian sport — the 12th Man backing Team India across cricket, hockey, kabaddi, badminton, football, and F1.",
+    "Indian Sports Club is a fan club for Indian sport — the 12th Man backing Team India across cricket, hockey, kabaddi, badminton, football, and F1.",
 };
 
 export default function AboutPage() {

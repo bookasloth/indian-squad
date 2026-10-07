@@ -3,7 +3,7 @@ import "server-only";
 import type { EmailCredentials } from "./config";
 
 /**
- * SMTP credentials from env vars. (indian-squad has no admin email-integration
+ * SMTP credentials from env vars. (this site has no admin email-integration
  * UI — the source site's Vault/DB-backed credential store was dropped; set SMTP_*
  * in the environment instead.) Returns null unless host + user + pass are set.
  * `secure` defaults from the port (465 → implicit TLS); SMTP_SECURE overrides.

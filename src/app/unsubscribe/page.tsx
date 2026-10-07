@@ -4,7 +4,7 @@ import { UnsubscribeForm } from "@/components/sections/unsubscribe-form";
 
 export const metadata = {
   title: "Unsubscribe",
-  description: "Unsubscribe from the Indian Squad newsletter.",
+  description: "Unsubscribe from the Indian Sports Club newsletter.",
   robots: { index: false, follow: false },
 };
 

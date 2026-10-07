@@ -99,7 +99,7 @@ export type RenderEmailOptions = {
 };
 
 const DEFAULT_FOOTER_NOTE =
-  "You're receiving this because you joined the Indian Squad newsletter. You can unsubscribe anytime.";
+  "You're receiving this because you joined the Indian Sports Club newsletter. You can unsubscribe anytime.";
 
 export function renderEmail(opts: RenderEmailOptions): string {
   const b = EMAIL_BRAND;

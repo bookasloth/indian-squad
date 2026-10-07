@@ -8,6 +8,7 @@ import { Header } from "@/components/header";
 import { HeaderUser } from "@/components/layout/header-user";
 import { Footer } from "@/components/layout/footer";
 import { ChromeGate } from "@/components/layout/chrome-gate";
+import { site } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -25,8 +26,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "Indian Squad",
-    template: "%s — Indian Squad",
+    default: site.name,
+    template: `%s — ${site.name}`,
   },
   description:
     "Indian cricket squad hub — player profiles, a Playing XI builder, a quiz, and a fan community.",

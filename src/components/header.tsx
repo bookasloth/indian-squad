@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { site } from "@/lib/site";
 
 const NAV = [
   { href: "/players", label: "Players" },
@@ -22,7 +23,7 @@ export function Header({ userSlot }: { userSlot?: React.ReactNode }) {
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4">
         <Link href="/" className="font-heading text-lg font-bold tracking-tight">
-          Indian Squad
+          {site.name}
         </Link>
 
         <nav className="flex flex-1 items-center gap-1 overflow-x-auto text-sm">

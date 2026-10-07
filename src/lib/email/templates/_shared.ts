@@ -27,4 +27,4 @@ export function p(html: string): string {
 
 /** Footer note for transactional / lifecycle emails (not newsletter). */
 export const TXN_FOOTER =
-  "This is a service email about your account or activity on shubhamdatarkar.com. The address and links below are here if you need them.";
+  "This is a service email about your account or activity on Indian Squad. The address and links below are here if you need them.";

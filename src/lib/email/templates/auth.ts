@@ -1,8 +1,9 @@
+import { site } from "@/lib/site";
 import { renderEmail, emailGif } from "../template";
 import { EMAIL_GIFS } from "../gifs";
 import { type RenderedEmail, esc, firstName, p, TXN_FOOTER } from "./_shared";
 
-const SITE = "https://shubhamdatarkar.com";
+const SITE = site.url;
 
 /** Confirm email address (signup). Humour: Subtle (it's a gate — clarity first). */
 export function confirmEmail(a: { name?: string | null; confirmUrl: string }): RenderedEmail {
@@ -11,7 +12,7 @@ export function confirmEmail(a: { name?: string | null; confirmUrl: string }): R
     subject: "Confirm your email — one click and you're in",
     html: renderEmail({
       preheader: "Quick tap to confirm it's really you. Then the door opens.",
-      headerTagline: "<strong>Shubham Datarkar</strong>",
+      headerTagline: "<strong>Indian Squad</strong>",
       title: "Confirm your email address",
       footerNote: TXN_FOOTER,
       bodyHtml:
@@ -34,7 +35,7 @@ export function accountWelcome(a: { name?: string | null }): RenderedEmail {
     subject: "You're in. That was easy.",
     html: renderEmail({
       preheader: "Account created. One less password to invent tonight.",
-      headerTagline: "<strong>Shubham Datarkar</strong>",
+      headerTagline: "<strong>Indian Squad</strong>",
       title: "You're in. That was easy.",
       footerNote: TXN_FOOTER,
       bodyHtml:
@@ -58,7 +59,7 @@ export function forgotPassword(a: { name?: string | null; resetUrl: string }): R
     subject: "Forgot your password? Happens.",
     html: renderEmail({
       preheader: "Here's your way back in. This link expires soon.",
-      headerTagline: "<strong>Shubham Datarkar</strong>",
+      headerTagline: "<strong>Indian Squad</strong>",
       title: "Forgot your password? Happens.",
       footerNote: TXN_FOOTER,
       bodyHtml:
@@ -82,7 +83,7 @@ export function passwordChanged(a: { name?: string | null }): RenderedEmail {
     subject: "New password. Same you.",
     html: renderEmail({
       preheader: "Your password has officially been changed.",
-      headerTagline: "<strong>Shubham Datarkar</strong>",
+      headerTagline: "<strong>Indian Squad</strong>",
       title: "New password. Same you.",
       footerNote: TXN_FOOTER,
       bodyHtml:
@@ -104,7 +105,7 @@ export function commentOtp(a: { code: string; returnUrl?: string }): RenderedEma
     subject: `Your code is ${a.code}`,
     html: renderEmail({
       preheader: "Six digits. Ten minutes. Try not to overthink it.",
-      headerTagline: "<strong>Shubham Datarkar</strong>",
+      headerTagline: "<strong>Indian Squad</strong>",
       title: "Here's your verification code",
       footerNote: TXN_FOOTER,
       bodyHtml:

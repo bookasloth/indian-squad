@@ -1,3 +1,5 @@
+import { site } from "@/lib/site";
+
 /**
  * Branded email shell — the single source for the look of every email we send
  * (contact auto-reply, notifications, future receipts). Table-based + inline
@@ -8,7 +10,7 @@
  */
 
 export const EMAIL_BRAND = {
-  name: "Shubham Datarkar's Newsletter",
+  name: site.name,
   logoHeader: "https://company-assets.bookasloth.in/images/sd/email/shubham-logo-primary.png",
   logoFooter: "https://company-assets.bookasloth.in/images/sd/email/shubham-logo-secondary.png",
   welcomeGif: "https://company-assets.bookasloth.in/images/sd/email/welcome.gif",
@@ -17,11 +19,10 @@ export const EMAIL_BRAND = {
   linkColor: "#c43700",
   company: ["Timewheel Internet Pvt Ltd", "2nd Floor, Eureka Coworking", "Mate Sqr, Nagpur, 440030"],
   links: [
-    { label: "About", href: "https://shubhamdatarkar.com/about" },
-    { label: "Help Center", href: "https://shubhamdatarkar.com/help" },
-    { label: "Privacy", href: "https://shubhamdatarkar.com/privacy-policy" },
-    { label: "Terms of Use", href: "https://shubhamdatarkar.com/terms-of-use" },
-    { label: "Unsubscribe", href: "https://shubhamdatarkar.com/unsubscribe" },
+    { label: "About", href: `${site.url}/about` },
+    { label: "Privacy", href: `${site.url}/privacy-policy` },
+    { label: "Terms of Use", href: `${site.url}/terms-of-use` },
+    { label: "Unsubscribe", href: `${site.url}/unsubscribe` },
   ],
 } as const;
 
@@ -98,7 +99,7 @@ export type RenderEmailOptions = {
 };
 
 const DEFAULT_FOOTER_NOTE =
-  "You're receiving this because you subscribed to Shubham Datarkar's Newsletter. If it ever stops being valuable, you can unsubscribe anytime. But I'll do my best to make sure that never happens.";
+  "You're receiving this because you joined the Indian Squad newsletter. You can unsubscribe anytime.";
 
 export function renderEmail(opts: RenderEmailOptions): string {
   const b = EMAIL_BRAND;

@@ -28,7 +28,8 @@ export const getMemberContext = cache(async (): Promise<MemberContext> => {
   if (!user) return GUEST;
 
   const adminEmail = process.env.ADMIN_EMAIL;
-  const isAdmin = !!adminEmail && user.email?.toLowerCase() === adminEmail.toLowerCase();
+  const isAdmin =
+    !!adminEmail && !!user.email_confirmed_at && user.email?.toLowerCase() === adminEmail.toLowerCase();
   return { user, role: isAdmin ? "admin" : "member" };
 });
 

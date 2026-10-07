@@ -22,7 +22,7 @@ export const players: Player[] = [
     role: "batter",
     battingStyle: "Right-handed",
     caps: { test: 67, odi: 273, t20: 159 },
-    bio: "Opening batter and white-ball captain, known for his timing and record ODI double-centuries.",
+    bio: "Opening batter and former captain, known for his timing and record ODI double-centuries. Now plays ODIs only.",
     active: true,
   },
   {
@@ -32,7 +32,7 @@ export const players: Player[] = [
     battingStyle: "Right-handed",
     bowlingStyle: "Right-arm medium",
     caps: { test: 123, odi: 302, t20: 125 },
-    bio: "One of the most prolific run-scorers in the game across all three formats.",
+    bio: "One of the most prolific run-scorers in the game; retired from Tests and T20Is, still a force in ODIs.",
     active: true,
   },
   {
@@ -155,7 +155,7 @@ export const players: Player[] = [
     bowlingStyle: "Right-arm off-break",
     caps: { test: 106, odi: 116, t20: 65 },
     bio: "Master off-spinner and canny lower-order batter, a Test-match wicket machine.",
-    active: true,
+    active: false,
   },
   {
     slug: "jasprit-bumrah",

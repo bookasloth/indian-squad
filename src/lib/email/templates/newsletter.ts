@@ -1,37 +1,38 @@
+import { site } from "@/lib/site";
 import { renderEmail, emailGif, emailPostList } from "../template";
 import { EMAIL_GIFS } from "../gifs";
 import { type RenderedEmail, esc, p } from "./_shared";
 
-const SITE = "https://shubhamdatarkar.com";
+const SITE = site.url;
 
 type Post = { title: string; href: string; meta?: string };
 
-/** Builders List subscription confirmed. Humour: High. */
+/** Newsletter subscription confirmed. Humour: High. */
 export function newsletterWelcome(a: { email?: string } = {}): RenderedEmail {
   // "Wasn't you?" escape hatch — prefills the address so it's one confirm click.
   const unsubUrl = a.email
     ? `${SITE}/unsubscribe?email=${encodeURIComponent(a.email)}`
     : `${SITE}/unsubscribe`;
   return {
-    subject: "You're on the Builders List.",
+    subject: "You're on the Indian Squad newsletter.",
     html: renderEmail({
       preheader: "Good stuff. Bad jokes. Useful things. Mostly in that order.",
-      title: "You're on the Builders List.",
+      title: "You're on the Indian Squad newsletter.",
       bodyHtml:
         p("Hey there,") +
-        p("You're officially on the Builders List.") +
+        p("You're officially on the Indian Squad newsletter.") +
         p("This means I'll occasionally appear in your inbox with things I found useful, built, broke, learned, or spent an unreasonable amount of time thinking about.") +
-        p("Expect ad breakdowns, SEO and growth experiments, build logs, useful resources, and opinions I probably could've kept to myself.") +
+        p("Expect match takes, squad news, and fan-club updates across cricket, hockey, kabaddi, badminton, football and F1.") +
         p("I won't email you just because Tuesday exists.") +
         p("Deal?"),
-      cta: { label: "See what you've joined", href: `${SITE}/subscriber-assets` },
+      cta: { label: "See what you've joined", href: `${SITE}/community` },
       afterCta:
         emailGif(EMAIL_GIFS.newsletterWelcome, "A mailbox flag popping up") +
         p(
           `Didn't sign up for this? No worries — someone may have typed your address by mistake. <a href="${unsubUrl}" style="color:#c43700; text-decoration:none;">Unsubscribe here</a> and you'll never hear from the list again.`,
         ),
     }),
-    text: `You're on the Builders List. Ad breakdowns, SEO and growth experiments, build logs, useful resources, and the odd strong opinion — never just because it's Tuesday. See what you've joined: ${SITE}/subscriber-assets\n\nDidn't sign up? Unsubscribe here: ${unsubUrl}`,
+    text: `You're on the Indian Squad newsletter. Match takes, squad news, and fan-club updates. See what you've joined: ${SITE}/community\n\nDidn't sign up? Unsubscribe here: ${unsubUrl}`,
   };
 }
 
@@ -50,13 +51,13 @@ export function newBlogs(a: { posts: Post[] }): RenderedEmail {
         emailPostList(a.posts) +
         p("Pick whatever catches your eye.") +
         p("Or open seven tabs and read none of them. I know how the internet works."),
-      cta: { label: "See this week's writing", href: `${SITE}/blog` },
+      cta: { label: "See this week's writing", href: `${SITE}/community` },
       afterCta: emailGif(EMAIL_GIFS.newBlogs, "A stack of fresh articles", 380),
     }),
     text:
       `I wrote some things this week:\n\n` +
       a.posts.map((x) => `• ${x.title} — ${x.href}`).join("\n") +
-      `\n\nMore at ${SITE}/blog`,
+      `\n\nMore at ${SITE}/community`,
   };
 }
 
@@ -76,13 +77,13 @@ export function monthlyRoundup(a: { monthLabel: string; posts: Post[] }): Render
         emailPostList(a.posts) +
         p("That should save you approximately 47 minutes of scrolling.") +
         p("You're welcome."),
-      cta: { label: `Catch up on ${esc(a.monthLabel)}`, href: `${SITE}/blog` },
+      cta: { label: `Catch up on ${esc(a.monthLabel)}`, href: `${SITE}/community` },
       afterCta: emailGif(EMAIL_GIFS.monthlyRoundup, "Pages flipping through a calendar month", 380),
     }),
     text:
       `${a.monthLabel}, in case you missed half of it:\n\n` +
       a.posts.map((x) => `• ${x.title} — ${x.href}`).join("\n") +
-      `\n\n${SITE}/blog`,
+      `\n\n${SITE}/community`,
   };
 }
 
@@ -96,13 +97,13 @@ export function unsubscribed(): RenderedEmail {
       title: "You escaped.",
       bodyHtml:
         p("You're unsubscribed.") +
-        p("No more emails from the Builders List.") +
+        p("No more emails from the Indian Squad newsletter.") +
         p("No guilt trip. No \"before you go\" questionnaire with 14 required fields.") +
         p("If you ever change your mind, the door will still be there.") +
         p("Probably unlocked."),
-      cta: { label: "I changed my mind", href: `${SITE}/subscribe` },
+      cta: { label: "I changed my mind", href: `${SITE}/newsletter` },
       afterCta: emailGif(EMAIL_GIFS.unsubscribe, "A friendly goodbye wave"),
     }),
-    text: `You're unsubscribed — no more emails from the Builders List. No guilt trip. Changed your mind? The door's unlocked: ${SITE}/subscribe`,
+    text: `You're unsubscribed — no more emails from the Indian Squad newsletter. No guilt trip. Changed your mind? The door's unlocked: ${SITE}/newsletter`,
   };
 }

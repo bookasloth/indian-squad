@@ -12,7 +12,7 @@ export const site = {
   email: "isc@shubhamdatarkar.com",
   /** A personal project, not a company. Linked from the footer, About, legal pages and emails. */
   owner: { name: "Shubham Datarkar", url: "https://shubhamdatarkar.com" },
-  location: "India",
+  location: "Nagpur, India",
   tagline: "We stand united. We are the 12th Man.",
   description:
     "Indian Sports Club — a fan club for Indian sport. A passionate community backing Team India across cricket, hockey, kabaddi, badminton, football, and F1.",

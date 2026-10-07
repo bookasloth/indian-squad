@@ -7,10 +7,14 @@ const LINKS = [
   { href: "/quiz", label: "Quiz" },
   { href: "/community", label: "Community" },
   { href: "/events", label: "Events" },
+  { href: "/shop", label: "Shop" },
   { href: "/newsletter", label: "Newsletter" },
   { href: "/about", label: "About" },
   { href: "/privacy-policy", label: "Privacy" },
   { href: "/terms-of-use", label: "Terms" },
+  { href: "/shipping-policy", label: "Shipping" },
+  { href: "/refund-policy", label: "Refunds" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Footer() {

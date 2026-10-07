@@ -44,6 +44,10 @@ export default function PrivacyPolicyPage() {
           and never reach us.
         </li>
         <li>
+          <strong>Merch orders:</strong> the recipient&rsquo;s name, mobile number and shipping address, the item,
+          size and amount.
+        </li>
+        <li>
           <strong>Technical:</strong> your IP address, used briefly to rate-limit abuse, and the
           cookies needed to keep you signed in. Your light/dark theme choice is stored in your
           browser only.
@@ -74,7 +78,10 @@ export default function PrivacyPolicyPage() {
           <strong>Vercel</strong> — website hosting.
         </li>
         <li>
-          <strong>Zoho Payments</strong> — processes ticket payments (UPI, cards, netbanking).
+          <strong>Zoho Payments</strong> — processes ticket and merch payments (UPI, cards, netbanking).
+        </li>
+        <li>
+          <strong>Printrove</strong> — prints and ships merch orders (receives the shipping details only).
         </li>
         <li>
           <strong>Our email provider</strong> — delivers account emails and the newsletter.

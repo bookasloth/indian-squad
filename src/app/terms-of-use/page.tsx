@@ -72,6 +72,20 @@ export default function TermsOfUsePage() {
         code); follow them or you may be refused entry without a refund.
       </p>
 
+      <h2 className={H2}>Merch</h2>
+      <p>
+        Merch is sold by {site.name}, printed to order and shipped within India. Delivery, cancellations and
+        replacements follow our{" "}
+        <Link href="/shipping-policy" className="underline underline-offset-4">
+          Shipping
+        </Link>{" "}
+        and{" "}
+        <Link href="/refund-policy" className="underline underline-offset-4">
+          Cancellations &amp; Refunds
+        </Link>{" "}
+        policies.
+      </p>
+
       <h2 className={H2}>Accuracy</h2>
       <p>
         Player stats, squads, and quiz answers are maintained by hand and may lag behind the latest

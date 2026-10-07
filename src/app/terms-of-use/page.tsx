@@ -60,6 +60,14 @@ export default function TermsOfUsePage() {
         do, with or without notice.
       </p>
 
+      <h2 className={H2}>Event tickets</h2>
+      <p>
+        Tickets are paid through Zoho Payments and confirmed by email. One ticket admits one person.
+        If we cancel or reschedule an event, you get a full refund to your original payment method.
+        Otherwise tickets are non-refundable. Venues may set their own entry rules (age, ID, dress
+        code); follow them or you may be refused entry without a refund.
+      </p>
+
       <h2 className={H2}>Accuracy</h2>
       <p>
         Player stats, squads, and quiz answers are maintained by hand and may lag behind the latest

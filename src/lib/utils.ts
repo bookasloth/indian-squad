@@ -16,6 +16,18 @@ export function formatDate(input: string | Date) {
   });
 }
 
+const EVENT_TIME = new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "short", timeZone: "Asia/Kolkata" });
+
+/** Event start in India time, e.g. "Saturday, 24 October 2026 at 7:30 pm". */
+export function formatEventTime(input: string | Date) {
+  return EVENT_TIME.format(typeof input === "string" ? new Date(input) : input);
+}
+
+/** Rupees, e.g. "₹1,499" (paise shown only when present). */
+export function formatInr(amount: number) {
+  return `₹${Number(amount).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+}
+
 /** Rough reading time in minutes from a word count (~220 wpm). */
 export function readingTime(words: number) {
   return Math.max(1, Math.round(words / 220));

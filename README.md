@@ -10,7 +10,8 @@ See [`docs/SPEC.md`](docs/SPEC.md) for the full v1 scope.
 - Next.js 16 (App Router) + TypeScript
 - Tailwind v4
 - Fonts: Plus Jakarta Sans (body) + Poppins (headings)
-- Supabase — community feed only (slice 4)
+- Supabase — auth, community, events
+- Zoho Payments — event tickets (setup: `Indian Squad/docs/PAYMENTS.md`)
 - Deploy: Vercel
 
 ## Getting Started

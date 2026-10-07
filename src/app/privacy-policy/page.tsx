@@ -39,6 +39,11 @@ export default function PrivacyPolicyPage() {
           you&rsquo;re subscribed.
         </li>
         <li>
+          <strong>Event tickets:</strong> what you bought, the amount, the payment status, and Zoho
+          Payments&rsquo; payment ID. Your card, UPI, and bank details go straight to Zoho Payments
+          and never reach us.
+        </li>
+        <li>
           <strong>Technical:</strong> your IP address, used briefly to rate-limit abuse, and the
           cookies needed to keep you signed in. Your light/dark theme choice is stored in your
           browser only.
@@ -48,7 +53,7 @@ export default function PrivacyPolicyPage() {
       <h2 className={H2}>Why we use it</h2>
       <p>
         To create and secure your account, show your posts and profile to other members, send you
-        account emails (confirmation, password reset) and the newsletter you asked for, and keep
+        account emails (confirmation, password reset, ticket receipts) and the newsletter you asked for, and keep
         the community free of spam and abuse. We process this data on the basis of your consent,
         which you give when you sign up or subscribe, and you can withdraw it at any time.
       </p>
@@ -69,6 +74,9 @@ export default function PrivacyPolicyPage() {
           <strong>Vercel</strong> — website hosting.
         </li>
         <li>
+          <strong>Zoho Payments</strong> — processes ticket payments (UPI, cards, netbanking).
+        </li>
+        <li>
           <strong>Our email provider</strong> — delivers account emails and the newsletter.
         </li>
       </ul>
@@ -82,7 +90,8 @@ export default function PrivacyPolicyPage() {
         Account data and content stay until you delete them or ask us to delete your account.
         Removed posts are hidden immediately and purged with the account. Newsletter records are
         kept while you&rsquo;re subscribed, plus a record of the unsubscribe so we don&rsquo;t
-        email you again.
+        email you again. Payment records are kept for as long as tax and accounting law requires,
+        even if you delete your account.
       </p>
 
       <h2 className={H2}>Your rights</h2>

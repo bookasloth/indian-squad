@@ -7,6 +7,8 @@ const LINKS = [
   { href: "/community", label: "Community" },
   { href: "/newsletter", label: "Newsletter" },
   { href: "/about", label: "About" },
+  { href: "/privacy-policy", label: "Privacy" },
+  { href: "/terms-of-use", label: "Terms" },
 ];
 
 export function Footer() {

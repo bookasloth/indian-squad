@@ -10,6 +10,8 @@ export const site = {
   domain: "sports-club-djlaxne-4073.vercel.app",
   url: "https://sports-club-djlaxne-4073.vercel.app",
   email: "isc@shubhamdatarkar.com",
+  /** A personal project, not a company. Linked from the footer, About, legal pages and emails. */
+  owner: { name: "Shubham Datarkar", url: "https://shubhamdatarkar.com" },
   location: "India",
   tagline: "We stand united. We are the 12th Man.",
   description:

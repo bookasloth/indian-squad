@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SPORTS } from "@/lib/site";
+import { SPORTS, site } from "@/lib/site";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
@@ -45,7 +45,11 @@ export default function AboutPage() {
 
       <h2 className="font-display text-xl font-semibold tracking-tight">The fine print</h2>
       <p className="text-muted-foreground">
-        This is an independent fan club. It is not affiliated with, endorsed by, or connected to
+        {site.name} is a personal project run by{" "}
+        <a href={site.owner.url} className="underline underline-offset-4">
+          {site.owner.name}
+        </a>
+        , not a company. It is an independent fan club, not affiliated with, endorsed by, or connected to
         the BCCI or any official body. Player and team data is maintained by hand and may lag
         behind the latest fixtures.
       </p>

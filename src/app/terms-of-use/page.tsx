@@ -26,7 +26,11 @@ export default function TermsOfUsePage() {
 
       <h2 className={H2}>Who we are</h2>
       <p>
-        {site.name} is an independent fan club. It is not affiliated with, endorsed by, or
+        {site.name} is an independent fan club run by{" "}
+        <a href={site.owner.url} className="underline underline-offset-4">
+          {site.owner.name}
+        </a>
+        {" "}as a personal project. It is not a company, and it is not affiliated with, endorsed by, or
         connected to the BCCI, Hockey India, the Pro Kabaddi League, the Badminton Association of
         India, the All India Football Federation, Formula 1, or any team, player, or official body.
         Names are used only to identify who we&rsquo;re cheering for.

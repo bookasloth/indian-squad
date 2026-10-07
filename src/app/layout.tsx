@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     default: site.name,
     template: `%s — ${site.name}`,
   },
+  authors: [{ name: site.owner.name, url: site.owner.url }],
+  creator: site.owner.name,
+  publisher: site.owner.name,
   description:
     "Indian cricket squad hub — player profiles, a Playing XI builder, a quiz, and a fan community.",
 };

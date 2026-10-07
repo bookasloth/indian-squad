@@ -17,7 +17,11 @@ export const EMAIL_BRAND = {
   unsubscribeGif: "https://company-assets.bookasloth.in/images/sd/email/unsubscribe.gif",
   accent: "#CE2B37",
   linkColor: "#c43700",
-  company: ["Timewheel Internet Pvt Ltd", "2nd Floor, Eureka Coworking", "Mate Sqr, Nagpur, 440030"],
+  company: [
+    `A personal project by ${site.owner.name}`,
+    `<a href="${site.owner.url}" style="color:#80868b;">shubhamdatarkar.com</a>`,
+    "Nagpur, India",
+  ],
   links: [
     { label: "About", href: `${site.url}/about` },
     { label: "Privacy", href: `${site.url}/privacy-policy` },

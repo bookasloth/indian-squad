@@ -110,7 +110,12 @@ export default function PrivacyPolicyPage() {
 
       <h2 className={H2}>Contact &amp; grievances</h2>
       <p>
-        For any privacy request or complaint, email{" "}
+        {site.name} is a personal project run by{" "}
+        <a href={site.owner.url} className="underline underline-offset-4">
+          {site.owner.name}
+        </a>
+        , who is responsible for your data (the data fiduciary under the DPDP Act). For any
+        privacy request or complaint, email{" "}
         <a href={`mailto:${site.email}`} className="underline underline-offset-4">
           {site.email}
         </a>

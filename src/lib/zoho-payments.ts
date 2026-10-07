@@ -79,7 +79,8 @@ export async function settlePayment(paymentId: string) {
 
   const orderId = p.reference_number;
   const order = orderId ? await getOrder(orderId) : null;
-  if (!orderId || !order) throw new Error(`Payment ${paymentId}: unknown order ${orderId}`);
+  // The Zoho account is shared with Coffee and Toffee, so its webhook also delivers their payments. Not ours: ack, skip.
+  if (!orderId || !order) return { paid: false, status: "not_ours" };
   if (p.currency !== "INR" || Number(p.amount).toFixed(2) !== order.amount.toFixed(2)) {
     throw new Error(`Payment ${paymentId}: paid ${p.currency} ${p.amount}, order ${orderId} expects INR ${order.amount}`);
   }

@@ -10,8 +10,8 @@ export function postLoginPath(email: string | null | undefined): string {
     : "/community";
 }
 
-/** Authed subtrees a post-login `next` may return to. Anything else is dropped. */
-const NEXT_ALLOWED = ["/community"];
+/** Subtrees a post-login `next` may return to. Anything else is dropped. */
+const NEXT_ALLOWED = ["/community", "/events"];
 
 /**
  * Validate a `next` return path. Returns the path only if it points at one of

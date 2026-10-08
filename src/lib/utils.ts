@@ -23,6 +23,15 @@ export function formatEventTime(input: string | Date) {
   return EVENT_TIME.format(typeof input === "string" ? new Date(input) : input);
 }
 
+const EVENT_DAY = new Intl.DateTimeFormat("en-IN", { dateStyle: "short", timeZone: "Asia/Kolkata" });
+const EVENT_CLOCK = new Intl.DateTimeFormat("en-IN", { timeStyle: "short", timeZone: "Asia/Kolkata" });
+
+/** Event end: just the time when it ends on the start day (India time), else the full date and time. */
+export function formatEventEnd(start: string | Date, end: string | Date) {
+  const [s, e] = [new Date(start), new Date(end)];
+  return EVENT_DAY.format(s) === EVENT_DAY.format(e) ? EVENT_CLOCK.format(e) : formatEventTime(e);
+}
+
 /** Rupees, e.g. "₹1,499" (paise shown only when present). */
 export function formatInr(amount: number) {
   return `₹${Number(amount).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;

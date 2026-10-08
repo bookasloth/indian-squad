@@ -48,6 +48,13 @@ export default function PrivacyPolicyPage() {
           size and amount.
         </li>
         <li>
+          <strong>Free event registrations:</strong> the events you register for, with your name and email.
+        </li>
+        <li>
+          <strong>Partners (organisers):</strong> organisation name, contact person, mobile number, city, sports
+          and website.
+        </li>
+        <li>
           <strong>Technical:</strong> your IP address, used briefly to rate-limit abuse, and the
           cookies needed to keep you signed in. Your light/dark theme choice is stored in your
           browser only.
@@ -66,7 +73,15 @@ export default function PrivacyPolicyPage() {
       <p>
         Your username, display name, avatar, bio, posts, replies, reposts, and follows are visible
         to anyone. Your email address is never shown. Don&rsquo;t post anything you wouldn&rsquo;t
-        want public.
+        want public. For partners, the organisation name, city, sports, description and website are public; the
+        contact person and mobile number are not.
+      </p>
+
+      <h2 className={H2}>Who we share it with</h2>
+      <p>
+        When you register for a free partner event, we share your name and email with that event&rsquo;s organiser so
+        they can contact you about it. The button says so before you register. We don&rsquo;t sell your data or share
+        it with anyone else except the providers below.
       </p>
 
       <h2 className={H2}>Who processes it for us</h2>

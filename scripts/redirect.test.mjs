@@ -8,10 +8,11 @@ test("allows the app's own return paths", () => {
   assert.equal(safeNext("/community/u/fan_1a2b"), "/community/u/fan_1a2b");
   assert.equal(safeNext("/events/ind-nz-watch-party"), "/events/ind-nz-watch-party");
   assert.equal(safeNext("/events?x=1"), "/events?x=1");
+  assert.equal(safeNext("/partners/apply"), "/partners/apply");
 });
 
 test("drops off-site, look-alike and unknown paths", () => {
-  for (const bad of ["https://evil.com", "//evil.com", "/\\evil.com", "/eventsevil", "/admin", "", null, undefined]) {
+  for (const bad of ["https://evil.com", "//evil.com", "/\\evil.com", "/eventsevil", "/partnersx", "/admin", "", null, undefined]) {
     assert.equal(safeNext(bad), null, String(bad));
   }
 });

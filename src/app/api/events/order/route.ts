@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     .select("id, price, capacity, starts_at")
     .eq("id", eventId)
     .eq("published", true)
+    .eq("ticketing", "paid")
     .maybeSingle<{ id: string; price: number; capacity: number | null; starts_at: string }>();
   if (!ev) return Response.json({ error: "Unknown event." }, { status: 404 });
   if (new Date(ev.starts_at) <= new Date()) {

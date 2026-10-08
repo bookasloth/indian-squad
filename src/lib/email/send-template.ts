@@ -28,3 +28,10 @@ export async function sendTemplate(
     ...extra,
   });
 }
+
+/** Send to our own inbox (SMTP_TO_EMAIL, else the SMTP user) — order and partner alerts. Never throws. */
+export async function sendToOps(email: RenderedEmail): Promise<void> {
+  const to = (await getEmailCredentials())?.toEmail;
+  if (!to) return;
+  await sendTemplate(to, email).catch((e) => console.error(`[email] ops alert failed — "${email.subject}"`, e));
+}

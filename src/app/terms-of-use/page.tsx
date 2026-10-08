@@ -72,6 +72,18 @@ export default function TermsOfUsePage() {
         code); follow them or you may be refused entry without a refund.
       </p>
 
+      <h2 className={H2}>Partner events</h2>
+      <p>
+        Some events are listed by independent organisers (&ldquo;partners&rdquo;), shown as &ldquo;Organised by&rdquo;
+        on the event page. The partner runs the event and is responsible for it. Registering for a free partner event
+        shares your name and email with that partner. When a partner sells tickets through their own link, the partner
+        is the seller and handles payment and refunds; {site.name} is not part of that sale. Partners agree to our{" "}
+        <Link href="/partners/terms" className="underline underline-offset-4">
+          partner terms
+        </Link>
+        .
+      </p>
+
       <h2 className={H2}>Merch</h2>
       <p>
         Merch is sold by {site.name}, printed to order and shipped within India. Delivery, cancellations and

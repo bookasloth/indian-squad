@@ -4,8 +4,7 @@ import "server-only";
 import type { ZohoPayment } from "./zoho-payments";
 import type { Shipping } from "./shop-validate";
 import { supabaseAdmin } from "./supabase/server";
-import { sendTemplate } from "./email/send-template";
-import { getEmailCredentials } from "./email/store";
+import { sendTemplate, sendToOps } from "./email/send-template";
 import { eventTicket } from "./email/templates/events";
 import { merchOrderAlert, merchReceipt } from "./email/templates/shop";
 import { site } from "./site";
@@ -74,7 +73,6 @@ export async function markPaid(orderId: string, payment: ZohoPayment) {
     };
     await send(o.email, merchReceipt(order));
     // ponytail: fulfilment is manual (place it in Printrove's dashboard); automate via its API past ~20 orders/month.
-    const ops = (await getEmailCredentials())?.toEmail;
-    if (ops) await send(ops, merchOrderAlert(order));
+    await sendToOps(merchOrderAlert(order));
   }
 }

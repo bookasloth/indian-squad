@@ -32,6 +32,17 @@ P1 is mostly a port: Coffee and Toffee already runs Route (linked-account onboar
 reconcile cron, reversals + debt ledger, GST invoices) with tests. Build it in **Razorpay test mode during P0**
 so it's ready when approval lands.
 
+## P0 status (built 8 Oct 2026, migration `0016_is_partners.sql`)
+
+- `/partners` landing, `/partners/apply` (signed-in + confirmed email), `/partners/dashboard` (status, events,
+  RSVP lists, submit-event form), `/partners/[slug]` public profile, `/partners/terms`, `/partners/review` (admin).
+- Events gain `partner_id`, `ticketing` (`paid` = ours via Zoho, `rsvp` = free, `external` = organiser's link),
+  `external_url`, `ends_at`, `submitted_at`. Partner events stay unpublished until approved.
+- `is_event_rsvps` + `/api/events/rsvp`; event page shows "Organised by" (seller details) and the right action.
+- Emails: application alert/received, partner decision, event alert/decision. Validation + tests in
+  `src/lib/partner-validate.ts` / `scripts/partners.test.mjs`.
+- Not in P0: editing a submitted event (ask us), paid partner ticketing (P1), check-in, promo codes.
+
 ## Revenue model (decided: 8% all-inclusive)
 
 - **Platform fee: 8% of the ticket price**, + 18% GST on the fee, deducted from the partner's payout.

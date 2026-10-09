@@ -25,9 +25,11 @@ export const EVENT_COLS =
   "id, slug, title, description, sport, venue, city, starts_at, ends_at, price, capacity, ticketing, external_url, partner_id";
 
 /** Published events that haven't started, soonest first. RLS hides unpublished ones from the anon client. */
-export async function listUpcomingEvents(partnerId?: string): Promise<EventRow[]> {
+export async function listUpcomingEvents(opts?: { partnerId?: string; sport?: string; limit?: number }): Promise<EventRow[]> {
   let q = supabaseAnon().from("is_events").select(EVENT_COLS).gte("starts_at", new Date().toISOString());
-  if (partnerId) q = q.eq("partner_id", partnerId);
+  if (opts?.partnerId) q = q.eq("partner_id", opts.partnerId);
+  if (opts?.sport) q = q.eq("sport", opts.sport);
+  if (opts?.limit) q = q.limit(opts.limit);
   const { data } = await q.order("starts_at");
   return (data ?? []) as EventRow[];
 }

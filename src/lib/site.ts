@@ -18,20 +18,29 @@ export const site = {
     "Indian Sports Club — a fan club for Indian sport. A passionate community backing Team India across cricket, hockey, kabaddi, badminton, football, and F1.",
 } as const;
 
-/** The sports the fan club follows. Cricket is the flagship (full features today). */
+/** The sports the fan club follows. Each gets a hub at /<slug> (docs/MULTISPORT.md).
+ * `blurb` is the hub's one-liner — placeholder until the copy in docs/COPY.md lands. */
 export const SPORTS = [
-  { slug: "cricket", label: "Cricket" },
-  { slug: "hockey", label: "Hockey" },
-  { slug: "kabaddi", label: "Kabaddi" },
-  { slug: "badminton", label: "Badminton" },
-  { slug: "football", label: "Football" },
-  { slug: "f1", label: "F1" },
+  { slug: "cricket", label: "Cricket", blurb: "Team India in Tests, ODIs and T20Is — the squad, your XI, and the talk." },
+  { slug: "hockey", label: "Hockey", blurb: "India on the hockey pitch, from the Pro League to the Olympics." },
+  { slug: "kabaddi", label: "Kabaddi", blurb: "Raids, tackles and the Pro Kabaddi League." },
+  { slug: "badminton", label: "Badminton", blurb: "India's shuttlers on the BWF World Tour and beyond." },
+  { slug: "football", label: "Football", blurb: "The Blue Tigers, the ISL and Indian football." },
+  { slug: "f1", label: "F1", blurb: "Formula 1, followed from India." },
 ] as const;
 
 export type SportSlug = (typeof SPORTS)[number]["slug"];
 
 export const SPORT_SLUGS = SPORTS.map((s) => s.slug) as SportSlug[];
 
+/** Sports with squad tools (players, Playing XI, quiz). Grows as rosters land:
+ * kabaddi is next (docs/MULTISPORT.md, phase 3). */
+export const SQUAD_SPORTS: readonly string[] = ["cricket"];
+
+export function getSport(slug: string | null | undefined) {
+  return SPORTS.find((s) => s.slug === slug) ?? null;
+}
+
 export function sportLabel(slug: string | null | undefined): string | null {
-  return SPORTS.find((s) => s.slug === slug)?.label ?? null;
+  return getSport(slug)?.label ?? null;
 }

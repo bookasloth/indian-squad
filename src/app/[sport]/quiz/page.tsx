@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { SQUAD_SPORTS } from "@/lib/site";
 import { Quiz } from "@/components/Quiz";
 
 export const metadata: Metadata = {
@@ -6,7 +8,8 @@ export const metadata: Metadata = {
   description: "A shuffled Indian cricket quiz. Answer, score, and play again.",
 };
 
-export default function QuizPage() {
+export default async function QuizPage({ params }: { params: Promise<{ sport: string }> }) {
+  if (!SQUAD_SPORTS.includes((await params).sport)) notFound();
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-2">

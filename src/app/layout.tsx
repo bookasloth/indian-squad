@@ -36,10 +36,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  // Light by default regardless of OS setting (theme-provider.tsx), so the browser
+  // chrome matches it rather than following prefers-color-scheme.
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };

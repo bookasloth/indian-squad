@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createClient, supabaseAdmin } from "@/lib/supabase/server";
+import { createClient, supabaseAdmin, supabaseAnon } from "@/lib/supabase/server";
 import { getMemberContext } from "@/lib/members/session";
 import type { CommunityPost, Viewer, PollOption } from "@/data/community";
 
@@ -220,6 +220,38 @@ export async function getFeed(opts?: {
   const posts = [...base, ...reblogRows];
   await fillPolls(posts, sb, user?.id ?? null);
   return { posts, viewer, followingIds, configured: true };
+}
+
+export interface LatestPost {
+  id: string;
+  body: string;
+  createdAt: string;
+  authorName: string;
+  username: string | null;
+  avatarUrl: string | null;
+}
+
+/** Newest top-level posts for a sport hub's preview. Anon client (public reads, no
+ * cookies) so the hub can prerender and revalidate; no viewer state needed. */
+export async function getLatestPosts(sport: string, limit = 3): Promise<LatestPost[]> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return [];
+  const { data } = await supabaseAnon()
+    .from("is_posts")
+    .select("id, body, created_at, author_name, author:is_profiles!is_posts_user_id_fkey(username, display_name, avatar_url)")
+    .eq("sport", sport)
+    .is("parent_id", null)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  type Row = { id: string; body: string; created_at: string; author_name: string | null; author: ProfileEmbed };
+  return ((data as Row[] | null) ?? []).map((r) => ({
+    id: r.id,
+    body: r.body,
+    createdAt: r.created_at,
+    authorName: r.author?.display_name?.trim() || r.author?.username || r.author_name || "Member",
+    username: r.author?.username ?? null,
+    avatarUrl: r.author?.avatar_url ?? null,
+  }));
 }
 
 export interface ProfileView {

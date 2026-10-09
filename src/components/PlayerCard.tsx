@@ -19,7 +19,8 @@ function initials(name: string) {
 export function PlayerCard({ player }: { player: Player }) {
   return (
     <Link
-      href={`/players/${player.slug}`}
+      // ponytail: roster is cricket-only until phase 3 adds `sport` to Player.
+      href={`/cricket/players/${player.slug}`}
       className="flex items-center gap-4 rounded-lg border border-border p-4 transition-colors hover:bg-muted"
     >
       <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted font-display text-sm font-semibold">

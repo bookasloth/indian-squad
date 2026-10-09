@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { supabaseAdmin, supabaseAnon } from "@/lib/supabase/server";
 
 export type EventRow = {
@@ -31,10 +32,11 @@ export async function listUpcomingEvents(partnerId?: string): Promise<EventRow[]
   return (data ?? []) as EventRow[];
 }
 
-export async function getEvent(slug: string): Promise<EventRow | null> {
+/** Memoized per request: generateMetadata and the page share one query. */
+export const getEvent = cache(async (slug: string): Promise<EventRow | null> => {
   const { data } = await supabaseAnon().from("is_events").select(EVENT_COLS).eq("slug", slug).maybeSingle<EventRow>();
   return data;
-}
+});
 
 /** Paid tickets for an event, optionally only one user's. Service role: buyers can't see each other's orders. */
 export async function paidTickets(eventId: string, userId?: string): Promise<number> {

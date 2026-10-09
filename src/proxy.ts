@@ -3,13 +3,11 @@ import { createServerClient } from "@supabase/ssr";
 
 /**
  * Next 16 Proxy (renamed from middleware). Refreshes the Supabase auth session
- * cookie on every request and exposes the pathname to server components.
+ * cookie on every request.
  * (The source site's admin/games/kalamai gates + community permalink redirect
  * were dropped — pages guard themselves via requireMember().)
  */
 export async function proxy(request: NextRequest) {
-  request.headers.set("x-pathname", request.nextUrl.pathname);
-
   let response = NextResponse.next({ request });
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -41,7 +39,10 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getUser();
+  // getClaims refreshes an expired session like getUser did, but verifies the JWT
+  // locally when the project uses asymmetric signing keys — no Auth round-trip on
+  // every request. (Falls back to a getUser call on legacy HS256 projects.)
+  await supabase.auth.getClaims();
   return response;
 }
 

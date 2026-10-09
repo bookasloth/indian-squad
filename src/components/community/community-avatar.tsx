@@ -32,7 +32,7 @@ export function CommunityAvatar({
         aria-hidden
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt="" width={size} height={size} className="h-full w-full object-cover" />
+        <img src={src} alt="" width={size} height={size} loading="lazy" decoding="async" className="h-full w-full object-cover" />
       </span>
     );
   }

@@ -24,12 +24,17 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const event = await getEvent(slug);
   if (!event) notFound();
 
-  const { user } = await getMemberContext();
-  const partner = event.partner_id ? (await getPartnersPublic([event.partner_id])).get(event.partner_id) ?? null : null;
-  const organiser = partner?.org_name ?? site.name;
   const isRsvp = event.ticketing === "rsvp";
   const count = (userId?: string) => (isRsvp ? rsvpCount(event.id, userId) : paidTickets(event.id, userId));
-  const [taken, mine] = await Promise.all([event.capacity ? count() : 0, user ? count(user.id) : 0]);
+  // Independent lookups — one parallel round instead of three sequential ones.
+  const [{ user }, partners, taken, mine] = await Promise.all([
+    getMemberContext(),
+    event.partner_id ? getPartnersPublic([event.partner_id]) : null,
+    event.capacity ? count() : 0,
+    getMemberContext().then(({ user }) => (user ? count(user.id) : 0)),
+  ]);
+  const partner = (event.partner_id && partners?.get(event.partner_id)) || null;
+  const organiser = partner?.org_name ?? site.name;
 
   const started = new Date(event.starts_at) <= new Date();
   const left = event.capacity ? Math.max(event.capacity - taken, 0) : null;

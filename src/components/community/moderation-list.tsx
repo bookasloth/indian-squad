@@ -14,9 +14,9 @@ export function ModerationList({ reports: initial }: { reports: OpenReport[] }) 
     const body =
       action === "remove" ? { action, postId: report.postId } : { action, reportId: report.id };
     // Optimistic: drop every open report for this post (remove) or just this one.
-    setReports((cur) =>
-      cur.filter((r) => (action === "remove" ? r.postId !== report.postId : r.id !== report.id)),
-    );
+    const hit = (r: OpenReport) => (action === "remove" ? r.postId === report.postId : r.id === report.id);
+    const removed = reports.filter(hit);
+    setReports((cur) => cur.filter((r) => !hit(r)));
     try {
       const res = await fetch("/api/moderate", {
         method: "POST",
@@ -25,8 +25,9 @@ export function ModerationList({ reports: initial }: { reports: OpenReport[] }) 
       });
       if (!res.ok) throw new Error();
     } catch {
-      setReports(initial);
-      setError("Action failed.");
+      // Put back only these rows — other actions taken meanwhile may have succeeded.
+      setReports((cur) => [...cur, ...removed].sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
+      setError("Action failed. The report is back in the list — try again.");
     }
   }
 

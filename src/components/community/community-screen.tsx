@@ -1,22 +1,17 @@
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { Suspense } from "react";
 import { SPORTS, sportLabel } from "@/lib/site";
 import { getFeed } from "@/lib/community-data";
 import { getMemberContext } from "@/lib/members/session";
 import { CommunityFeed } from "@/components/CommunityFeed";
+import { CommunityNav } from "@/components/community/community-nav";
 import { SportEmblem } from "@/components/community/sport-emblem";
+import { FeedSkeleton } from "@/components/layout/page-skeletons";
 
 export async function CommunityScreen({ sport, tab }: { sport?: string; tab?: string }) {
   const following = tab === "following";
   const saved = tab === "saved";
-  const { posts, viewer, followingIds, configured } = await getFeed({ following, saved, sport });
-  const { role } = await getMemberContext();
-  const isAdmin = role === "admin";
 
-  const base = sport ? `/community/${sport}` : "/community";
-  const heading = sport ? `${sportLabel(sport)} community` : "Community";
-
-  if (!configured) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return (
       <div className="flex flex-col gap-8">
         <h1 className="font-display text-3xl font-bold tracking-tight">Community</h1>
@@ -27,6 +22,14 @@ export async function CommunityScreen({ sport, tab }: { sport?: string; tab?: st
       </div>
     );
   }
+
+  // Only the (cached) auth lookup gates the chrome; the feed streams in below it.
+  const { user, role } = await getMemberContext();
+  const isAdmin = role === "admin";
+
+  const base = sport ? `/community/${sport}` : "/community";
+  const heading = sport ? `${sportLabel(sport)} community` : "Community";
+  const activeTab = following ? `${base}?tab=following` : saved ? `${base}?tab=saved` : base;
 
   return (
     <div className="flex flex-col gap-6" data-sport={sport || undefined}>
@@ -50,85 +53,61 @@ export async function CommunityScreen({ sport, tab }: { sport?: string; tab?: st
         </header>
       )}
 
-      {/* Sport chips */}
-      <nav className="flex flex-wrap gap-2">
-        <SportChip href="/community" active={!sport}>
-          All
-        </SportChip>
-        {SPORTS.map((s) => (
-          <SportChip key={s.slug} href={`/community/${s.slug}`} active={sport === s.slug}>
-            {s.label}
-          </SportChip>
-        ))}
-      </nav>
+      <CommunityNav
+        variant="chips"
+        active={base}
+        items={[{ href: "/community", label: "All" }, ...SPORTS.map((s) => ({ href: `/community/${s.slug}`, label: s.label }))]}
+      />
 
-      {viewer && (
-        <div className="flex gap-1 border-b border-border">
-          <Tab href={base} active={!following && !saved}>
-            Latest
-          </Tab>
-          <Tab href={`${base}?tab=following`} active={following}>
-            Following
-          </Tab>
-          <Tab href={`${base}?tab=saved`} active={saved}>
-            Saved
-          </Tab>
-          {isAdmin && (
-            <Tab href="/community/moderation" active={false}>
-              Moderation
-            </Tab>
-          )}
-        </div>
-      )}
-
-      {following && posts.length === 0 ? (
-        <p className="text-muted-foreground">
-          Nothing here yet. Follow some fans to fill your Following feed.
-        </p>
-      ) : saved && posts.length === 0 ? (
-        <p className="text-muted-foreground">No saved posts yet. Tap the bookmark on any post.</p>
-      ) : (
-        <CommunityFeed
-          initialPosts={posts}
-          viewer={viewer}
-          followingIds={followingIds}
-          flat={saved}
-          isAdmin={isAdmin}
-          defaultSport={sport ?? "cricket"}
+      {user && (
+        <CommunityNav
+          variant="tabs"
+          active={activeTab}
+          items={[
+            { href: base, label: "Latest" },
+            { href: `${base}?tab=following`, label: "Following" },
+            { href: `${base}?tab=saved`, label: "Saved" },
+            ...(isAdmin ? [{ href: "/community/moderation", label: "Moderation" }] : []),
+          ]}
         />
       )}
+
+      {/* Keyed so switching sport/tab shows the skeleton for the new feed instead of
+          holding the old one on screen while the server works. */}
+      <Suspense key={`${sport ?? ""}:${tab ?? ""}`} fallback={<FeedSkeleton />}>
+        <Feed sport={sport} following={following} saved={saved} isAdmin={isAdmin} />
+      </Suspense>
     </div>
   );
 }
 
-function SportChip({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "rounded-full border px-3 py-1 text-sm transition-ui",
-        active
-          ? "border-brand bg-brand text-brand-foreground"
-          : "border-border text-muted-foreground hover:bg-accent",
-      )}
-    >
-      {children}
-    </Link>
-  );
-}
+async function Feed({
+  sport,
+  following,
+  saved,
+  isAdmin,
+}: {
+  sport?: string;
+  following: boolean;
+  saved: boolean;
+  isAdmin: boolean;
+}) {
+  const { posts, viewer, followingIds } = await getFeed({ following, saved, sport });
 
-function Tab({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
+  if (following && posts.length === 0) {
+    return <p className="text-muted-foreground">Nothing here yet. Follow some fans to fill your Following feed.</p>;
+  }
+  if (saved && posts.length === 0) {
+    return <p className="text-muted-foreground">No saved posts yet. Tap the bookmark on any post.</p>;
+  }
   return (
-    <Link
-      href={href}
-      className={cn(
-        "-mb-px border-b-2 px-4 py-2 text-sm transition-ui",
-        active
-          ? "border-foreground font-semibold text-foreground"
-          : "border-transparent text-muted-foreground hover:text-foreground",
-      )}
-    >
-      {children}
-    </Link>
+    <CommunityFeed
+      initialPosts={posts}
+      viewer={viewer}
+      followingIds={followingIds}
+      flat={saved}
+      isAdmin={isAdmin}
+      defaultSport={sport ?? "cricket"}
+    />
   );
 }

@@ -13,6 +13,7 @@ export function ReviewActions({ id, kind }: { id: string; kind: "partner" | "eve
   const [error, setError] = useState<string | null>(null);
 
   async function act(action: Action) {
+    if (busy) return;
     setBusy(action);
     setError(null);
     try {
@@ -26,10 +27,10 @@ export function ReviewActions({ id, kind }: { id: string; kind: "partner" | "eve
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button size="sm" variant="brand" loading={busy === `approve_${kind}`} onClick={() => act(`approve_${kind}`)}>
+      <Button size="sm" variant="brand" loading={busy === `approve_${kind}`} disabled={!!busy} onClick={() => act(`approve_${kind}`)}>
         Approve
       </Button>
-      <Button size="sm" variant="outline" loading={busy === `reject_${kind}`} onClick={() => act(`reject_${kind}`)}>
+      <Button size="sm" variant="outline" loading={busy === `reject_${kind}`} disabled={!!busy} onClick={() => act(`reject_${kind}`)}>
         Reject
       </Button>
       {error && <span className="text-sm text-danger">{error}</span>}

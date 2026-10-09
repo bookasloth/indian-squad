@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { supabaseAnon } from "@/lib/supabase/server";
 
 export type ProductRow = {
@@ -20,7 +21,8 @@ export async function listProducts(): Promise<ProductRow[]> {
   return (data ?? []) as ProductRow[];
 }
 
-export async function getProduct(slug: string): Promise<ProductRow | null> {
+/** Memoized per request: generateMetadata and the page share one query. */
+export const getProduct = cache(async (slug: string): Promise<ProductRow | null> => {
   const { data } = await supabaseAnon().from("is_products").select(COLS).eq("slug", slug).maybeSingle<ProductRow>();
   return data;
-}
+});

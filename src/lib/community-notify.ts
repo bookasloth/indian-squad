@@ -1,6 +1,7 @@
 import "server-only";
 
 import { supabaseAdmin, createClient } from "@/lib/supabase/server";
+import { getMemberContext } from "@/lib/members/session";
 
 export type NotificationType = "like" | "reply" | "follow" | "reblog";
 
@@ -22,10 +23,7 @@ function configured() {
 /** Unread notification count for the signed-in viewer (0 when signed out/unconfigured). */
 export async function getUnreadCount(): Promise<number> {
   if (!configured()) return 0;
-  const sb = await createClient();
-  const {
-    data: { user },
-  } = await sb.auth.getUser();
+  const [sb, { user }] = await Promise.all([createClient(), getMemberContext()]);
   if (!user) return 0;
   const { count } = await sb
     .from("is_notifications")
@@ -53,10 +51,7 @@ type NotifRow = {
 /** The viewer's latest notifications. */
 export async function getNotifications(): Promise<CommunityNotification[]> {
   if (!configured()) return [];
-  const sb = await createClient();
-  const {
-    data: { user },
-  } = await sb.auth.getUser();
+  const [sb, { user }] = await Promise.all([createClient(), getMemberContext()]);
   if (!user) return [];
 
   const { data } = await sb
@@ -84,10 +79,7 @@ export async function getNotifications(): Promise<CommunityNotification[]> {
 /** Mark all of the viewer's notifications read. */
 export async function markAllRead(): Promise<void> {
   if (!configured()) return;
-  const sb = await createClient();
-  const {
-    data: { user },
-  } = await sb.auth.getUser();
+  const [sb, { user }] = await Promise.all([createClient(), getMemberContext()]);
   if (!user) return;
   await sb
     .from("is_notifications")

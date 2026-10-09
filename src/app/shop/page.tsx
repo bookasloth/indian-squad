@@ -26,13 +26,20 @@ export default async function ShopPage() {
         <EmptyState title="The first drop is on its way" description="Join the newsletter to hear when the merch lands." />
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((p) => (
+          {products.map((p, i) => (
             <li key={p.id}>
               <Link href={`/shop/${p.slug}`} className="block h-full">
                 <Card interactive className="flex h-full flex-col overflow-hidden">
                   {p.images[0] && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.images[0]} alt={p.title} className="aspect-square w-full bg-muted object-cover" />
+                    <img
+                      src={p.images[0]}
+                      alt={p.title}
+                      // First row is above the fold; the rest can wait for scroll.
+                      loading={i < 3 ? "eager" : "lazy"}
+                      decoding="async"
+                      className="aspect-square w-full bg-muted object-cover"
+                    />
                   )}
                   <div className="flex flex-1 flex-col gap-1 p-4">
                     <h2 className="font-display text-lg font-semibold tracking-tight">{p.title}</h2>

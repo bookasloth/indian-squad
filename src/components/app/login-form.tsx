@@ -137,7 +137,7 @@ function CredentialsForm({
   onMagic: () => void;
 }) {
   const [state, formAction, pending] = useActionState<SignInState, FormData>(signIn, undefined);
-  const [resendState, resendAction] = useActionState<ResendState, FormData>(resendConfirmation, undefined);
+  const [resendState, resendAction, resendPending] = useActionState<ResendState, FormData>(resendConfirmation, undefined);
   const errRef = React.useRef<HTMLParagraphElement>(null);
 
   React.useEffect(() => {
@@ -233,8 +233,17 @@ function CredentialsForm({
     {state?.needsVerification && (
       <form action={resendAction} className="mt-3 text-center">
         <input type="hidden" name="email" value={email} />
-        <button type="submit" className="text-sm font-medium text-foreground underline underline-offset-4 hover:text-muted-foreground">
-          {resendState && "ok" in resendState ? "Verification email sent — check your inbox." : "Resend verification email"}
+        <button
+          type="submit"
+          disabled={resendPending}
+          aria-busy={resendPending || undefined}
+          className="text-sm font-medium text-foreground underline underline-offset-4 hover:text-muted-foreground disabled:opacity-60"
+        >
+          {resendPending
+            ? "Sending…"
+            : resendState && "ok" in resendState
+              ? "Verification email sent — check your inbox."
+              : "Resend verification email"}
         </button>
       </form>
     )}

@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { listUpcomingEvents } from "@/lib/events";
 import { getPartnersPublic } from "@/lib/partners";
-import { sportLabel } from "@/lib/site";
-import { formatEventTime, formatInr } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { EventCard } from "@/components/events/event-card";
 
 export const dynamic = "force-dynamic";
 
@@ -40,30 +37,7 @@ export default async function EventsPage() {
         <ul className="grid gap-4 sm:grid-cols-2">
           {events.map((e) => (
             <li key={e.id}>
-              <Link href={`/events/${e.slug}`} className="block h-full">
-                <Card interactive className="flex h-full flex-col gap-2 p-5">
-                  {e.sport && (
-                    <Badge variant="outline" className="self-start">
-                      {sportLabel(e.sport)}
-                    </Badge>
-                  )}
-                  <h2 className="font-display text-lg font-semibold tracking-tight">{e.title}</h2>
-                  <p className="text-sm text-muted-foreground">{formatEventTime(e.starts_at)}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {e.venue}, {e.city}
-                    {e.partner_id && partners.get(e.partner_id) && <> · by {partners.get(e.partner_id)!.org_name}</>}
-                  </p>
-                  <p className="mt-auto pt-2 font-semibold">
-                    {e.ticketing === "rsvp"
-                      ? "Free"
-                      : e.ticketing === "external"
-                        ? e.price > 0
-                          ? `From ${formatInr(e.price)}`
-                          : "Tickets via organiser"
-                        : formatInr(e.price)}
-                  </p>
-                </Card>
-              </Link>
+              <EventCard event={e} organiser={e.partner_id ? partners.get(e.partner_id)?.org_name : undefined} />
             </li>
           ))}
         </ul>

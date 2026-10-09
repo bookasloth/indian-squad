@@ -3,7 +3,7 @@ import { SPORTS, sportLabel } from "@/lib/site";
 import { getFeed } from "@/lib/community-data";
 import { getMemberContext } from "@/lib/members/session";
 import { CommunityFeed } from "@/components/CommunityFeed";
-import { CommunityNav } from "@/components/community/community-nav";
+import { PillNav } from "@/components/layout/pill-nav";
 import { SportEmblem } from "@/components/community/sport-emblem";
 import { FeedSkeleton } from "@/components/layout/page-skeletons";
 
@@ -53,14 +53,14 @@ export async function CommunityScreen({ sport, tab }: { sport?: string; tab?: st
         </header>
       )}
 
-      <CommunityNav
+      <PillNav
         variant="chips"
         active={base}
         items={[{ href: "/community", label: "All" }, ...SPORTS.map((s) => ({ href: `/community/${s.slug}`, label: s.label }))]}
       />
 
       {user && (
-        <CommunityNav
+        <PillNav
           variant="tabs"
           active={activeTab}
           items={[

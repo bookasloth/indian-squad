@@ -4,11 +4,12 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { SportEmblem } from "@/components/community/sport-emblem";
 import { SPORTS } from "@/lib/site";
 
-const FEATURES = [
-  { href: "/players", title: "Players", desc: "Profiles, roles, and caps for the Indian squad." },
-  { href: "/xi", title: "Playing XI", desc: "Pick your eleven, validate the squad, share it as an image." },
-  { href: "/quiz", title: "Quiz", desc: "A shuffled cricket quiz. Score yourself and play again." },
-  { href: "/community", title: "Community", desc: "Talk sport with other fans. No sign-up — just a name." },
+// Placeholder copy until docs/COPY.md is filled in.
+const CLUB = [
+  { href: "/community", title: "Community", desc: "Talk sport with other fans. Reading is open; posting takes a free account." },
+  { href: "/events", title: "Events", desc: "Watch-parties, tournaments and meetups near you." },
+  { href: "/shop", title: "Shop", desc: "Club merch, printed to order and shipped across India." },
+  { href: "/partners", title: "Run sports events?", desc: "List your tournaments, camps and watch-parties here for free." },
 ] as const;
 
 export default function Home() {
@@ -38,28 +39,29 @@ export default function Home() {
 
       <section className="flex flex-col gap-4">
         <h2 className="font-display text-2xl font-semibold tracking-tight">The sports we follow</h2>
-        <div className="flex flex-wrap gap-2">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SPORTS.map((s) => (
-            <Link
-              key={s.slug}
-              href={`/community/${s.slug}`}
-              data-sport={s.slug}
-              className="group flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm transition-ui hover:border-brand hover:bg-accent"
-            >
-              <SportEmblem sport={s.slug} size={18} animate={false} className="transition-transform group-hover:scale-110" />
-              {s.label}
-            </Link>
+            <li key={s.slug}>
+              <Link href={`/${s.slug}`} data-sport={s.slug} className="group block h-full">
+                <Card className="flex h-full items-start gap-4 p-5 transition-ui group-hover:border-brand group-hover:shadow-md">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--brand)_14%,transparent)]">
+                    <SportEmblem sport={s.slug} size={24} animate={false} className="transition-transform group-hover:scale-110" />
+                  </span>
+                  <span className="flex flex-col gap-1">
+                    <span className="font-display text-lg font-semibold tracking-tight">{s.label}</span>
+                    <span className="text-sm text-muted-foreground">{s.blurb}</span>
+                  </span>
+                </Card>
+              </Link>
+            </li>
           ))}
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Cricket is the fullest today. The rest grow with the club.
-        </p>
+        </ul>
       </section>
 
       <section className="flex flex-col gap-6">
-        <h2 className="font-display text-2xl font-semibold tracking-tight">Cricket, right now</h2>
+        <h2 className="font-display text-2xl font-semibold tracking-tight">Around the club</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          {FEATURES.map(({ href, title, desc }) => (
+          {CLUB.map(({ href, title, desc }) => (
             <Link key={href} href={href} className="group">
               <Card className="h-full transition-ui group-hover:shadow-md">
                 <CardHeader>

@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { site } from "@/lib/site";
+import { SPORTS, site } from "@/lib/site";
 
 const LINKS = [
-  { href: "/players", label: "Players" },
-  { href: "/xi", label: "Playing XI" },
-  { href: "/quiz", label: "Quiz" },
+  ...SPORTS.map((s) => ({ href: `/${s.slug}`, label: s.label })),
   { href: "/community", label: "Community" },
   { href: "/events", label: "Events" },
   { href: "/shop", label: "Shop" },
@@ -23,7 +21,7 @@ export function Footer() {
     <footer className="border-t border-border">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <p>
-          {site.name} — a fan club for Indian sport. The 12th Man. Not affiliated with the BCCI. A
+          {site.name} — a fan club for Indian sport. The 12th Man. Not affiliated with any team, league or governing body. A
           personal project by{" "}
           <a href={site.owner.url} className="underline underline-offset-4 transition-ui hover:text-foreground">
             {site.owner.name}

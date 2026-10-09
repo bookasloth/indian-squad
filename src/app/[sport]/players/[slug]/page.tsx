@@ -2,10 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPlayer, players } from "@/data/players";
+import { SQUAD_SPORTS } from "@/lib/site";
 import { ROLE_LABEL } from "@/components/PlayerCard";
 
+export const dynamicParams = false;
+
+// Returns both params ("bottom-up"). The per-parent form ({ params }) generated no
+// pages here — the static `players` segment sits between [sport] and [slug].
 export function generateStaticParams() {
-  return players.map((p) => ({ slug: p.slug }));
+  return SQUAD_SPORTS.flatMap((sport) => players.map((p) => ({ sport, slug: p.slug })));
 }
 
 export async function generateMetadata({
@@ -27,11 +32,11 @@ const CAP_LABELS = { test: "Tests", odi: "ODIs", t20: "T20Is" } as const;
 export default async function PlayerPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ sport: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { sport, slug } = await params;
   const player = getPlayer(slug);
-  if (!player) notFound();
+  if (!player || !SQUAD_SPORTS.includes(sport)) notFound();
 
   const caps = (Object.keys(CAP_LABELS) as (keyof typeof CAP_LABELS)[])
     .map((format) => ({ label: CAP_LABELS[format], value: player.caps[format] }))
@@ -39,7 +44,7 @@ export default async function PlayerPage({
 
   return (
     <article className="flex flex-col gap-8">
-      <Link href="/players" className="text-sm text-muted-foreground hover:text-foreground">
+      <Link href={`/${sport}/players`} className="text-sm text-muted-foreground hover:text-foreground">
         ← All players
       </Link>
 

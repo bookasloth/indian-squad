@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PartnerProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const partner = await getPartnerPublic((await params).slug);
   if (!partner) notFound();
-  const events = await listUpcomingEvents(partner.id);
+  const events = await listUpcomingEvents({ partnerId: partner.id });
 
   return (
     <div className="flex flex-col gap-8">

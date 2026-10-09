@@ -14,17 +14,18 @@ const STYLES = {
     off: "border-border text-muted-foreground hover:bg-accent",
   },
   tabs: {
-    row: "flex gap-1 border-b border-border",
-    item: "-mb-px border-b-2 px-4 py-2 text-sm transition-ui",
+    // Scrolls sideways on phones instead of clipping the last tab.
+    row: "flex gap-1 overflow-x-auto border-b border-border [scrollbar-width:none]",
+    item: "-mb-px whitespace-nowrap border-b-2 px-4 py-2 text-sm transition-ui",
     on: "border-foreground font-semibold text-foreground",
     off: "border-transparent text-muted-foreground hover:text-foreground",
   },
 } as const;
 
-/** Sport chips / feed tabs. The clicked item turns selected on click, before the
+/** Chip row or tab row of links (community chips/tabs, sport hub tabs). The clicked item turns selected on click, before the
  * server responds; the server's `active` takes over again once the new page lands
  * (a click recorded against an older `active` is ignored — no reset effect needed). */
-export function CommunityNav({ items, active, variant }: { items: Item[]; active: string; variant: keyof typeof STYLES }) {
+export function PillNav({ items, active, variant }: { items: Item[]; active: string; variant: keyof typeof STYLES }) {
   const [clicked, setClicked] = useState<{ from: string; href: string } | null>(null);
   const current = clicked?.from === active ? clicked.href : active;
   const s = STYLES[variant];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { Heart, MessageCircle, Bookmark, Repeat2, BarChart3, Image as ImageIcon } from "lucide-react";
 import { cn, timeAgo } from "@/lib/utils";
@@ -37,6 +37,11 @@ export function CommunityFeed({
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // One request per post+action at a time. Without it a fast double-click sends two
+  // opposite toggles that can land out of order, leaving the UI and the DB disagreeing.
+  const inflight = useRef(new Set<string>());
+  const claim = (key: string) => !inflight.current.has(key) && !!inflight.current.add(key);
+  const release = (key: string) => inflight.current.delete(key);
 
   function reportPost(id: string) {
     // Optimistic: confirm immediately, file in the background.
@@ -89,6 +94,8 @@ export function CommunityFeed({
       setError("Sign in to follow.");
       return;
     }
+    const key = `follow:${followeeId}`;
+    if (!claim(key)) return;
     const next = !following.has(followeeId);
     setFollowing((cur) => {
       const s = new Set(cur);
@@ -111,6 +118,8 @@ export function CommunityFeed({
         return s;
       });
       setError("Could not update follow.");
+    } finally {
+      release(key);
     }
   }
 
@@ -126,6 +135,8 @@ export function CommunityFeed({
     }
     const post = posts.find((p) => p.id === id);
     if (!post || post.pending) return;
+    const key = `reblog:${id}`;
+    if (!claim(key)) return;
     const next = !post.rebloggedByViewer;
     // Update every row that shows this post (base + any reblog rows).
     setPosts((cur) =>
@@ -151,6 +162,8 @@ export function CommunityFeed({
         ),
       );
       setError("Could not reblog.");
+    } finally {
+      release(key);
     }
   }
 
@@ -161,6 +174,8 @@ export function CommunityFeed({
     }
     const prev = posts.find((p) => p.id === postId)?.poll ?? null;
     if (!prev || prev.closed || prev.viewerChoice === optionIndex) return;
+    const key = `vote:${postId}`;
+    if (!claim(key)) return;
 
     setPosts((cur) =>
       cur.map((p) => {
@@ -185,6 +200,8 @@ export function CommunityFeed({
     } catch {
       setPosts((cur) => cur.map((p) => (p.id === postId && p.poll ? { ...p, poll: prev } : p)));
       setError("Could not record your vote.");
+    } finally {
+      release(key);
     }
   }
 
@@ -195,6 +212,8 @@ export function CommunityFeed({
     }
     const post = posts.find((p) => p.id === id);
     if (!post || post.pending) return;
+    const key = `bookmark:${id}`;
+    if (!claim(key)) return;
     const next = !post.bookmarkedByViewer;
     setPosts((cur) => cur.map((p) => (p.id === id ? { ...p, bookmarkedByViewer: next } : p)));
     try {
@@ -207,6 +226,8 @@ export function CommunityFeed({
     } catch {
       setPosts((cur) => cur.map((p) => (p.id === id ? { ...p, bookmarkedByViewer: !next } : p)));
       setError("Could not update saved.");
+    } finally {
+      release(key);
     }
   }
 
@@ -327,6 +348,8 @@ export function CommunityFeed({
     }
     const post = posts.find((p) => p.id === id);
     if (!post || post.pending) return;
+    const key = `like:${id}`;
+    if (!claim(key)) return;
     const nextLiked = !post.likedByViewer;
 
     // Optimistic.
@@ -355,6 +378,8 @@ export function CommunityFeed({
         ),
       );
       setError("Could not update your like.");
+    } finally {
+      release(key);
     }
   }
 
@@ -597,6 +622,8 @@ function PostView({
                 key={idx}
                 src={src}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="max-h-80 w-full rounded-input border border-border object-cover"
               />
             ))}

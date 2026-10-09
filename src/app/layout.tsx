@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
 import { Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -7,7 +6,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { Header } from "@/components/header";
 import { HeaderUser } from "@/components/layout/header-user";
 import { Footer } from "@/components/layout/footer";
-import { ChromeGate } from "@/components/layout/chrome-gate";
+import { ChromeGate, MainFrame } from "@/components/layout/chrome-gate";
 import { site } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -45,17 +44,9 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const BARE_PREFIXES = [
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-  "/verify-email",
-];
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const pathname = (await headers()).get("x-pathname") ?? "";
-  const bare = BARE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+// Static: no request data (headers/cookies) is read here, so pages without their
+// own dynamic data prerender. The signed-in slot is a client island (HeaderUser).
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${jakarta.variable} ${poppins.variable}`}>
       <body className="min-h-dvh bg-background text-foreground antialiased">
@@ -72,11 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Header userSlot={<HeaderUser />} />
               </ChromeGate>
               <main id="main" className="flex-1">
-                {bare ? (
-                  children
-                ) : (
-                  <div className="mx-auto w-full max-w-6xl px-4 py-10">{children}</div>
-                )}
+                <MainFrame>{children}</MainFrame>
               </main>
               <ChromeGate>
                 <Footer />

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 export function ProfileFollowButton({
   followeeId,
@@ -12,6 +13,7 @@ export function ProfileFollowButton({
 }) {
   const [following, setFollowing] = useState(initialFollowing);
   const [busy, setBusy] = useState(false);
+  const { toast } = useToast();
 
   async function toggle() {
     const next = !following;
@@ -26,6 +28,7 @@ export function ProfileFollowButton({
       if (!res.ok) throw new Error();
     } catch {
       setFollowing(!next);
+      toast({ title: "Couldn't update follow", description: "Check your connection and try again.", variant: "danger" });
     } finally {
       setBusy(false);
     }

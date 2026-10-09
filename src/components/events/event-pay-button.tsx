@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -22,9 +22,11 @@ export function EventPayButton({
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const [refreshing, startRefresh] = useTransition();
   const [message, setMessage] = useState<Message | null>(null);
 
   async function buy() {
+    if (busy || refreshing) return;
     setBusy(true);
     setMessage(null);
     try {
@@ -32,7 +34,7 @@ export function EventPayButton({
       const outcome = await payZoho(orderId, site.name, { name, email });
       if (outcome === "paid") {
         setMessage({ tone: "success", text: `You're in! Your ticket is on its way to ${email}.` });
-        router.refresh();
+        startRefresh(() => router.refresh());
       } else {
         setMessage(OUTCOME_TEXT[outcome]);
       }
@@ -45,7 +47,7 @@ export function EventPayButton({
 
   return (
     <div className="flex flex-col gap-3">
-      <Button variant="brand" size="lg" loading={busy} onClick={buy}>
+      <Button variant="brand" size="lg" loading={busy || refreshing} onClick={buy}>
         Buy ticket · {priceLabel}
       </Button>
       {message && (

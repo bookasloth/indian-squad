@@ -936,3 +936,11 @@
 .post-row:hover { background-color: color-mix(in srgb, var(--muted) 55%, transparent); }
 
 @media (prefers-reduced-motion: reduce) { .anim-fade-up { animation: none; } }
+
+/* Loading fallbacks stay invisible for --skeleton-delay, then fade in. Fast loads
+   swap content in before anything shows (no flash); slow ones get a skeleton.
+   Pure CSS: no timers to clean up. Tune the delay against real latency data.
+   (Reduced motion: the global rule zeroes the fade but keeps the delay.) */
+:root { --skeleton-delay: 150ms; }
+@keyframes skeleton-reveal { from { opacity: 0; } to { opacity: 1; } }
+.skeleton-reveal { animation: skeleton-reveal 200ms ease-out var(--skeleton-delay) both; }

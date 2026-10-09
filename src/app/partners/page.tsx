@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { listApprovedPartners } from "@/lib/partners";
@@ -14,9 +15,7 @@ export const metadata: Metadata = {
 
 const H2 = "font-display text-xl font-semibold tracking-tight";
 
-export default async function PartnersPage() {
-  const partners = await listApprovedPartners();
-
+export default function PartnersPage() {
   return (
     <div className="flex flex-col gap-10">
       <header className="flex max-w-prose flex-col gap-3">
@@ -67,25 +66,35 @@ export default async function PartnersPage() {
         </p>
       </section>
 
-      {partners.length > 0 && (
-        <section className="flex flex-col gap-4">
-          <h2 className={H2}>Our partners</h2>
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {partners.map((p) => (
-              <li key={p.id}>
-                <Link href={`/partners/${p.slug}`} className="block h-full">
-                  <Card interactive className="flex h-full flex-col gap-1 p-5">
-                    <h3 className="font-display text-lg font-semibold tracking-tight">{p.org_name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {p.city} · {p.sports.map((s) => sportLabel(s)).join(", ")}
-                    </p>
-                  </Card>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {/* Last section: streams in after the copy above, which needs no data. No
+          fallback — nothing above it moves, and an empty list renders nothing. */}
+      <Suspense fallback={null}>
+        <PartnerList />
+      </Suspense>
     </div>
+  );
+}
+
+async function PartnerList() {
+  const partners = await listApprovedPartners();
+  if (partners.length === 0) return null;
+  return (
+    <section className="flex flex-col gap-4">
+      <h2 className={H2}>Our partners</h2>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {partners.map((p) => (
+          <li key={p.id}>
+            <Link href={`/partners/${p.slug}`} className="block h-full">
+              <Card interactive className="flex h-full flex-col gap-1 p-5">
+                <h3 className="font-display text-lg font-semibold tracking-tight">{p.org_name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {p.city} · {p.sports.map((s) => sportLabel(s)).join(", ")}
+                </p>
+              </Card>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

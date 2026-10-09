@@ -30,6 +30,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             key={src}
             src={src}
             alt={i === 0 ? product.title : ""}
+            // The first image is the page's LCP; the rest sit off-screen in the swipe row.
+            loading={i === 0 ? "eager" : "lazy"}
+            fetchPriority={i === 0 ? "high" : "auto"}
+            decoding="async"
             className={`max-h-[60vh] shrink-0 snap-center rounded-card border border-border bg-muted object-cover md:max-h-none md:w-full ${product.images.length > 1 ? "w-[85%]" : "w-full"}`}
           />
         ))}

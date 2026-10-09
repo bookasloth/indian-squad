@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { supabaseAdmin, supabaseAnon } from "@/lib/supabase/server";
 import { EVENT_COLS, type EventRow } from "@/lib/events";
 
@@ -31,10 +32,11 @@ export async function getPartnerForUser(userId: string): Promise<Partner | null>
   return data;
 }
 
-export async function getPartnerPublic(slug: string): Promise<PartnerPublic | null> {
+/** Memoized per request: generateMetadata and the page share one query. */
+export const getPartnerPublic = cache(async (slug: string): Promise<PartnerPublic | null> => {
   const { data } = await supabaseAnon().from("is_partners_public").select(PUBLIC_COLS).eq("slug", slug).maybeSingle<PartnerPublic>();
   return data;
-}
+});
 
 /** Approved partners by id, for "Organised by …" labels. */
 export async function getPartnersPublic(ids: string[]): Promise<Map<string, PartnerPublic>> {

@@ -43,13 +43,27 @@ export function indiaFixtures(res: Json | null, now: string): Fixture[] {
     .filter((m) => typeof m.dateTimeGMT === "string" && !m.matchStarted && m.dateTimeGMT >= now)
     .map((m) => ({
       id: String(m.id),
-      name: String(m.name ?? m.teams.join(" v ")),
-      matchType: String(m.matchType ?? "").toLowerCase(),
+      name: stripSeries(String(m.name ?? m.teams.join(" v ")), String(info.name ?? "")),
+      matchType: formatFromName(String(m.name ?? "")) ?? String(m.matchType ?? "").toLowerCase(),
       venue: String(m.venue ?? ""),
       start: m.dateTimeGMT.endsWith("Z") ? m.dateTimeGMT : `${m.dateTimeGMT}Z`,
       teams: m.teams,
       series: String(info.name ?? ""),
     }));
+}
+
+/** Match names end with the series name ("…, 3rd T20I, West Indies tour of India, 2026"),
+ * which the page already shows on its own line. */
+function stripSeries(name: string, series: string): string {
+  return series && name.endsWith(`, ${series}`) ? name.slice(0, -(series.length + 2)) : name;
+}
+
+/** The API's matchType is sometimes wrong (T20Is labelled "odi"); the name is reliable. */
+function formatFromName(name: string): string | null {
+  if (/\bT20I?\b/i.test(name)) return "t20";
+  if (/\bODI\b/i.test(name)) return "odi";
+  if (/\bTest\b/i.test(name)) return "test";
+  return null;
 }
 
 /** Merge per-series lists, drop duplicates, soonest first. */

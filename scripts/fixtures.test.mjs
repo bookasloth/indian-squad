@@ -46,6 +46,23 @@ test("India's not-yet-started matches only", () => {
   assert.deepEqual(indiaFixtures({}, "2026-10-10T00:00:00Z"), []);
 });
 
+test("match names drop the repeated series; format comes from the name", () => {
+  const series = "West Indies tour of India, 2026";
+  const res = {
+    data: {
+      info: { name: series },
+      matchList: [
+        { id: 7, name: `India vs West Indies, 3rd T20I, ${series}`, matchType: "odi", dateTimeGMT: "2026-10-11T13:30:00", teams: ["India", "West Indies"], matchStarted: false },
+        { id: 8, name: "India vs West Indies, only Test", matchType: "test", dateTimeGMT: "2026-10-20T04:00:00", teams: ["India", "West Indies"], matchStarted: false },
+      ],
+    },
+  };
+  const [t20, testMatch] = indiaFixtures(res, "2026-10-10T00:00:00Z");
+  assert.equal(t20.name, "India vs West Indies, 3rd T20I");
+  assert.equal(t20.matchType, "t20");
+  assert.equal(testMatch.matchType, "test");
+});
+
 test("merge de-duplicates and sorts soonest first", () => {
   const a = { id: "1", start: "2026-10-12T13:30:00Z" };
   const b = { id: "2", start: "2026-10-11T08:00:00Z" };

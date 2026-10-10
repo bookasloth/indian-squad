@@ -4,6 +4,7 @@ import { abs } from "@/lib/seo";
 import { players } from "@/data/players";
 import { competitionsFor } from "@/data/competitions";
 import { explainersFor } from "@/data/learn";
+import { recordsFor } from "@/data/records";
 import { listUpcomingEvents } from "@/lib/events";
 import { listProducts } from "@/lib/shop";
 import { listApprovedPartners } from "@/lib/partners";
@@ -32,11 +33,13 @@ const STATIC = [
 
 function sportPaths(sport: string): string[] {
   const learn = explainersFor(sport);
+  const records = recordsFor(sport);
   const paths = [
     `/${sport}`,
     `/community/${sport}`,
     ...competitionsFor(sport).map((c) => `/${sport}/${c.slug}`),
     ...(learn.length ? [`/${sport}/learn`, ...learn.map((e) => `/${sport}/learn/${e.slug}`)] : []),
+    ...(records.length ? [`/${sport}/records`, ...records.map((r) => `/${sport}/records/${r.slug}`)] : []),
     ...(sport === "cricket" ? ["/cricket/calculator"] : []),
   ];
   if (SQUAD_SPORTS.includes(sport)) {

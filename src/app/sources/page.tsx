@@ -37,6 +37,11 @@ export default function SourcesPage() {
           Pro Kabaddi League for kabaddi, BWF for badminton, AIFF for football and Formula 1 for F1.
         </li>
         <li>
+          <strong>Career records.</strong> Governing bodies rarely publish full all-time lists, so record tables are
+          compiled from public career statistics and dated. Retired players&rsquo; figures are final; current
+          players&rsquo; are marked and refreshed after each series.
+        </li>
+        <li>
           <strong>Open data where it exists.</strong> When we add computed statistics, we use openly licensed datasets
           and credit them on the page that uses them.
         </li>

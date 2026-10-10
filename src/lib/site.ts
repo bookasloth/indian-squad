@@ -33,10 +33,6 @@ export type SportSlug = (typeof SPORTS)[number]["slug"];
 
 export const SPORT_SLUGS = SPORTS.map((s) => s.slug) as SportSlug[];
 
-/** Sports with squad tools (players, Playing XI, quiz). Grows as rosters land:
- * kabaddi is next (docs/MULTISPORT.md, phase 3). */
-export const SQUAD_SPORTS: readonly string[] = ["cricket"];
-
 export function getSport(slug: string | null | undefined) {
   return SPORTS.find((s) => s.slug === slug) ?? null;
 }

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SQUAD_SPORTS, getSport } from "@/lib/site";
+import { getSport } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
-import { squad } from "@/data/players";
+import { rosterFor, squadConfig } from "@/data/squads";
+import { quizFor } from "@/data/quiz";
 import { competitionsFor } from "@/data/competitions";
 import { teamsFor } from "@/data/teams";
 import { rivalriesFor } from "@/data/rivalries";
@@ -30,7 +31,8 @@ const CHIP = "block rounded-btn border border-border px-3 py-1.5 text-sm transit
 export default async function SportHubPage({ params }: { params: Promise<{ sport: string }> }) {
   const sport = getSport((await params).sport);
   if (!sport) notFound();
-  const hasSquad = SQUAD_SPORTS.includes(sport.slug);
+  const squad = squadConfig(sport.slug);
+  const hasQuiz = quizFor(sport.slug).length > 0;
   const competitions = competitionsFor(sport.slug);
   const teams = teamsFor(sport.slug);
   const rivalries = rivalriesFor(sport.slug);
@@ -43,10 +45,9 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
     <div className="flex flex-col gap-12">
       <h1 className="sr-only">{sport.label}</h1>
 
-      {hasSquad ? (
+      {squad ? (
         <section className="flex flex-col gap-4">
           <h2 className={H2}>The squads</h2>
-          {/* ponytail: players.ts is the cricket roster; becomes per-sport in phase 3 (kabaddi). */}
           <div className="grid gap-6 md:grid-cols-2">
             {(["men", "women"] as const).map((team) => (
               <div key={team} className="flex flex-col gap-3">
@@ -56,7 +57,7 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
                     Full squad →
                   </Link>
                 </div>
-                {squad(team)
+                {rosterFor(sport.slug, team)
                   .filter((p) => p.active)
                   .slice(0, 3)
                   .map((p) => (
@@ -69,19 +70,21 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
             <Link href={`/${sport.slug}/xi`} className="group">
               <Card className="h-full transition-ui group-hover:shadow-md">
                 <CardHeader>
-                  <CardTitle>Pick your Playing XI</CardTitle>
+                  <CardTitle>Pick your {squad.xiLabel}</CardTitle>
                   <CardDescription>Build your eleven, check the balance, share it as an image.</CardDescription>
                 </CardHeader>
               </Card>
             </Link>
-            <Link href={`/${sport.slug}/quiz`} className="group">
-              <Card className="h-full transition-ui group-hover:shadow-md">
-                <CardHeader>
-                  <CardTitle>Take the quiz</CardTitle>
-                  <CardDescription>A shuffled {sport.label.toLowerCase()} quiz. Score yourself and go again.</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
+            {hasQuiz && (
+              <Link href={`/${sport.slug}/quiz`} className="group">
+                <Card className="h-full transition-ui group-hover:shadow-md">
+                  <CardHeader>
+                    <CardTitle>Take the quiz</CardTitle>
+                    <CardDescription>A shuffled {sport.label.toLowerCase()} quiz. Score yourself and go again.</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            )}
             {sport.slug === "cricket" && (
               <Link href="/cricket/calculator" className="group">
                 <Card className="h-full transition-ui group-hover:shadow-md">

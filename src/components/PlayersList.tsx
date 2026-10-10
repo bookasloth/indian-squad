@@ -1,26 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { ROLES, type Player, type Role } from "@/data/players";
-import { PlayerCard, ROLE_LABEL } from "@/components/PlayerCard";
+import type { SquadPlayer } from "@/data/squads";
+import { PlayerCard } from "@/components/PlayerCard";
 
-type Filter = Role | "all";
-
-export function PlayersList({ players }: { players: Player[] }) {
-  const [filter, setFilter] = useState<Filter>("all");
+export function PlayersList({ players, roles }: { players: SquadPlayer[]; roles: { key: string; label: string }[] }) {
+  const [filter, setFilter] = useState("all");
   const shown = filter === "all" ? players : players.filter((p) => p.role === filter);
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap gap-2">
         <FilterChip label="All" active={filter === "all"} onClick={() => setFilter("all")} />
-        {ROLES.map((role) => (
-          <FilterChip
-            key={role}
-            label={ROLE_LABEL[role]}
-            active={filter === role}
-            onClick={() => setFilter(role)}
-          />
+        {roles.map((r) => (
+          <FilterChip key={r.key} label={r.label} active={filter === r.key} onClick={() => setFilter(r.key)} />
         ))}
       </div>
 

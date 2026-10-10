@@ -45,7 +45,8 @@ function sportPaths(sport: string): string[] {
     ...(records.length ? [`/${sport}/records`, ...records.map((r) => `/${sport}/records/${r.slug}`)] : []),
     ...teamsFor(sport).map((t) => `/${sport}/teams/${t.slug}`),
     ...rivalriesFor(sport).map((r) => `/${sport}/rivalries/${r.slug}`),
-    ...(sport === "cricket" ? ["/cricket/calculator"] : []),
+    // ponytail: keep in step with CALCULATORS in [sport]/calculator/page.tsx
+    ...(["cricket", "f1"].includes(sport) ? [`/${sport}/calculator`] : []),
     ...(quizFor(sport).length ? [`/${sport}/quiz`] : []),
   ];
   if (squadConfig(sport)) {

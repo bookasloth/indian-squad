@@ -52,6 +52,8 @@ export default async function SportLayout({
             ...(quizFor(sport.slug).length > 0 ? [{ href: `${base}/quiz`, label: "Quiz" }] : []),
             ...(recordsFor(sport.slug).length > 0 ? [{ href: `${base}/records`, label: "Records" }] : []),
             ...(explainersFor(sport.slug).length > 0 ? [{ href: `${base}/learn`, label: "Learn" }] : []),
+            // ponytail: keep in step with CALCULATORS in [sport]/calculator/page.tsx
+            ...(["cricket", "f1"].includes(sport.slug) ? [{ href: `${base}/calculator`, label: "Calculator" }] : []),
             { href: `/community/${sport.slug}`, label: "Community" },
           ]}
         />

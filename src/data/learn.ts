@@ -1186,6 +1186,248 @@ export const EXPLAINERS: Explainer[] = [
       { label: "India badminton team", href: "/badminton/teams/india" },
     ],
   },
+
+  // ── F1 (checked against the FIA Formula One regulations for 2026) ──
+  {
+    sport: "f1",
+    slug: "india-in-formula-1",
+    title: "India in Formula One: drivers, Force India and the Indian Grand Prix",
+    description:
+      "India's story in F1: Narain Karthikeyan and Karun Chandhok, the Force India team, and the three Indian Grands Prix at the Buddh International Circuit.",
+    answer:
+      "Two Indians have raced in Formula One — Narain Karthikeyan and Karun Chandhok. India also had its own team, Force India, from 2008 to 2018, and hosted three Indian Grands Prix at the Buddh International Circuit between 2011 and 2013.",
+    sections: [
+      {
+        h: "Narain Karthikeyan",
+        body: [
+          "Karthikeyan became India's first Formula One driver in 2005 with Jordan, and returned with HRT in 2011 and 2012. He started 46 Grands Prix and scored India's only championship points: five, for fourth place at the 2005 United States Grand Prix.",
+        ],
+      },
+      {
+        h: "Karun Chandhok",
+        body: [
+          "Chandhok raced for HRT in 2010 and made one start for Team Lotus in 2011, eleven Grands Prix in all. He has since become a familiar voice in F1 broadcasting.",
+        ],
+      },
+      {
+        h: "Force India",
+        body: [
+          "Force India raced from 2008 to 2018. Its best results were fourth place in the constructors' championship in 2016 and 2017, and its first podium was second place at the 2009 Belgian Grand Prix, where it also took its only pole position. The team was later renamed and continues on the grid under a different name.",
+        ],
+      },
+      {
+        h: "The Indian Grand Prix",
+        body: [
+          "The Buddh International Circuit in Greater Noida hosted three Indian Grands Prix, from 2011 to 2013. Sebastian Vettel won all three for Red Bull.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Who was the first Indian F1 driver?",
+        a: "Narain Karthikeyan, who made his debut with Jordan at the 2005 Australian Grand Prix.",
+      },
+      {
+        q: "How many Indians have raced in Formula One?",
+        a: "Two: Narain Karthikeyan and Karun Chandhok.",
+      },
+      {
+        q: "What was Force India's best result?",
+        a: "Fourth in the constructors' championship, in 2016 and 2017. Its best race finish was second at the 2009 Belgian Grand Prix.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "The Indian Grand Prix", href: "/f1/indian-grand-prix" },
+      { label: "Every F1 world champion", href: "/f1/drivers-championship" },
+    ],
+  },
+  {
+    sport: "f1",
+    slug: "points-system",
+    title: "The F1 points system explained",
+    description:
+      "How Formula One points work: 25 for a win down to 1 for tenth, sprint points for the top eight, no fastest-lap bonus, and how ties are broken.",
+    answer:
+      "In a Formula One Grand Prix, the top ten finishers score points: 25 for the win, then 18, 15, 12, 10, 8, 6, 4, 2 and 1. On sprint weekends, the top eight in the Saturday sprint also score: 8 down to 1. Drivers and teams add these up across the season to decide the two world championships.",
+    sections: [
+      {
+        h: "Grand Prix points",
+        body: [
+          "Points go to the first ten classified finishers. The same points count towards both championships: a driver's points go to their own total and to their team's.",
+        ],
+      },
+      {
+        h: "Sprint points",
+        body: [
+          "Some weekends include a shorter Saturday sprint race. Its top eight score 8, 7, 6, 5, 4, 3, 2 and 1 points.",
+        ],
+      },
+      {
+        h: "No more fastest-lap point",
+        body: [
+          "From 2019 to 2024, a driver in the top ten who set the fastest lap earned one bonus point. That bonus was dropped from 2025.",
+        ],
+      },
+      {
+        h: "Ties",
+        body: [
+          "If two drivers finish the season level on points, the one with more wins ranks higher; if still level, more second places, and so on down the finishing positions.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many points do you get for winning an F1 race?",
+        a: "Twenty-five.",
+      },
+      {
+        q: "How many drivers score points in an F1 race?",
+        a: "The top ten in a Grand Prix and the top eight in a sprint.",
+      },
+      {
+        q: "Is there a point for the fastest lap in F1?",
+        a: "Not any more. The fastest-lap point ran from 2019 to 2024 and was dropped from 2025.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "F1 points calculator", href: "/f1/calculator" },
+      { label: "How F1 qualifying works", href: "/f1/learn/qualifying" },
+    ],
+  },
+  {
+    sport: "f1",
+    slug: "qualifying",
+    title: "How F1 qualifying works",
+    description:
+      "Formula One qualifying explained: the three knockout sessions Q1, Q2 and Q3, how many cars drop out in each, and how it sets the starting grid.",
+    answer:
+      "F1 qualifying is a knockout split into three sessions. The slowest cars drop out at the end of Q1 and Q2, and the fastest ten fight for pole position in Q3. Final qualifying order sets the starting grid for Sunday's race.",
+    sections: [
+      {
+        h: "The three sessions",
+        body: [
+          "With 22 cars on the 2026 grid, the six slowest are eliminated at the end of Q1 and the next six at the end of Q2, leaving ten for Q3. Each session is shorter than the last, and drivers can do as many laps as time and tyres allow.",
+        ],
+      },
+      {
+        h: "Pole position",
+        body: [
+          "The fastest driver in Q3 takes pole position and starts from the front of the grid. Grid penalties — for changing too many power-unit parts, for example — are applied after qualifying, so a driver can qualify higher than they start.",
+        ],
+      },
+      {
+        h: "Sprint weekends",
+        body: [
+          "On sprint weekends there is a separate, shorter sprint qualifying session that sets the grid for the sprint race.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many cars make it to Q3?",
+        a: "Ten. The rest are eliminated in Q1 and Q2.",
+      },
+      {
+        q: "What is pole position in F1?",
+        a: "First place on the starting grid, earned by setting the fastest lap in Q3.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "The F1 points system", href: "/f1/learn/points-system" },
+      { label: "F1 tyres explained", href: "/f1/learn/tyres" },
+    ],
+  },
+  {
+    sport: "f1",
+    slug: "tyres",
+    title: "F1 tyres explained",
+    description:
+      "How Formula One tyres work: soft, medium and hard dry compounds, intermediates and wets, the colour codes, and the two-compound rule in dry races.",
+    answer:
+      "For each race weekend, Pirelli brings three dry tyre compounds — labelled soft (red), medium (yellow) and hard (white) — plus intermediates (green) and full wets (blue) for rain. In a dry race, every driver must use at least two different dry compounds.",
+    sections: [
+      {
+        h: "Soft, medium and hard",
+        body: [
+          "Softer tyres grip better and are faster over a lap, but wear out sooner. Harder tyres are slower but last longer. Choosing when to switch between them is the heart of race strategy.",
+        ],
+      },
+      {
+        h: "The two-compound rule",
+        body: [
+          "Unless the race is declared wet, drivers must use at least two different dry compounds, so everyone makes at least one pit stop.",
+        ],
+      },
+      {
+        h: "Wet-weather tyres",
+        body: [
+          "Intermediates, with green markings, are for a damp or drying track. Full wets, with blue markings, clear more water for heavy rain. Using them lifts the two-compound requirement.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "What do the tyre colours mean in F1?",
+        a: "Red is soft, yellow is medium and white is hard. Green is intermediate and blue is full wet.",
+      },
+      {
+        q: "Do F1 drivers have to pit?",
+        a: "In a dry race, yes in practice: they must use two different dry compounds, which means at least one stop.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "How F1 qualifying works", href: "/f1/learn/qualifying" },
+      { label: "The 2026 F1 rules", href: "/f1/learn/2026-rules" },
+    ],
+  },
+  {
+    sport: "f1",
+    slug: "2026-rules",
+    title: "The 2026 F1 rules explained: active aero and the end of DRS",
+    description:
+      "What changed in Formula One for 2026: active aerodynamics, the end of DRS and the new overtake mode, smaller and lighter cars, new power units and an eleventh team.",
+    answer:
+      "Formula One's 2026 rules are its biggest reset in years. Cars are shorter, narrower and lighter, with active aerodynamics on both wings. DRS is gone, replaced by an overtake mode, and a revised power unit leans more heavily on electrical energy. An eleventh team joined the grid.",
+    sections: [
+      {
+        h: "Smaller, lighter cars",
+        body: [
+          "The wheelbase dropped from 3.6 m to 3.4 m, the maximum width from 2.0 m to 1.9 m, and the minimum weight fell by 30 kg. The tyres are narrower too.",
+        ],
+      },
+      {
+        h: "Active aero instead of DRS",
+        body: [
+          "The drag reduction system — the opening rear-wing flap that helped a chasing car on the straights since 2011 — was removed. Instead, the front and rear wings can change setting to cut drag on straights, and a separate overtake mode gives a chasing driver extra help when close behind.",
+        ],
+      },
+      {
+        h: "A bigger grid",
+        body: [
+          "With an eleventh team, the 2026 grid has 22 cars across a 23-race calendar.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Is DRS still used in F1?",
+        a: "No. DRS was removed for 2026 and replaced by active aerodynamics and an overtake mode.",
+      },
+      {
+        q: "How many teams are in F1 in 2026?",
+        a: "Eleven, with 22 cars.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "F1 tyres explained", href: "/f1/learn/tyres" },
+      { label: "The F1 points system", href: "/f1/learn/points-system" },
+    ],
+  },
 ];
 
 export const explainersFor = (sport: string) => EXPLAINERS.filter((e) => e.sport === sport);

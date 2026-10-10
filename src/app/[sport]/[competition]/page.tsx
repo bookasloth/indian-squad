@@ -119,8 +119,8 @@ export default async function CompetitionPage({ params }: Params) {
           <TableHeader>
             <TableRow>
               <TableHead>Year</TableHead>
-              <TableHead>Champion</TableHead>
-              <TableHead>Runner-up</TableHead>
+              <TableHead>{c.columns?.winner ?? "Champion"}</TableHead>
+              <TableHead>{c.columns?.runnerUp ?? "Runner-up"}</TableHead>
               {hasHost && <TableHead>Host</TableHead>}
             </TableRow>
           </TableHeader>
@@ -144,7 +144,7 @@ export default async function CompetitionPage({ params }: Params) {
 
       {!c.since && c.editions.length > 0 && (
         <section className="flex flex-col gap-4">
-          <h2 className={H2}>Titles by team</h2>
+          <h2 className={H2}>{c.columns?.tally ?? "Titles by team"}</h2>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {titleCounts(c).map((t) => (
               <li key={t.team} className="flex items-baseline justify-between gap-4 rounded-card border border-border px-5 py-3">

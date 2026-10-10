@@ -27,6 +27,7 @@ const RULEBOOK: Record<string, string> = {
   kabaddi: "international kabaddi rules and Pro Kabaddi League rules",
   football: "the IFAB Laws of the Game and AIFF competition rules",
   badminton: "the BWF Laws of Badminton and World Tour regulations",
+  f1: "the FIA Formula One Sporting and Technical Regulations",
 };
 const reviewedLabel = (iso: string) =>
   new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });

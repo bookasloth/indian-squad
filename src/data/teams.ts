@@ -16,34 +16,33 @@ export interface Team {
   otherHonours?: string[];
   /** Where the squad lives on this site, if anywhere. */
   squadHref?: string;
+  /** Franchise league short name, e.g. "IPL", "PKL". */
+  league?: string;
   faq: Qa[];
 }
 
 // ponytail: no captains or coaches — they change often and are easy to get
 // wrong. Titles and finals are derived from src/data/competitions.ts.
-const ipl = (
-  slug: string,
-  name: string,
-  city: string,
-  ground: string,
-  since: string,
-  names: string[],
-  note: string,
-): Team => ({
-  sport: "cricket",
-  slug,
-  name,
-  kind: "franchise",
-  description: `${name}: IPL titles, finals, home ground and history of the ${city} franchise.`,
-  intro: [note],
-  facts: [
-    { label: "City", value: city },
-    { label: "Home ground", value: ground },
-    { label: "In the IPL since", value: since },
-  ],
-  names,
-  faq: [],
-});
+const franchise =
+  (sport: SportSlug, league: string) =>
+  (slug: string, name: string, city: string, ground: string, since: string, names: string[], note: string): Team => ({
+    sport,
+    slug,
+    name,
+    kind: "franchise",
+    league,
+    description: `${name}: ${league} titles, finals, home ground and history of the ${city} franchise.`,
+    intro: [note],
+    facts: [
+      { label: "City", value: city },
+      { label: "Home ground", value: ground },
+      { label: `In the ${league} since`, value: since },
+    ],
+    names,
+    faq: [],
+  });
+const ipl = franchise("cricket", "IPL");
+const pkl = franchise("kabaddi", "PKL");
 
 export const TEAMS: Team[] = [
   {
@@ -197,6 +196,86 @@ export const TEAMS: Team[] = [
     "Punjab Kings, known as Kings XI Punjab until 2020, have reached two finals — 2014 and 2025 — without yet winning the title."),
   ipl("lucknow-super-giants", "Lucknow Super Giants", "Lucknow", "Ekana Cricket Stadium", "2022", ["Lucknow Super Giants"],
     "Lucknow Super Giants joined in 2022 alongside Gujarat Titans and reached the playoffs in each of their first two seasons."),
+
+  // ── Kabaddi ──
+  {
+    sport: "kabaddi",
+    slug: "india-men",
+    name: "India men's kabaddi team",
+    kind: "national",
+    description:
+      "India's men's kabaddi team: 9 Asian Games golds out of 10 and all three Kabaddi World Cups. Honours, records and history.",
+    intro: [
+      "India are kabaddi's dominant nation. The men have won nine of the ten Asian Games kabaddi golds since 1990 and every one of the three standard-style Kabaddi World Cups.",
+      "Their only Asian Games defeat came in 2018, when Iran — the rivals India have met in every World Cup final — took the gold.",
+    ],
+    facts: [
+      { label: "Governing body", value: "Amateur Kabaddi Federation of India" },
+      { label: "Asian Games golds", value: "9 of 10" },
+      { label: "World Cups", value: "3 of 3" },
+      { label: "Most caps", value: "Ajay Thakur, 110" },
+    ],
+    names: ["India"],
+    faq: [
+      {
+        q: "How many times has India won kabaddi gold at the Asian Games?",
+        a: "Nine times in men's kabaddi — every Games since 1990 except 2018, when Iran won.",
+      },
+      {
+        q: "Who has played the most matches for India in kabaddi?",
+        a: "Ajay Thakur, with 110 caps.",
+      },
+    ],
+  },
+  {
+    sport: "kabaddi",
+    slug: "india-women",
+    name: "India women's kabaddi team",
+    kind: "national",
+    description:
+      "India's women's kabaddi team: Asian Games gold in 2010, 2014, 2022 and 2026, and silver in 2018.",
+    intro: [
+      "Women's kabaddi joined the Asian Games in 2010, and India's women have won four of the five golds since — 2010, 2014, 2022 and 2026.",
+      "The one that got away was 2018 in Jakarta, where Iran beat India in the final.",
+    ],
+    facts: [
+      { label: "Governing body", value: "Amateur Kabaddi Federation of India" },
+      { label: "Asian Games golds", value: "4 of 5" },
+      { label: "Asian Games silver", value: "2018" },
+    ],
+    names: ["India women"],
+    otherHonours: ["Asian Games: gold 2010, 2014, 2022, 2026; silver 2018"],
+    faq: [
+      {
+        q: "Has India's women's kabaddi team won the Asian Games?",
+        a: "Yes, four times: 2010, 2014, 2022 and 2026. They were runners-up to Iran in 2018.",
+      },
+    ],
+  },
+  pkl("patna-pirates", "Patna Pirates", "Patna", "Patliputra Sports Complex", "2014", ["Patna Pirates"],
+    "Patna Pirates are the PKL's most successful side, with three titles won back to back in seasons 3, 4 and 5."),
+  pkl("jaipur-pink-panthers", "Jaipur Pink Panthers", "Jaipur", "Sawai Mansingh Indoor Stadium", "2014", ["Jaipur Pink Panthers"],
+    "Jaipur Pink Panthers won the very first PKL season in 2014 and lifted the title again in 2022."),
+  pkl("dabang-delhi-kc", "Dabang Delhi K.C.", "New Delhi", "Thyagaraj Sports Complex", "2014", ["Dabang Delhi K.C.", "Dabang Delhi KC", "Dabang Delhi"],
+    "Dabang Delhi K.C. have won two titles, in 2021–22 and in Season 12 in 2025, when they beat Puneri Paltan in a home final."),
+  pkl("u-mumba", "U Mumba", "Mumbai", "Sardar Vallabhbhai Patel Indoor Stadium", "2014", ["U Mumba"],
+    "U Mumba reached the first three PKL finals and won the second of them, in 2015."),
+  pkl("bengaluru-bulls", "Bengaluru Bulls", "Bengaluru", "Kanteerava Indoor Stadium", "2014", ["Bengaluru Bulls"],
+    "Bengaluru Bulls won the title in 2018–19, after losing the 2015 final."),
+  pkl("bengal-warriorz", "Bengal Warriorz", "Kolkata", "Netaji Indoor Stadium", "2014", ["Bengal Warriorz", "Bengal Warriors"],
+    "Bengal Warriorz, then spelled Bengal Warriors, won their only title in 2019."),
+  pkl("puneri-paltan", "Puneri Paltan", "Pune", "Shree Shiv Chhatrapati Sports Complex", "2014", ["Puneri Paltan"],
+    "Puneri Paltan won the 2023–24 title and have reached three finals in four seasons."),
+  pkl("haryana-steelers", "Haryana Steelers", "Panchkula", "Sports University of Haryana Stadium, Sonipat", "2017", ["Haryana Steelers"],
+    "Haryana Steelers won the 2024 title a season after losing the final to Puneri Paltan."),
+  pkl("gujarat-giants", "Gujarat Giants", "Ahmedabad", "EKA Arena", "2017", ["Gujarat Giants", "Gujarat Fortune Giants"],
+    "Gujarat Giants, then Gujarat Fortune Giants, reached the final in each of their first two seasons but are still waiting for a title."),
+  pkl("tamil-thalaivas", "Tamil Thalaivas", "Chennai", "Jawaharlal Nehru Indoor Stadium", "2017", ["Tamil Thalaivas"],
+    "Tamil Thalaivas joined the league in its 2017 expansion and have yet to reach a final."),
+  pkl("telugu-titans", "Telugu Titans", "Hyderabad", "G. M. C. Balayogi Indoor Stadium", "2014", ["Telugu Titans"],
+    "Telugu Titans are one of the PKL's eight founding teams and have yet to reach a final."),
+  pkl("up-yoddhas", "UP Yoddhas", "Lucknow", "Babu Banarasi Das Indoor Stadium", "2017", ["UP Yoddhas", "UP Yoddha"],
+    "UP Yoddhas joined in the 2017 expansion and have yet to reach a final."),
 ];
 
 export const teamsFor = (sport: string) => TEAMS.filter((t) => t.sport === sport);

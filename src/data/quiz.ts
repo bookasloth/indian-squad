@@ -97,7 +97,23 @@ export const hockeyQuiz: QuizQuestion[] = [
   { id: "h12", question: "India won men's hockey gold at the 2026 Asian Games by beating which team in the final?", options: ["Pakistan", "Malaysia", "Japan", "South Korea"], correctIndex: 1, category: "Recent" },
 ];
 
+// ponytail: hand-maintained, facts checked 10 Oct 2026.
+export const kabaddiQuiz: QuizQuestion[] = [
+  { id: "k1", question: "How many players does each kabaddi team have on court?", options: ["5", "6", "7", "9"], correctIndex: 2, category: "Rules" },
+  { id: "k2", question: "How many points is a super tackle worth?", options: ["1", "2", "3", "4"], correctIndex: 1, category: "Rules" },
+  { id: "k3", question: "A raider can earn a bonus point only when at least how many defenders are on court?", options: ["4", "5", "6", "7"], correctIndex: 2, category: "Rules" },
+  { id: "k4", question: "In the Pro Kabaddi League, a do-or-die raid comes after how many empty raids in a row?", options: ["One", "Two", "Three", "Four"], correctIndex: 1, category: "Rules" },
+  { id: "k5", question: "Which team won the first Pro Kabaddi League season in 2014?", options: ["U Mumba", "Patna Pirates", "Jaipur Pink Panthers", "Bengaluru Bulls"], correctIndex: 2, category: "PKL" },
+  { id: "k6", question: "Which team has won the most Pro Kabaddi titles?", options: ["Patna Pirates", "Dabang Delhi K.C.", "Jaipur Pink Panthers", "U Mumba"], correctIndex: 0, category: "PKL" },
+  { id: "k7", question: "Who won Pro Kabaddi Season 12 in 2025?", options: ["Puneri Paltan", "Haryana Steelers", "Dabang Delhi K.C.", "Patna Pirates"], correctIndex: 2, category: "PKL" },
+  { id: "k8", question: "How many of the ten Asian Games men's kabaddi golds has India won?", options: ["7", "8", "9", "10"], correctIndex: 2, category: "India" },
+  { id: "k9", question: "Which country beat India to Asian Games kabaddi gold in 2018?", options: ["Pakistan", "Bangladesh", "South Korea", "Iran"], correctIndex: 3, category: "India" },
+  { id: "k10", question: "Where was the 2016 Kabaddi World Cup, won by India, held?", options: ["Mumbai", "Ahmedabad", "Patna", "Panvel"], correctIndex: 1, category: "India" },
+  { id: "k11", question: "Who has the most caps for India's men's kabaddi team?", options: ["Anup Kumar", "Pardeep Narwal", "Ajay Thakur", "Rahul Chaudhari"], correctIndex: 2, category: "Records" },
+  { id: "k12", question: "How long is each half of a kabaddi match?", options: ["15 minutes", "20 minutes", "25 minutes", "30 minutes"], correctIndex: 1, category: "Rules" },
+];
+
 /** Questions per sport. A sport gets a quiz page once it has an entry here. */
-export const QUIZZES: Record<string, QuizQuestion[]> = { cricket: quiz, hockey: hockeyQuiz };
+export const QUIZZES: Record<string, QuizQuestion[]> = { cricket: quiz, hockey: hockeyQuiz, kabaddi: kabaddiQuiz };
 
 export const quizFor = (sport: string): QuizQuestion[] => QUIZZES[sport] ?? [];

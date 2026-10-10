@@ -24,6 +24,7 @@ const H2 = "font-display text-xl font-semibold tracking-tight";
 const RULEBOOK: Record<string, string> = {
   cricket: "the Laws of Cricket and ICC playing conditions",
   hockey: "the FIH Rules of Hockey",
+  kabaddi: "international kabaddi rules and Pro Kabaddi League rules",
 };
 const reviewedLabel = (iso: string) =>
   new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });

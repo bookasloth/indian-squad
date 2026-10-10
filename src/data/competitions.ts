@@ -518,6 +518,147 @@ export const COMPETITIONS: Competition[] = [
     reviewed: "10 October 2026",
     checkedAgainst: "Hockey India records",
   },
+
+  // ── Kabaddi (checked 10 October 2026) ──
+  {
+    sport: "kabaddi",
+    slug: "pro-kabaddi-league",
+    name: "Pro Kabaddi League (PKL)",
+    short: "PKL",
+    description:
+      "The Pro Kabaddi League: India's franchise kabaddi league since 2014. Every champion and runner-up across 12 seasons, and the teams with the most titles.",
+    intro: [
+      "The Pro Kabaddi League is a franchise league that turned kabaddi into prime-time television in India. It began in 2014 with eight teams and has had twelve since 2017.",
+      "Patna Pirates are the most successful side, with three titles in a row between 2016 and 2017. Dabang Delhi K.C. won the twelfth season in 2025.",
+    ],
+    facts: [
+      { label: "First season", value: "2014" },
+      { label: "Teams", value: "12" },
+      { label: "Seasons played", value: "12" },
+      { label: "Most titles", value: "Patna Pirates, 3" },
+      { label: "Latest champion", value: "Dabang Delhi K.C., 2025" },
+    ],
+    india:
+      "PKL squads are built around Indian players, with a small number of overseas signings — most of them from Iran.",
+    editions: [
+      { year: "2025", winner: "Dabang Delhi K.C.", runnerUp: "Puneri Paltan" },
+      { year: "2024", winner: "Haryana Steelers", runnerUp: "Patna Pirates" },
+      { year: "2023–24", winner: "Puneri Paltan", runnerUp: "Haryana Steelers" },
+      { year: "2022", winner: "Jaipur Pink Panthers", runnerUp: "Puneri Paltan" },
+      { year: "2021–22", winner: "Dabang Delhi K.C.", runnerUp: "Patna Pirates" },
+      { year: "2019", winner: "Bengal Warriors", runnerUp: "Dabang Delhi K.C." },
+      { year: "2018–19", winner: "Bengaluru Bulls", runnerUp: "Gujarat Fortune Giants" },
+      { year: "2017", winner: "Patna Pirates", runnerUp: "Gujarat Fortune Giants" },
+      { year: "2016 (Season 4)", winner: "Patna Pirates", runnerUp: "Jaipur Pink Panthers" },
+      { year: "2016 (Season 3)", winner: "Patna Pirates", runnerUp: "U Mumba" },
+      { year: "2015", winner: "U Mumba", runnerUp: "Bengaluru Bulls" },
+      { year: "2014", winner: "Jaipur Pink Panthers", runnerUp: "U Mumba" },
+    ],
+    faq: [
+      {
+        q: "Which team has won the most Pro Kabaddi titles?",
+        a: "Patna Pirates, with three — seasons 3, 4 and 5, won in a row in 2016 and 2017. Jaipur Pink Panthers and Dabang Delhi K.C. have two each.",
+      },
+      {
+        q: "Who won Pro Kabaddi Season 12?",
+        a: "Dabang Delhi K.C. won the 2025 season, beating Puneri Paltan in the final in Delhi for their second title.",
+      },
+      {
+        q: "When did the Pro Kabaddi League start?",
+        a: "In 2014. Jaipur Pink Panthers won the first season, beating U Mumba in the final.",
+      },
+      {
+        q: "How many teams play in the Pro Kabaddi League?",
+        a: "Twelve, since the league expanded from eight teams in 2017.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "Pro Kabaddi League records",
+  },
+  {
+    sport: "kabaddi",
+    slug: "asian-games",
+    name: "Asian Games kabaddi",
+    short: "Asian Games",
+    description:
+      "Kabaddi at the Asian Games since 1990: India's men have won 9 of 10 golds, and India's women 4 of 5. Every men's final, with hosts.",
+    intro: [
+      "Kabaddi has been an Asian Games sport since Beijing 1990, and India have dominated it. The men won the first seven golds, lost only in 2018 to Iran, and have won again in 2022 and 2026.",
+      "Women's kabaddi joined the Games in 2010. India's women have won gold four times — 2010, 2014, 2022 and 2026 — and silver in 2018.",
+    ],
+    facts: [
+      { label: "In the Games since", value: "1990 (women since 2010)" },
+      { label: "India men's golds", value: "9 of 10" },
+      { label: "India women's golds", value: "4 of 5" },
+      { label: "Only other men's champion", value: "Iran, 2018" },
+      { label: "Latest Games", value: "Aichi-Nagoya 2026" },
+    ],
+    india: "Men: gold every time except 2018 (bronze). Women: gold in 2010, 2014, 2022 and 2026; silver in 2018.",
+    editions: [
+      { year: "2026", winner: "India", runnerUp: "Iran", host: "Aichi-Nagoya, Japan" },
+      { year: "2022", winner: "India", runnerUp: "Iran", host: "Hangzhou, China" },
+      { year: "2018", winner: "Iran", runnerUp: "South Korea", host: "Jakarta, Indonesia" },
+      { year: "2014", winner: "India", runnerUp: "Iran", host: "Incheon, South Korea" },
+      { year: "2010", winner: "India", runnerUp: "Iran", host: "Guangzhou, China" },
+      { year: "2006", winner: "India", runnerUp: "Pakistan", host: "Doha, Qatar" },
+      { year: "2002", winner: "India", runnerUp: "Bangladesh", host: "Busan, South Korea" },
+      { year: "1998", winner: "India", runnerUp: "Pakistan", host: "Bangkok, Thailand" },
+      { year: "1994", winner: "India", runnerUp: "Bangladesh", host: "Hiroshima, Japan" },
+      { year: "1990", winner: "India", runnerUp: "Bangladesh", host: "Beijing, China" },
+    ],
+    faq: [
+      {
+        q: "How many Asian Games kabaddi golds has India won?",
+        a: "Thirteen: nine in men's kabaddi (every Games since 1990 except 2018) and four in women's kabaddi (2010, 2014, 2022 and 2026).",
+      },
+      {
+        q: "When did India lose the Asian Games kabaddi title?",
+        a: "In 2018, when Iran won both the men's and women's golds in Jakarta. India's men took bronze and the women silver.",
+      },
+      {
+        q: "Who won kabaddi at the 2026 Asian Games?",
+        a: "India won both the men's and the women's gold in Japan.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "Olympic Council of Asia records",
+  },
+  {
+    sport: "kabaddi",
+    slug: "kabaddi-world-cup",
+    name: "Kabaddi World Cup",
+    short: "World Cup",
+    description:
+      "The men's Kabaddi World Cup (standard style): India have won all three editions — 2004, 2007 and 2016 — each time beating Iran in the final.",
+    intro: [
+      "The Kabaddi World Cup, run by the International Kabaddi Federation in the standard style played in the PKL and at the Asian Games, has been held three times. India have won every one.",
+      "Each final has been India against Iran: Mumbai in 2004, Panvel in 2007 and Ahmedabad in 2016.",
+    ],
+    facts: [
+      { label: "Run by", value: "International Kabaddi Federation" },
+      { label: "Editions", value: "3 (2004, 2007, 2016)" },
+      { label: "India's titles", value: "3 of 3" },
+      { label: "Every runner-up", value: "Iran" },
+    ],
+    india: "Champions in 2004, 2007 and 2016, beating Iran in all three finals.",
+    editions: [
+      { year: "2016", winner: "India", runnerUp: "Iran", host: "Ahmedabad, India" },
+      { year: "2007", winner: "India", runnerUp: "Iran", host: "Panvel, India" },
+      { year: "2004", winner: "India", runnerUp: "Iran", host: "Mumbai, India" },
+    ],
+    faq: [
+      {
+        q: "How many Kabaddi World Cups has India won?",
+        a: "All three men's standard-style World Cups: 2004, 2007 and 2016.",
+      },
+      {
+        q: "Who did India beat in the 2016 Kabaddi World Cup final?",
+        a: "Iran, in Ahmedabad. Iran were also India's opponents in the 2004 and 2007 finals.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "International Kabaddi Federation records",
+  },
 ];
 
 export const competitionsFor = (sport: string) => COMPETITIONS.filter((c) => c.sport === sport);

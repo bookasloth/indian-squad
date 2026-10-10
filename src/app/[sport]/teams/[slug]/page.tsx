@@ -17,7 +17,7 @@ type Params = { params: Promise<{ sport: string; slug: string }> };
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { sport, slug } = await params;
   const t = getTeam(sport, slug);
-  return t ? pageMeta({ title: t.kind === "franchise" ? `${t.name}: IPL titles and history` : t.name, description: t.description, path: `/${sport}/teams/${t.slug}` }) : {};
+  return t ? pageMeta({ title: t.league ? `${t.name}: ${t.league} titles and history` : t.name, description: t.description, path: `/${sport}/teams/${t.slug}` }) : {};
 }
 
 const H2 = "font-display text-xl font-semibold tracking-tight";
@@ -32,16 +32,16 @@ export default async function TeamPage({ params }: Params) {
   const titles = finals.filter((f) => f.won);
   const siblings = teamsFor(sport).filter((o) => o.kind === t.kind && o.slug !== t.slug);
 
-  // Franchise FAQ is derived from the finals list so it stays in step with the IPL page.
+  // Franchise FAQ is derived from the finals list so it stays in step with the league page.
   const faq =
     t.faq.length > 0
       ? t.faq
       : [
           {
-            q: `How many IPL titles have ${t.name} won?`,
+            q: `How many ${t.league} titles have ${t.name} won?`,
             a:
               titles.length === 0
-                ? `None yet.${finals.length ? ` They have reached ${finals.length === 1 ? "one final" : `${finals.length} finals`} (${finals.map((f) => f.year).join(", ")}).` : ""}`
+                ? `None yet.${finals.length ? ` They have reached ${finals.length === 1 ? "one final" : `${finals.length} finals`} (${finals.map((f) => f.year).reverse().join(", ")}).` : ""}`
                 : `${titles.length}: ${titles.map((f) => f.year).reverse().join(", ")}.`,
           },
           {
@@ -65,7 +65,7 @@ export default async function TeamPage({ params }: Params) {
       </header>
 
       <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[...t.facts, ...(t.kind === "franchise" ? [{ label: "IPL titles", value: String(titles.length) }] : [])]
+        {[...t.facts, ...(t.league ? [{ label: `${t.league} titles`, value: String(titles.length) }] : [])]
           .map((f) => (
             <div key={f.label} className="rounded-card border border-border px-5 py-4">
               <dt className="text-sm text-muted-foreground">{f.label}</dt>
@@ -110,7 +110,7 @@ export default async function TeamPage({ params }: Params) {
       <Faq items={faq} />
 
       <nav className="flex flex-col gap-3">
-        <h2 className={H2}>{t.kind === "franchise" ? "Other IPL teams" : "More teams"}</h2>
+        <h2 className={H2}>{t.league ? `Other ${t.league} teams` : "More teams"}</h2>
         <ul className="flex flex-wrap gap-3">
           {siblings.map((o) => (
             <li key={o.slug}>

@@ -21,7 +21,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { sport, competition } = await params;
   const c = getCompetition(sport, competition);
   if (!c) return {};
-  return pageMeta({ title: `${c.name}: winners list and history`, description: c.description, path: `/${sport}/${c.slug}` });
+  const title = c.editions.length > 0 ? `${c.name}: winners list and history` : `${c.name}: India's medals and history`;
+  return pageMeta({ title, description: c.description, path: `/${sport}/${c.slug}` });
 }
 
 const H2 = "font-display text-xl font-semibold tracking-tight";
@@ -83,6 +84,35 @@ export default async function CompetitionPage({ params }: Params) {
         <p>{c.india}</p>
       </section>
 
+      {c.medals && c.medals.length > 0 && (
+        <section className="flex flex-col gap-4">
+          <h2 className={H2}>India&rsquo;s medals at the {c.short}</h2>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Year</TableHead>
+                <TableHead>Player</TableHead>
+                <TableHead>Event</TableHead>
+                <TableHead>Result</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {c.medals.map((m) => (
+                <TableRow key={`${m.year}-${m.event}-${m.player}`}>
+                  <TableCell className="font-medium tabular-nums">{m.year}</TableCell>
+                  <TableCell className="font-medium">{m.player}</TableCell>
+                  <TableCell className="text-muted-foreground">{m.event}</TableCell>
+                  <TableCell className={m.medal === "Gold" || m.medal === "Champion" ? "font-semibold" : "text-muted-foreground"}>
+                    {m.medal}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </section>
+      )}
+
+      {c.editions.length > 0 && (
       <section className="flex flex-col gap-4">
         <h2 className={H2}>{c.since ? `${c.short} winners since ${c.since}` : `Every ${c.short} winner`}</h2>
         <Table>
@@ -110,8 +140,9 @@ export default async function CompetitionPage({ params }: Params) {
           </TableBody>
         </Table>
       </section>
+      )}
 
-      {!c.since && (
+      {!c.since && c.editions.length > 0 && (
         <section className="flex flex-col gap-4">
           <h2 className={H2}>Titles by team</h2>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

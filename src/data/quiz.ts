@@ -129,7 +129,29 @@ export const footballQuiz: QuizQuestion[] = [
   { id: "f12", question: "Who has the most caps for India's women's football team?", options: ["Bala Devi", "Ashalata Devi", "Sangita Basfore", "Dangmei Grace"], correctIndex: 1, category: "Records" },
 ];
 
+// ponytail: hand-maintained, facts checked 10 Oct 2026. Rules follow the BWF Laws of Badminton.
+export const badmintonQuiz: QuizQuestion[] = [
+  { id: "b1", question: "In which year did India win the Thomas Cup?", options: ["2014", "2018", "2022", "2024"], correctIndex: 2, category: "India" },
+  { id: "b2", question: "Which team did India beat in the 2022 Thomas Cup final?", options: ["China", "Indonesia", "Denmark", "Malaysia"], correctIndex: 1, category: "India" },
+  { id: "b3", question: "Who won India's first Olympic medal in badminton?", options: ["P. V. Sindhu", "Saina Nehwal", "Jwala Gutta", "Aparna Popat"], correctIndex: 1, category: "Olympics" },
+  { id: "b4", question: "What colour was P. V. Sindhu's medal at Rio 2016?", options: ["Gold", "Silver", "Bronze", "She didn't win one"], correctIndex: 1, category: "Olympics" },
+  { id: "b5", question: "In which year did P. V. Sindhu become world champion?", options: ["2017", "2018", "2019", "2021"], correctIndex: 2, category: "Records" },
+  { id: "b6", question: "Who was the first Indian to win the All England Open?", options: ["Pullela Gopichand", "Prakash Padukone", "Syed Modi", "Nandu Natekar"], correctIndex: 1, category: "History" },
+  { id: "b7", question: "Pullela Gopichand won the All England Open in which year?", options: ["1995", "1999", "2001", "2005"], correctIndex: 2, category: "History" },
+  { id: "b8", question: "How many points do you need to win a game of badminton (without deuce)?", options: ["11", "15", "21", "25"], correctIndex: 2, category: "Rules" },
+  { id: "b9", question: "What is the most points a badminton game can reach?", options: ["25", "29", "30", "No limit"], correctIndex: 2, category: "Rules" },
+  { id: "b10", question: "The whole shuttle must be below what height when served?", options: ["1.00 m", "1.15 m", "1.25 m", "The server's waist"], correctIndex: 1, category: "Rules" },
+  { id: "b11", question: "Which Indian city hosted the 2026 BWF World Championships?", options: ["Hyderabad", "Bengaluru", "Mumbai", "New Delhi"], correctIndex: 3, category: "Recent" },
+  { id: "b12", question: "What tier of the BWF World Tour is the India Open?", options: ["Super 300", "Super 500", "Super 750", "Super 1000"], correctIndex: 2, category: "Rules" },
+];
+
 /** Questions per sport. A sport gets a quiz page once it has an entry here. */
-export const QUIZZES: Record<string, QuizQuestion[]> = { cricket: quiz, hockey: hockeyQuiz, kabaddi: kabaddiQuiz, football: footballQuiz };
+export const QUIZZES: Record<string, QuizQuestion[]> = {
+  cricket: quiz,
+  hockey: hockeyQuiz,
+  kabaddi: kabaddiQuiz,
+  football: footballQuiz,
+  badminton: badmintonQuiz,
+};
 
 export const quizFor = (sport: string): QuizQuestion[] => QUIZZES[sport] ?? [];

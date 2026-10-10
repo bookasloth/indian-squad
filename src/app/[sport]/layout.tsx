@@ -3,6 +3,7 @@ import { SPORT_SLUGS, SQUAD_SPORTS, getSport } from "@/lib/site";
 import { SportEmblem } from "@/components/community/sport-emblem";
 import { SportTabs } from "@/components/layout/sport-tabs";
 import { explainersFor } from "@/data/learn";
+import { recordsFor } from "@/data/records";
 
 // One hub per sport (/cricket, /kabaddi, …), all prerendered. Any other top-level
 // slug 404s — real routes like /events are static folders and match first.
@@ -47,6 +48,7 @@ export default async function SportLayout({
                   { href: `${base}/quiz`, label: "Quiz" },
                 ]
               : []),
+            ...(recordsFor(sport.slug).length > 0 ? [{ href: `${base}/records`, label: "Records" }] : []),
             ...(explainersFor(sport.slug).length > 0 ? [{ href: `${base}/learn`, label: "Learn" }] : []),
             { href: `/community/${sport.slug}`, label: "Community" },
           ]}

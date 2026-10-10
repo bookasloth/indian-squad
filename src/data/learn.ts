@@ -618,6 +618,197 @@ export const EXPLAINERS: Explainer[] = [
       { label: "India men's hockey team", href: "/hockey/teams/india-men" },
     ],
   },
+
+  // ── Kabaddi (checked against international and Pro Kabaddi League rules) ──
+  {
+    sport: "kabaddi",
+    slug: "kabaddi-rules",
+    title: "Kabaddi rules explained: a beginner's guide",
+    description:
+      "How kabaddi works: seven a side, raids and tackles, how points are scored, revivals, all-outs, and how long a match lasts.",
+    answer:
+      "Kabaddi is played seven a side on a court split in two. Teams take turns to send one raider into the other half to touch as many defenders as possible and get back over the midline without being stopped. Each defender touched is out and earns the raiding side a point; if the defenders stop the raider, they earn the point instead.",
+    sections: [
+      {
+        h: "The teams and the match",
+        body: [
+          "Each side has seven players on court and substitutes on the bench. A match is two halves of 20 minutes with a short break, and teams swap halves of the court at the interval.",
+        ],
+      },
+      {
+        h: "The raid",
+        body: [
+          "One player at a time — the raider — crosses into the opponents' half. Traditionally the raider chants \"kabaddi\" on a single breath; in the Pro Kabaddi League each raid instead has a 30-second limit. The raider has to cross the baulk line in the opponents' half for the raid to count, then get back to their own half.",
+        ],
+      },
+      {
+        h: "Tackles",
+        body: [
+          "Defenders try to stop the raider getting home, usually by holding them, blocking them or bringing them down. A successful tackle puts the raider out and earns the defending team a point.",
+        ],
+      },
+      {
+        h: "Outs and revivals",
+        body: [
+          "Players who are out leave the court and wait. Each point a team scores brings one of its out players back, in the order they went out. That revival rule means a side that is losing players can recover quickly.",
+        ],
+      },
+      {
+        h: "All out",
+        body: [
+          "If a team loses all seven players, it is \"all out\": the other side gets two bonus points and the whole team comes back on court.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many players are on a kabaddi team?",
+        a: "Seven on court at a time, with substitutes on the bench.",
+      },
+      {
+        q: "How long is a kabaddi match?",
+        a: "Forty minutes of play: two halves of 20 minutes with a short break.",
+      },
+      {
+        q: "What is an all out in kabaddi?",
+        a: "When every player on one team has been put out. The other team gets two extra points and the whole team is revived.",
+      },
+      {
+        q: "How do out players come back in kabaddi?",
+        a: "Through revivals: each point a team scores brings back one player who is out, in the order they were put out.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Raids and the bonus line", href: "/kabaddi/learn/raids-and-bonus-line" },
+      { label: "Do-or-die raids", href: "/kabaddi/learn/do-or-die-raid" },
+      { label: "Take the kabaddi quiz", href: "/kabaddi/quiz" },
+    ],
+  },
+  {
+    sport: "kabaddi",
+    slug: "raids-and-bonus-line",
+    title: "Raids, the bonus line and super raids explained",
+    description:
+      "How a kabaddi raider scores: touch points, the baulk line, the bonus line and when it applies, empty raids and super raids.",
+    answer:
+      "A raider scores a point for every defender they touch and then escape. They can also earn a bonus point by reaching the bonus line — the line deepest in the defenders' half — while at least six defenders are on court. A raid that earns three or more points is called a super raid.",
+    sections: [
+      {
+        h: "The two lines that matter",
+        body: [
+          "The baulk line is the first line in the opponents' half. A raider has to cross it for the raid to count. The bonus line sits further back, closer to the end line.",
+        ],
+      },
+      {
+        h: "The bonus point",
+        body: [
+          "If at least six defenders are on court, a raider who touches the bonus line with one foot, with the other foot in the air, earns a bonus point — even without touching anyone. The rule stops a full-strength defence from simply sitting back. When five or fewer defenders are on court, there is no bonus.",
+        ],
+      },
+      {
+        h: "Empty raids and super raids",
+        body: [
+          "A raid with no points either way is an empty raid. A raid that earns three or more points — touch points, a bonus, or both — is a super raid, and can swing a match by itself.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "When does the bonus point apply in kabaddi?",
+        a: "Only when at least six defenders are on court. The raider must touch the bonus line with one foot while the other is in the air.",
+      },
+      {
+        q: "What is a super raid?",
+        a: "A single raid that earns three or more points.",
+      },
+      {
+        q: "What is an empty raid?",
+        a: "A raid in which neither side scores a point.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Kabaddi rules explained", href: "/kabaddi/learn/kabaddi-rules" },
+      { label: "Super tackles explained", href: "/kabaddi/learn/super-tackle" },
+    ],
+  },
+  {
+    sport: "kabaddi",
+    slug: "do-or-die-raid",
+    title: "The do-or-die raid explained",
+    description:
+      "What a do-or-die raid is in the Pro Kabaddi League, when it happens, and why it changes how teams raid and defend.",
+    answer:
+      "In the Pro Kabaddi League, after a team makes two empty raids in a row, its third raid is a do-or-die raid: the raider must score at least one point, or they are out.",
+    sections: [
+      {
+        h: "Why it exists",
+        body: [
+          "Without it, a team could send raiders over just to touch the baulk line and return, running down the clock. The do-or-die rule forces attacks and gives defenders a moment to gamble on a tackle.",
+        ],
+      },
+      {
+        h: "How teams play it",
+        body: [
+          "Teams often send their best raider for a do-or-die raid. Defences, knowing the raider must score, can hold their ground and wait for the raider to come to them.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "When does a do-or-die raid happen in kabaddi?",
+        a: "In the Pro Kabaddi League, on a team's third raid after two empty raids in a row.",
+      },
+      {
+        q: "What happens if a do-or-die raid scores nothing?",
+        a: "The raider is out and the defending team gets a point.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Raids and the bonus line", href: "/kabaddi/learn/raids-and-bonus-line" },
+      { label: "The Pro Kabaddi League", href: "/kabaddi/pro-kabaddi-league" },
+    ],
+  },
+  {
+    sport: "kabaddi",
+    slug: "super-tackle",
+    title: "The super tackle explained",
+    description:
+      "What a super tackle is in kabaddi, when it applies, why it's worth two points, and how short-handed defences use it.",
+    answer:
+      "A super tackle is a successful tackle made when the defending side has three or fewer players on court. It earns two points instead of one, rewarding a short-handed defence for stopping the raider.",
+    sections: [
+      {
+        h: "Why it matters",
+        body: [
+          "A defence down to three players is close to being all out. A super tackle gives it two points, and with them two revivals — often enough to turn the match.",
+        ],
+      },
+      {
+        h: "The raider's dilemma",
+        body: [
+          "Facing three or fewer defenders, a raider can pick up easy touch points to force an all out, but every attempt risks a super tackle. That tension is one of kabaddi's best moments.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many points is a super tackle worth?",
+        a: "Two points: the usual tackle point plus a bonus.",
+      },
+      {
+        q: "When can a team make a super tackle?",
+        a: "When it has three or fewer players on court at the time of the tackle.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Kabaddi rules explained", href: "/kabaddi/learn/kabaddi-rules" },
+      { label: "India men's kabaddi team", href: "/kabaddi/teams/india-men" },
+    ],
+  },
 ];
 
 export const explainersFor = (sport: string) => EXPLAINERS.filter((e) => e.sport === sport);

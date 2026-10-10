@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/shop" },
   title: "Shop",
   description: "Indian Sports Club merch — tees and more for the 12th Man. Printed to order, shipped across India.",
 };

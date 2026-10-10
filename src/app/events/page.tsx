@@ -8,6 +8,7 @@ import { EventCard } from "@/components/events/event-card";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/events" },
   title: "Events",
   description: "Indian Sports Club watch-parties, box cricket, tournaments and fan meetups near you.",
 };

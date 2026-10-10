@@ -8,6 +8,8 @@ import { HeaderUser } from "@/components/layout/header-user";
 import { Footer } from "@/components/layout/footer";
 import { ChromeGate, MainFrame } from "@/components/layout/chrome-gate";
 import { site } from "@/lib/site";
+import { JsonLd } from "@/components/seo";
+import { orgLd, websiteLd } from "@/lib/seo";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -24,6 +26,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: {
     default: site.name,
     template: `%s — ${site.name}`,
@@ -31,8 +34,13 @@ export const metadata: Metadata = {
   authors: [{ name: site.owner.name, url: site.owner.url }],
   creator: site.owner.name,
   publisher: site.owner.name,
-  description:
-    "Indian cricket squad hub — player profiles, a Playing XI builder, a quiz, and a fan community.",
+  description: site.description,
+  openGraph: { type: "website", siteName: site.name, locale: "en_IN" },
+  twitter: { card: "summary_large_image" },
+  // Search Console ownership: set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION to the meta-tag token.
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export const viewport: Viewport = {
@@ -49,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${jakarta.variable} ${poppins.variable}`}>
       <body className="min-h-dvh bg-background text-foreground antialiased">
+        <JsonLd data={[orgLd(), websiteLd()]} />
         <ThemeProvider>
           <ToastProvider>
             <a

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CommunityScreen } from "@/components/community/community-screen";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/community" },
   title: "Community",
   description: "Talk Indian sport with other fans.",
 };

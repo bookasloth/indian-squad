@@ -16,7 +16,9 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const event = await getEvent((await params).slug);
-  return event ? { title: event.title, description: `${formatEventTime(event.starts_at)} · ${event.venue}, ${event.city}` } : {};
+  return event
+    ? { title: event.title, description: `${formatEventTime(event.starts_at)} · ${event.venue}, ${event.city}`, alternates: { canonical: `/events/${event.slug}` } }
+    : {};
 }
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {

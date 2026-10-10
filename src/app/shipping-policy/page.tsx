@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/shipping-policy" },
   title: "Shipping Policy",
   description: "How Indian Sports Club merch and event tickets are delivered.",
 };

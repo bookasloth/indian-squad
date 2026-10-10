@@ -11,7 +11,9 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = await getPartnerPublic((await params).slug);
-  return p ? { title: p.org_name, description: `${p.org_name}, ${p.city} — sports events on Indian Sports Club.` } : {};
+  return p
+    ? { title: p.org_name, description: `${p.org_name}, ${p.city} — sports events on Indian Sports Club.`, alternates: { canonical: `/partners/${p.slug}` } }
+    : {};
 }
 
 export default async function PartnerProfilePage({ params }: { params: Promise<{ slug: string }> }) {

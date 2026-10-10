@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/partners/terms" },
   title: "Partner Terms",
   description: "The agreement between Indian Sports Club and partners who list events.",
 };

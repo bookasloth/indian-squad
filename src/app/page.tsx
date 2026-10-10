@@ -2,7 +2,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { SportEmblem } from "@/components/community/sport-emblem";
-import { SPORTS } from "@/lib/site";
+import { SPORTS, site } from "@/lib/site";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = {
+  ...pageMeta({ description: site.description, path: "/" }),
+  title: { absolute: `${site.name} — fan club for Indian cricket, hockey, kabaddi, badminton, football and F1` },
+};
 
 // Placeholder copy until docs/COPY.md is filled in.
 const CLUB = [

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/refund-policy" },
   title: "Cancellations & Refunds",
   description: "When Indian Sports Club refunds or replaces merch and event tickets.",
 };

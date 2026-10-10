@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SQUAD_SPORTS } from "@/lib/site";
+import { SQUAD_SPORTS, sportLabel } from "@/lib/site";
+import { pageMeta } from "@/lib/seo";
 import { Quiz } from "@/components/Quiz";
 
-export const metadata: Metadata = {
-  title: "Quiz",
-  description: "A shuffled Indian cricket quiz. Answer, score, and play again.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ sport: string }> }): Promise<Metadata> {
+  const { sport } = await params;
+  const label = (sportLabel(sport) ?? sport).toLowerCase();
+  return pageMeta({ title: `${sportLabel(sport)} quiz`, description: `A shuffled Indian ${label} quiz. Answer, score, and play again.`, path: `/${sport}/quiz` });
+}
 
 export default async function QuizPage({ params }: { params: Promise<{ sport: string }> }) {
   if (!SQUAD_SPORTS.includes((await params).sport)) notFound();

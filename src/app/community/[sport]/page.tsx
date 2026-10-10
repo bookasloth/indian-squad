@@ -12,7 +12,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { sport } = await params;
   const label = sportLabel(sport);
-  return label ? { title: `${label} — Community` } : {};
+  return label
+    ? { title: `${label} fan community`, description: `Talk ${label.toLowerCase()} with other Indian fans: posts, polls and match-day chat.`, alternates: { canonical: `/community/${sport}` } }
+    : {};
 }
 
 export default async function SportCommunityPage({

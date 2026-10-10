@@ -276,6 +276,74 @@ export const TEAMS: Team[] = [
     "Telugu Titans are one of the PKL's eight founding teams and have yet to reach a final."),
   pkl("up-yoddhas", "UP Yoddhas", "Lucknow", "Babu Banarasi Das Indoor Stadium", "2017", ["UP Yoddhas", "UP Yoddha"],
     "UP Yoddhas joined in the 2017 expansion and have yet to reach a final."),
+
+  // ── Football ──
+  {
+    sport: "football",
+    slug: "india-men",
+    name: "India men's football team",
+    kind: "national",
+    description:
+      "India's men's football team, the Blue Tigers: nine SAFF Championships, Asian Games gold in 1951 and 1962, fourth at the 1956 Olympics and Asian Cup runners-up in 1964.",
+    intro: [
+      "India's men — the Blue Tigers — had their golden age in the 1950s and early 1960s: Asian Games gold in 1951 and 1962, fourth place at the 1956 Olympics and runners-up at the 1964 Asian Cup.",
+      "In South Asia they are the team to beat, with nine SAFF Championships. Sunil Chhetri holds both the appearance and the scoring record.",
+    ],
+    facts: [
+      { label: "Governing body", value: "All India Football Federation (AIFF)" },
+      { label: "Most caps", value: "Sunil Chhetri, 157" },
+      { label: "Top scorer", value: "Sunil Chhetri, 95 goals" },
+      { label: "Best Olympic finish", value: "4th, 1956" },
+    ],
+    names: ["India"],
+    otherHonours: ["Asian Games: gold 1951 and 1962", "Olympics: fourth place 1956"],
+    squadHref: "/football/players",
+    faq: [
+      {
+        q: "Who is India's all-time top scorer in men's football?",
+        a: "Sunil Chhetri, with 95 international goals. He is also India's most-capped men's player, with 157 appearances.",
+      },
+      {
+        q: "Has India ever played at the FIFA World Cup?",
+        a: "No. India's best results on the world stage came at the Olympics, where they finished fourth in 1956.",
+      },
+      {
+        q: "How many SAFF Championships has India won?",
+        a: "Nine, the most of any team.",
+      },
+    ],
+  },
+  {
+    sport: "football",
+    slug: "india-women",
+    name: "India women's football team",
+    kind: "national",
+    description:
+      "India's women's football team: AFC Women's Asian Cup runners-up in 1980 and 1983, with records held by Ashalata Devi and Bala Devi.",
+    intro: [
+      "India's women reached the final of the AFC Women's Asian Cup twice in its early years, in 1980 and 1983.",
+      "Defender Ashalata Devi became the first India woman to reach 100 caps, and forward Bala Devi is the team's record scorer with 48 goals.",
+    ],
+    facts: [
+      { label: "Governing body", value: "All India Football Federation (AIFF)" },
+      { label: "Best Asian Cup finish", value: "Runners-up, 1980 and 1983" },
+      { label: "Most caps", value: "Ashalata Devi, 100" },
+      { label: "Top scorer", value: "Bala Devi, 48 goals" },
+    ],
+    names: ["India women"],
+    otherHonours: ["AFC Women's Asian Cup: runners-up 1980 and 1983"],
+    squadHref: "/football/players/women",
+    faq: [
+      {
+        q: "Who is the top scorer for India's women's football team?",
+        a: "Bala Devi, with 48 international goals.",
+      },
+      {
+        q: "What is India women's best result at the Asian Cup?",
+        a: "Runners-up, in both 1980 and 1983.",
+      },
+    ],
+  },
 ];
 
 export const teamsFor = (sport: string) => TEAMS.filter((t) => t.sport === sport);

@@ -23,6 +23,9 @@ export interface Competition {
   india: string;
   /** Newest first. */
   editions: Edition[];
+  /** Set when `editions` covers only recent years: the page labels the list
+   * "since X" and hides the all-time titles tally, which would mislead. */
+  since?: string;
   faq: Qa[];
   /** Date the facts on the page were last checked (human-readable). */
   reviewed: string;
@@ -658,6 +661,251 @@ export const COMPETITIONS: Competition[] = [
     ],
     reviewed: "10 October 2026",
     checkedAgainst: "International Kabaddi Federation records",
+  },
+
+  // ── Football (checked 10 October 2026) ──
+  {
+    sport: "football",
+    slug: "indian-super-league",
+    name: "Indian Super League (ISL)",
+    short: "ISL",
+    description:
+      "The Indian Super League since 2014: every champion, from ATK's first title to East Bengal in 2025–26, plus how the title has been decided.",
+    intro: [
+      "The Indian Super League is India's top football division. It began in 2014 as a short franchise tournament and has become the national league, with promotion from the I-League.",
+      "Until 2024–25 the champion was decided by a playoff final, with the League Winners' Shield going to the side that topped the table from 2019–20. In 2025–26 the title went to the league leaders, East Bengal. Clubs are listed under their current names: ATK played as Atlético de Kolkata in 2014 and 2016, and Mohun Bagan SG as ATK Mohun Bagan from 2020 to 2023.",
+    ],
+    facts: [
+      { label: "First season", value: "2014" },
+      { label: "Level", value: "Top division of Indian football" },
+      { label: "Run by", value: "AIFF" },
+      { label: "Most titles", value: "ATK, 3" },
+      { label: "Latest champion", value: "East Bengal, 2025–26" },
+    ],
+    india: "The ISL is where most of India's national-team players play their club football.",
+    editions: [
+      { year: "2025–26", winner: "East Bengal", runnerUp: "Mohun Bagan SG (league runners-up)" },
+      { year: "2024–25", winner: "Mohun Bagan SG", runnerUp: "Bengaluru" },
+      { year: "2023–24", winner: "Mumbai City", runnerUp: "Mohun Bagan SG" },
+      { year: "2022–23", winner: "Mohun Bagan SG", runnerUp: "Bengaluru" },
+      { year: "2021–22", winner: "Hyderabad", runnerUp: "Kerala Blasters" },
+      { year: "2020–21", winner: "Mumbai City", runnerUp: "Mohun Bagan SG" },
+      { year: "2019–20", winner: "ATK", runnerUp: "Chennaiyin" },
+      { year: "2018–19", winner: "Bengaluru", runnerUp: "Goa" },
+      { year: "2017–18", winner: "Chennaiyin", runnerUp: "Bengaluru" },
+      { year: "2016", winner: "ATK", runnerUp: "Kerala Blasters" },
+      { year: "2015", winner: "Chennaiyin", runnerUp: "Goa" },
+      { year: "2014", winner: "ATK", runnerUp: "Kerala Blasters" },
+    ],
+    faq: [
+      {
+        q: "Who won the ISL in 2025–26?",
+        a: "East Bengal, their first ISL title. The 2025–26 champion was decided on the league table rather than by a playoff final.",
+      },
+      {
+        q: "Which club has won the most ISL titles?",
+        a: "ATK, with three (2014, 2016 and 2019–20). Chennaiyin, Mumbai City and Mohun Bagan SG have two each.",
+      },
+      {
+        q: "What is the ISL League Winners' Shield?",
+        a: "The trophy for the club that finishes top of the regular-season table, awarded since 2019–20 alongside the playoff title.",
+      },
+      {
+        q: "Have Kerala Blasters won the ISL?",
+        a: "Not yet. They have reached three finals — 2014, 2016 and 2021–22 — and lost all three.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "AIFF and ISL records",
+  },
+  {
+    sport: "football",
+    slug: "super-cup",
+    name: "Super Cup",
+    short: "Super Cup",
+    description:
+      "India's knockout Super Cup since 2018: every winner and runner-up. Goa have won it three times, including back-to-back in 2025 and 2025–26.",
+    intro: [
+      "The Super Cup is India's national knockout cup for clubs from the ISL and I-League. It began in 2018, replacing the Federation Cup, and was paused between 2020 and 2022.",
+      "Goa are the most successful side, with three titles, the last two in a row.",
+    ],
+    facts: [
+      { label: "First edition", value: "2018" },
+      { label: "Format", value: "Knockout cup" },
+      { label: "Run by", value: "AIFF" },
+      { label: "Most titles", value: "Goa, 3" },
+    ],
+    india: "A cup for Indian clubs; the winner earns a continental place in some seasons.",
+    editions: [
+      { year: "2025–26", winner: "Goa", runnerUp: "East Bengal" },
+      { year: "2025", winner: "Goa", runnerUp: "Jamshedpur" },
+      { year: "2024", winner: "East Bengal", runnerUp: "Odisha" },
+      { year: "2023", winner: "Odisha", runnerUp: "Bengaluru" },
+      { year: "2019", winner: "Goa", runnerUp: "Chennaiyin" },
+      { year: "2018", winner: "Bengaluru", runnerUp: "East Bengal" },
+    ],
+    faq: [
+      {
+        q: "Who has won the most Super Cups in Indian football?",
+        a: "Goa, with three: 2019, 2025 and 2025–26.",
+      },
+      {
+        q: "When did the Super Cup start?",
+        a: "In 2018, replacing the Federation Cup. Bengaluru won the first edition, beating East Bengal in the final.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "AIFF records",
+  },
+  {
+    sport: "football",
+    slug: "durand-cup",
+    name: "Durand Cup",
+    short: "Durand Cup",
+    description:
+      "The Durand Cup, first played in 1888, is one of the oldest football tournaments in the world. Recent winners since 2010, and how it fits the Indian season.",
+    intro: [
+      "The Durand Cup was first played in 1888, making it Asia's oldest club football competition and one of the oldest anywhere. It now opens the Indian season each summer, with ISL, I-League and armed-forces sides taking part.",
+      "Kolkata's two giants, Mohun Bagan and East Bengal, have the richest history in it. In the most recent edition, in 2026, East Bengal beat Mohun Bagan in the final.",
+    ],
+    facts: [
+      { label: "First played", value: "1888" },
+      { label: "Format", value: "Group stage then knockouts" },
+      { label: "Usual window", value: "July–August" },
+      { label: "Latest champion", value: "East Bengal, 2026" },
+    ],
+    india: "Played every year it can be, the Durand Cup is the traditional curtain-raiser of the Indian football season.",
+    since: "2010",
+    editions: [
+      { year: "2026", winner: "East Bengal", runnerUp: "Mohun Bagan" },
+      { year: "2025", winner: "NorthEast United", runnerUp: "Diamond Harbour" },
+      { year: "2024", winner: "NorthEast United", runnerUp: "Mohun Bagan" },
+      { year: "2023", winner: "Mohun Bagan", runnerUp: "East Bengal" },
+      { year: "2022", winner: "Bengaluru", runnerUp: "Mumbai City" },
+      { year: "2021", winner: "Goa", runnerUp: "Mohammedan" },
+      { year: "2019", winner: "Gokulam Kerala", runnerUp: "Mohun Bagan" },
+      { year: "2016", winner: "Army Green", runnerUp: "NEROCA" },
+      { year: "2014", winner: "Salgaocar", runnerUp: "Pune" },
+      { year: "2013", winner: "Mohammedan", runnerUp: "ONGC" },
+      { year: "2012", winner: "Air India", runnerUp: "Dodsal" },
+      { year: "2011", winner: "Churchill Brothers", runnerUp: "Prayag United" },
+      { year: "2010", winner: "Chirag United", runnerUp: "JCT" },
+    ],
+    faq: [
+      {
+        q: "How old is the Durand Cup?",
+        a: "It was first played in 1888, making it the oldest club football competition in Asia.",
+      },
+      {
+        q: "Who won the 2026 Durand Cup?",
+        a: "East Bengal, who beat Mohun Bagan in the final.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "Durand Cup records",
+  },
+  {
+    sport: "football",
+    slug: "saff-championship",
+    name: "SAFF Championship",
+    short: "SAFF Championship",
+    description:
+      "The SAFF Championship, South Asia's men's football title: India have won it nine times, most recently at home in 2023. Every winner and runner-up.",
+    intro: [
+      "The SAFF Championship is the men's championship of the South Asian Football Federation, first played in 1993. India are by far its most successful side, with nine titles.",
+      "India won the most recent completed edition at home in Bengaluru in 2023, beating guest side Kuwait on penalties. The 2009 title was won by an under-23 India team.",
+    ],
+    facts: [
+      { label: "First edition", value: "1993" },
+      { label: "Run by", value: "South Asian Football Federation" },
+      { label: "India's titles", value: "9" },
+      { label: "Most titles", value: "India, 9" },
+    ],
+    india: "Champions nine times — 1993, 1997, 1999, 2005, 2009, 2011, 2015, 2021 and 2023 — and runners-up four times.",
+    editions: [
+      { year: "2023", winner: "India", runnerUp: "Kuwait", host: "India" },
+      { year: "2021", winner: "India", runnerUp: "Nepal", host: "Maldives" },
+      { year: "2018", winner: "Maldives", runnerUp: "India", host: "Bangladesh" },
+      { year: "2015", winner: "India", runnerUp: "Afghanistan", host: "India" },
+      { year: "2013", winner: "Afghanistan", runnerUp: "India", host: "Nepal" },
+      { year: "2011", winner: "India", runnerUp: "Afghanistan", host: "India" },
+      { year: "2009", winner: "India", runnerUp: "Maldives", host: "Bangladesh" },
+      { year: "2008", winner: "Maldives", runnerUp: "India", host: "Maldives and Sri Lanka" },
+      { year: "2005", winner: "India", runnerUp: "Bangladesh", host: "Pakistan" },
+      { year: "2003", winner: "Bangladesh", runnerUp: "Maldives", host: "Bangladesh" },
+      { year: "1999", winner: "India", runnerUp: "Bangladesh", host: "India" },
+      { year: "1997", winner: "India", runnerUp: "Maldives", host: "Nepal" },
+      { year: "1995", winner: "Sri Lanka", runnerUp: "India", host: "Sri Lanka" },
+      { year: "1993", winner: "India", runnerUp: "Sri Lanka", host: "Pakistan" },
+    ],
+    faq: [
+      {
+        q: "How many SAFF Championships has India won?",
+        a: "Nine: 1993, 1997, 1999, 2005, 2009, 2011, 2015, 2021 and 2023.",
+      },
+      {
+        q: "Who won the 2023 SAFF Championship?",
+        a: "India, who beat Kuwait on penalties in the final in Bengaluru.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "SAFF records",
+  },
+  {
+    sport: "football",
+    slug: "afc-asian-cup",
+    name: "AFC Asian Cup",
+    short: "Asian Cup",
+    description:
+      "The AFC Asian Cup, Asia's men's championship since 1956: every winner and runner-up. India finished second in 1964, their best result.",
+    intro: [
+      "The AFC Asian Cup is Asia's continental championship for men's national teams, first played in 1956. Japan have won it a record four times.",
+      "India's best finish came in 1964 in Israel, when they were runners-up in a four-team round-robin. India have also played in the finals in 1984, 2011, 2019 and 2023.",
+    ],
+    facts: [
+      { label: "First edition", value: "1956" },
+      { label: "Run by", value: "Asian Football Confederation" },
+      { label: "Most titles", value: "Japan, 4" },
+      { label: "India's best", value: "Runners-up, 1964" },
+      { label: "Next edition", value: "2027, Saudi Arabia" },
+    ],
+    india: "Runners-up in 1964; group stage in 1984, 2011, 2019 and 2023.",
+    editions: [
+      { year: "2023", winner: "Qatar", runnerUp: "Jordan", host: "Qatar" },
+      { year: "2019", winner: "Qatar", runnerUp: "Japan", host: "United Arab Emirates" },
+      { year: "2015", winner: "Australia", runnerUp: "South Korea", host: "Australia" },
+      { year: "2011", winner: "Japan", runnerUp: "Australia", host: "Qatar" },
+      { year: "2007", winner: "Iraq", runnerUp: "Saudi Arabia", host: "Indonesia, Malaysia, Thailand and Vietnam" },
+      { year: "2004", winner: "Japan", runnerUp: "China", host: "China" },
+      { year: "2000", winner: "Japan", runnerUp: "Saudi Arabia", host: "Lebanon" },
+      { year: "1996", winner: "Saudi Arabia", runnerUp: "United Arab Emirates", host: "United Arab Emirates" },
+      { year: "1992", winner: "Japan", runnerUp: "Saudi Arabia", host: "Japan" },
+      { year: "1988", winner: "Saudi Arabia", runnerUp: "South Korea", host: "Qatar" },
+      { year: "1984", winner: "Saudi Arabia", runnerUp: "China", host: "Singapore" },
+      { year: "1980", winner: "Kuwait", runnerUp: "South Korea", host: "Kuwait" },
+      { year: "1976", winner: "Iran", runnerUp: "Kuwait", host: "Iran" },
+      { year: "1972", winner: "Iran", runnerUp: "South Korea", host: "Thailand" },
+      { year: "1968", winner: "Iran", runnerUp: "Burma", host: "Iran" },
+      { year: "1964", winner: "Israel", runnerUp: "India", host: "Israel" },
+      { year: "1960", winner: "South Korea", runnerUp: "Israel", host: "South Korea" },
+      { year: "1956", winner: "South Korea", runnerUp: "Israel", host: "Hong Kong" },
+    ],
+    faq: [
+      {
+        q: "What is India's best result at the Asian Cup?",
+        a: "Runners-up in 1964, behind hosts Israel in a four-team round-robin.",
+      },
+      {
+        q: "How many times has India played in the Asian Cup?",
+        a: "Five: 1964, 1984, 2011, 2019 and 2023.",
+      },
+      {
+        q: "Who has won the most Asian Cups?",
+        a: "Japan, with four titles: 1992, 2000, 2004 and 2011.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "AFC records",
   },
 ];
 

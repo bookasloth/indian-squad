@@ -277,6 +277,38 @@ export const TEAMS: Team[] = [
   pkl("up-yoddhas", "UP Yoddhas", "Lucknow", "Babu Banarasi Das Indoor Stadium", "2017", ["UP Yoddhas", "UP Yoddha"],
     "UP Yoddhas joined in the 2017 expansion and have yet to reach a final."),
 
+  // ── Badminton ──
+  {
+    sport: "badminton",
+    slug: "india",
+    name: "India badminton team",
+    kind: "national",
+    description:
+      "India's national badminton team: 2022 Thomas Cup champions, three Olympic medals and 16 World Championship medals, with P. V. Sindhu the only world champion.",
+    intro: [
+      "India's men won the Thomas Cup for the first time in 2022, the country's biggest team result in badminton. Individually, Indian players have won three Olympic medals and sixteen World Championship medals.",
+      "P. V. Sindhu leads the way, with an Olympic silver and bronze and the 2019 world title. Saina Nehwal won India's first Olympic medal in the sport, and Satwiksairaj Rankireddy and Chirag Shetty have twice won world medals in men's doubles.",
+    ],
+    facts: [
+      { label: "Governing body", value: "Badminton Association of India" },
+      { label: "Thomas Cup", value: "Champions 2022" },
+      { label: "Olympic medals", value: "3" },
+      { label: "World Championship medals", value: "16" },
+    ],
+    names: ["India"],
+    otherHonours: ["Olympics: 1 silver, 2 bronze", "BWF World Championships: 1 gold, 4 silver, 11 bronze", "Uber Cup: bronze 2014 and 2016"],
+    faq: [
+      {
+        q: "Has India won the Thomas Cup?",
+        a: "Yes, in 2022, beating Indonesia 3–0 in the final in Bangkok.",
+      },
+      {
+        q: "Who is India's most successful badminton player?",
+        a: "By major medals, P. V. Sindhu: two Olympic medals and five World Championship medals, including the 2019 world title.",
+      },
+    ],
+  },
+
   // ── Football ──
   {
     sport: "football",

@@ -8,6 +8,13 @@ export interface Edition {
   host?: string;
 }
 
+export interface Medal {
+  year: string;
+  player: string;
+  event: string;
+  medal: "Gold" | "Silver" | "Bronze" | "Champion" | "Runner-up";
+}
+
 export interface Competition {
   sport: SportSlug;
   slug: string;
@@ -26,6 +33,10 @@ export interface Competition {
   /** Set when `editions` covers only recent years: the page labels the list
    * "since X" and hides the all-time titles tally, which would mislead. */
   since?: string;
+  /** India's medals, for individual-sport events where a full winners list
+   * isn't the point (badminton Olympics, World Championships). Newest first.
+   * Leave `editions` empty when this is the main table. */
+  medals?: Medal[];
   faq: Qa[];
   /** Date the facts on the page were last checked (human-readable). */
   reviewed: string;
@@ -906,6 +917,280 @@ export const COMPETITIONS: Competition[] = [
     ],
     reviewed: "10 October 2026",
     checkedAgainst: "AFC records",
+  },
+
+  // ── Badminton (checked 10 October 2026) ──
+  {
+    sport: "badminton",
+    slug: "thomas-cup",
+    name: "Thomas Cup",
+    short: "Thomas Cup",
+    description:
+      "The Thomas Cup, badminton's men's team world championship since 1949. India won it for the first time in 2022, beating Indonesia 3–0 in the final. Every winner.",
+    intro: [
+      "The Thomas Cup is the world team championship for men's badminton, first contested in 1948–49. Each tie is played over five matches: three singles and two doubles.",
+      "India won it for the first time in 2022 in Bangkok, beating 14-time champions Indonesia 3–0 in the final — one of the biggest results in Indian badminton history.",
+    ],
+    facts: [
+      { label: "First edition", value: "1949" },
+      { label: "Format", value: "Team event: 3 singles, 2 doubles" },
+      { label: "Run by", value: "BWF" },
+      { label: "Most titles", value: "Indonesia, 14" },
+      { label: "India's title", value: "2022" },
+    ],
+    india: "Champions in 2022, beating Indonesia 3–0 in the final in Bangkok.",
+    editions: [
+      { year: "2026", winner: "China", runnerUp: "France", host: "Horsens, Denmark" },
+      { year: "2024", winner: "China", runnerUp: "Indonesia", host: "Chengdu, China" },
+      { year: "2022", winner: "India", runnerUp: "Indonesia", host: "Bangkok, Thailand" },
+      { year: "2020", winner: "Indonesia", runnerUp: "China", host: "Aarhus, Denmark" },
+      { year: "2018", winner: "China", runnerUp: "Japan", host: "Bangkok, Thailand" },
+      { year: "2016", winner: "Denmark", runnerUp: "Indonesia", host: "Kunshan, China" },
+      { year: "2014", winner: "Japan", runnerUp: "Malaysia", host: "New Delhi, India" },
+      { year: "2012", winner: "China", runnerUp: "South Korea", host: "Wuhan, China" },
+      { year: "2010", winner: "China", runnerUp: "Indonesia", host: "Kuala Lumpur, Malaysia" },
+      { year: "2008", winner: "China", runnerUp: "South Korea", host: "Jakarta, Indonesia" },
+      { year: "2006", winner: "China", runnerUp: "Denmark", host: "Sendai and Tokyo, Japan" },
+      { year: "2004", winner: "China", runnerUp: "Denmark", host: "Jakarta, Indonesia" },
+      { year: "2002", winner: "Indonesia", runnerUp: "Malaysia", host: "Guangzhou, China" },
+      { year: "2000", winner: "Indonesia", runnerUp: "China", host: "Kuala Lumpur, Malaysia" },
+      { year: "1998", winner: "Indonesia", runnerUp: "Malaysia", host: "Hong Kong" },
+      { year: "1996", winner: "Indonesia", runnerUp: "Denmark", host: "Hong Kong" },
+      { year: "1994", winner: "Indonesia", runnerUp: "Malaysia", host: "Jakarta, Indonesia" },
+      { year: "1992", winner: "Malaysia", runnerUp: "Indonesia", host: "Kuala Lumpur, Malaysia" },
+      { year: "1990", winner: "China", runnerUp: "Malaysia", host: "Nagoya and Tokyo, Japan" },
+      { year: "1988", winner: "China", runnerUp: "Malaysia", host: "Kuala Lumpur, Malaysia" },
+      { year: "1986", winner: "China", runnerUp: "Indonesia", host: "Jakarta, Indonesia" },
+      { year: "1984", winner: "Indonesia", runnerUp: "China", host: "Kuala Lumpur, Malaysia" },
+      { year: "1982", winner: "China", runnerUp: "Indonesia", host: "London, England" },
+      { year: "1979", winner: "Indonesia", runnerUp: "Denmark", host: "Jakarta, Indonesia" },
+      { year: "1976", winner: "Indonesia", runnerUp: "Malaysia", host: "Bangkok, Thailand" },
+      { year: "1973", winner: "Indonesia", runnerUp: "Denmark", host: "Jakarta, Indonesia" },
+      { year: "1970", winner: "Indonesia", runnerUp: "Malaysia", host: "Kuala Lumpur, Malaysia" },
+      { year: "1967", winner: "Malaysia", runnerUp: "Indonesia", host: "Jakarta, Indonesia" },
+      { year: "1964", winner: "Indonesia", runnerUp: "Denmark", host: "Tokyo, Japan" },
+      { year: "1961", winner: "Indonesia", runnerUp: "Thailand", host: "Jakarta, Indonesia" },
+      { year: "1958", winner: "Indonesia", runnerUp: "Malaya", host: "Singapore" },
+      { year: "1955", winner: "Malaya", runnerUp: "Denmark", host: "Singapore" },
+      { year: "1952", winner: "Malaya", runnerUp: "United States", host: "Singapore" },
+      { year: "1949", winner: "Malaya", runnerUp: "Denmark", host: "Preston, England" },
+    ],
+    faq: [
+      {
+        q: "When did India win the Thomas Cup?",
+        a: "In 2022, in Bangkok. India beat Indonesia, the most successful nation in the event's history, 3–0 in the final.",
+      },
+      {
+        q: "Which country has won the most Thomas Cups?",
+        a: "Indonesia, with 14 titles. China have won 12.",
+      },
+      {
+        q: "How is a Thomas Cup tie played?",
+        a: "Each tie is five matches — three singles and two doubles — and the first team to win three takes the tie.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "BWF records",
+  },
+  {
+    sport: "badminton",
+    slug: "uber-cup",
+    name: "Uber Cup",
+    short: "Uber Cup",
+    description:
+      "The Uber Cup, badminton's women's team world championship since 1957. Every winner, China's dominance, and India's medals.",
+    intro: [
+      "The Uber Cup is the women's equivalent of the Thomas Cup, first held in 1957 and now played alongside it. China have dominated it since the 1980s.",
+      "India reached the semi-finals of the very first Uber Cup and won bronze medals in 2014 and 2016, but have not yet reached a final.",
+    ],
+    facts: [
+      { label: "First edition", value: "1957" },
+      { label: "Format", value: "Team event: 3 singles, 2 doubles" },
+      { label: "Run by", value: "BWF" },
+      { label: "Most titles", value: "China" },
+      { label: "India's best", value: "Semi-finals (1957, 2014, 2016)" },
+    ],
+    india: "Semi-finalists in 1957, and bronze medallists in 2014 and 2016.",
+    editions: [
+      { year: "2026", winner: "South Korea", runnerUp: "China", host: "Horsens, Denmark" },
+      { year: "2024", winner: "China", runnerUp: "Indonesia", host: "Chengdu, China" },
+      { year: "2022", winner: "South Korea", runnerUp: "China", host: "Bangkok, Thailand" },
+      { year: "2020", winner: "China", runnerUp: "Japan", host: "Aarhus, Denmark" },
+      { year: "2018", winner: "Japan", runnerUp: "Thailand", host: "Bangkok, Thailand" },
+      { year: "2016", winner: "China", runnerUp: "South Korea", host: "Kunshan, China" },
+      { year: "2014", winner: "China", runnerUp: "Japan", host: "New Delhi, India" },
+      { year: "2012", winner: "China", runnerUp: "South Korea", host: "Wuhan, China" },
+      { year: "2010", winner: "South Korea", runnerUp: "China", host: "Kuala Lumpur, Malaysia" },
+      { year: "2008", winner: "China", runnerUp: "Indonesia", host: "Jakarta, Indonesia" },
+      { year: "2006", winner: "China", runnerUp: "Netherlands", host: "Sendai and Tokyo, Japan" },
+      { year: "2004", winner: "China", runnerUp: "South Korea", host: "Jakarta, Indonesia" },
+      { year: "2002", winner: "China", runnerUp: "South Korea", host: "Guangzhou, China" },
+      { year: "2000", winner: "China", runnerUp: "Denmark", host: "Kuala Lumpur, Malaysia" },
+      { year: "1998", winner: "China", runnerUp: "Indonesia", host: "Hong Kong" },
+      { year: "1996", winner: "Indonesia", runnerUp: "China", host: "Hong Kong" },
+      { year: "1994", winner: "Indonesia", runnerUp: "China", host: "Jakarta, Indonesia" },
+      { year: "1992", winner: "China", runnerUp: "South Korea", host: "Kuala Lumpur, Malaysia" },
+      { year: "1990", winner: "China", runnerUp: "South Korea", host: "Nagoya and Tokyo, Japan" },
+      { year: "1988", winner: "China", runnerUp: "South Korea", host: "Kuala Lumpur, Malaysia" },
+      { year: "1986", winner: "China", runnerUp: "Indonesia", host: "Jakarta, Indonesia" },
+      { year: "1984", winner: "China", runnerUp: "England", host: "Kuala Lumpur, Malaysia" },
+      { year: "1981", winner: "Japan", runnerUp: "Indonesia", host: "Tokyo, Japan" },
+      { year: "1978", winner: "Japan", runnerUp: "Indonesia", host: "Auckland, New Zealand" },
+      { year: "1975", winner: "Indonesia", runnerUp: "Japan", host: "Jakarta, Indonesia" },
+      { year: "1972", winner: "Japan", runnerUp: "Indonesia", host: "Tokyo, Japan" },
+      { year: "1969", winner: "Japan", runnerUp: "Indonesia", host: "Tokyo, Japan" },
+      { year: "1966", winner: "Japan", runnerUp: "United States", host: "Wellington, New Zealand" },
+      { year: "1963", winner: "United States", runnerUp: "England", host: "Wilmington, United States" },
+      { year: "1960", winner: "United States", runnerUp: "Denmark", host: "Philadelphia, United States" },
+      { year: "1957", winner: "United States", runnerUp: "Denmark", host: "Lancashire, England" },
+    ],
+    faq: [
+      {
+        q: "Has India won the Uber Cup?",
+        a: "Not yet. India's best results are semi-final places in 1957, 2014 and 2016, with bronze medals in the last two.",
+      },
+      {
+        q: "Who won the 2026 Uber Cup?",
+        a: "South Korea, who beat China in the final in Horsens, Denmark.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "BWF records",
+  },
+  {
+    sport: "badminton",
+    slug: "olympics",
+    name: "Olympic badminton",
+    short: "Olympics",
+    description:
+      "India's Olympic badminton medals: Saina Nehwal's bronze in 2012, and P. V. Sindhu's silver in 2016 and bronze in 2020 — the first Indian woman with two individual Olympic medals.",
+    intro: [
+      "Badminton became a full Olympic sport at Barcelona 1992. India's first medal came at London 2012, when Saina Nehwal won bronze in women's singles.",
+      "P. V. Sindhu then won silver at Rio 2016 and bronze at Tokyo 2020, becoming the first Indian woman to win two individual Olympic medals. At Paris 2024, Lakshya Sen came fourth in men's singles.",
+    ],
+    facts: [
+      { label: "Olympic sport since", value: "1992" },
+      { label: "India's medals", value: "3 (1 silver, 2 bronze)" },
+      { label: "First Indian medal", value: "Saina Nehwal, bronze, 2012" },
+      { label: "Best result", value: "Silver, P. V. Sindhu, 2016" },
+      { label: "Next Games", value: "Los Angeles 2028" },
+    ],
+    india: "Three medals, all in women's singles: bronze in 2012 and 2020, silver in 2016.",
+    editions: [],
+    medals: [
+      { year: "2020", player: "P. V. Sindhu", event: "Women's singles", medal: "Bronze" },
+      { year: "2016", player: "P. V. Sindhu", event: "Women's singles", medal: "Silver" },
+      { year: "2012", player: "Saina Nehwal", event: "Women's singles", medal: "Bronze" },
+    ],
+    faq: [
+      {
+        q: "How many Olympic medals has India won in badminton?",
+        a: "Three: Saina Nehwal's bronze in 2012, and P. V. Sindhu's silver in 2016 and bronze in 2020.",
+      },
+      {
+        q: "Who won India's first Olympic badminton medal?",
+        a: "Saina Nehwal, with bronze in women's singles at London 2012.",
+      },
+      {
+        q: "Did India win a badminton medal at Paris 2024?",
+        a: "No. Lakshya Sen came closest, finishing fourth in men's singles.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "BWF and Olympic records",
+  },
+  {
+    sport: "badminton",
+    slug: "bwf-world-championships",
+    name: "BWF World Championships",
+    short: "World Championships",
+    description:
+      "India's medals at the BWF World Championships, from Prakash Padukone's bronze in 1983 to P. V. Sindhu's gold in 2019 and the home championships in New Delhi in 2026.",
+    intro: [
+      "The BWF World Championships crown individual world champions in five events: men's and women's singles and doubles, and mixed doubles.",
+      "P. V. Sindhu is India's only world champion, winning women's singles in Basel in 2019 — the last of her five World Championship medals. India hosted the championships in New Delhi in 2026.",
+    ],
+    facts: [
+      { label: "First edition", value: "1977" },
+      { label: "Events", value: "5 (singles, doubles, mixed)" },
+      { label: "Run by", value: "BWF" },
+      { label: "India's world champion", value: "P. V. Sindhu, 2019" },
+      { label: "Most Indian medals", value: "P. V. Sindhu, 5" },
+    ],
+    india: "One gold, four silvers and eleven bronzes, led by P. V. Sindhu's five medals.",
+    editions: [],
+    medals: [
+      { year: "2026", player: "Treesa Jolly / Gayatri Gopichand", event: "Women's doubles", medal: "Bronze" },
+      { year: "2025", player: "Satwiksairaj Rankireddy / Chirag Shetty", event: "Men's doubles", medal: "Bronze" },
+      { year: "2023", player: "H. S. Prannoy", event: "Men's singles", medal: "Bronze" },
+      { year: "2022", player: "Satwiksairaj Rankireddy / Chirag Shetty", event: "Men's doubles", medal: "Bronze" },
+      { year: "2021", player: "Kidambi Srikanth", event: "Men's singles", medal: "Silver" },
+      { year: "2021", player: "Lakshya Sen", event: "Men's singles", medal: "Bronze" },
+      { year: "2019", player: "P. V. Sindhu", event: "Women's singles", medal: "Gold" },
+      { year: "2019", player: "B. Sai Praneeth", event: "Men's singles", medal: "Bronze" },
+      { year: "2018", player: "P. V. Sindhu", event: "Women's singles", medal: "Silver" },
+      { year: "2017", player: "P. V. Sindhu", event: "Women's singles", medal: "Silver" },
+      { year: "2017", player: "Saina Nehwal", event: "Women's singles", medal: "Bronze" },
+      { year: "2015", player: "Saina Nehwal", event: "Women's singles", medal: "Silver" },
+      { year: "2014", player: "P. V. Sindhu", event: "Women's singles", medal: "Bronze" },
+      { year: "2013", player: "P. V. Sindhu", event: "Women's singles", medal: "Bronze" },
+      { year: "2011", player: "Jwala Gutta / Ashwini Ponnappa", event: "Women's doubles", medal: "Bronze" },
+      { year: "1983", player: "Prakash Padukone", event: "Men's singles", medal: "Bronze" },
+    ],
+    faq: [
+      {
+        q: "Who is India's only badminton world champion?",
+        a: "P. V. Sindhu, who won women's singles at the 2019 World Championships in Basel.",
+      },
+      {
+        q: "How many World Championship medals has P. V. Sindhu won?",
+        a: "Five: bronze in 2013 and 2014, silver in 2017 and 2018, and gold in 2019.",
+      },
+      {
+        q: "Who won India's first World Championship medal in badminton?",
+        a: "Prakash Padukone, with bronze in men's singles in 1983.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "BWF records",
+  },
+  {
+    sport: "badminton",
+    slug: "all-england-open",
+    name: "All England Open",
+    short: "All England",
+    description:
+      "The All England Open, badminton's oldest and most prestigious tournament. Prakash Padukone (1980) and Pullela Gopichand (2001) are India's champions.",
+    intro: [
+      "The All England Open, played in Birmingham each March, is the oldest tournament in badminton and was the unofficial world championship for decades. It is now a Super 1000 event on the BWF World Tour.",
+      "Two Indians have won it, both in men's singles: Prakash Padukone in 1980 and Pullela Gopichand in 2001. Saina Nehwal (2015) and Lakshya Sen (2022) reached the final.",
+    ],
+    facts: [
+      { label: "First held", value: "1899" },
+      { label: "Venue", value: "Birmingham, England" },
+      { label: "Tier", value: "BWF World Tour Super 1000" },
+      { label: "Indian champions", value: "Padukone 1980, Gopichand 2001" },
+    ],
+    india: "Champions: Prakash Padukone (1980) and Pullela Gopichand (2001). Finalists: Saina Nehwal (2015) and Lakshya Sen (2022).",
+    editions: [],
+    medals: [
+      { year: "2022", player: "Lakshya Sen", event: "Men's singles", medal: "Runner-up" },
+      { year: "2015", player: "Saina Nehwal", event: "Women's singles", medal: "Runner-up" },
+      { year: "2001", player: "Pullela Gopichand", event: "Men's singles", medal: "Champion" },
+      { year: "1980", player: "Prakash Padukone", event: "Men's singles", medal: "Champion" },
+    ],
+    faq: [
+      {
+        q: "Which Indians have won the All England Open?",
+        a: "Prakash Padukone in 1980 and Pullela Gopichand in 2001, both in men's singles.",
+      },
+      {
+        q: "Has an Indian woman reached the All England final?",
+        a: "Yes. Saina Nehwal reached the women's singles final in 2015.",
+      },
+    ],
+    reviewed: "10 October 2026",
+    checkedAgainst: "BWF records",
   },
 ];
 

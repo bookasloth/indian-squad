@@ -115,7 +115,9 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
                     <CardHeader>
                       <CardTitle>{c.short}</CardTitle>
                       <CardDescription>
-                        {c.editions[0].year}: {c.editions[0].winner}
+                        {c.editions[0]
+                          ? `${c.editions[0].year}: ${c.editions[0].winner}`
+                          : c.medals?.[0] && `${c.medals[0].year}: ${c.medals[0].player} (${c.medals[0].medal.toLowerCase()})`}
                       </CardDescription>
                     </CardHeader>
                   </Card>

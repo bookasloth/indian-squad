@@ -1004,6 +1004,188 @@ export const EXPLAINERS: Explainer[] = [
       { label: "Every ISL champion", href: "/football/indian-super-league" },
     ],
   },
+
+  // ── Badminton (checked against the BWF Laws of Badminton and World Tour regulations) ──
+  {
+    sport: "badminton",
+    slug: "badminton-scoring",
+    title: "Badminton scoring explained",
+    description:
+      "How badminton is scored: rally scoring to 21, best of three games, the two-point rule, the 30-point cap, intervals and changing ends.",
+    answer:
+      "Badminton uses rally scoring: every rally wins a point, whoever served. A game is won by the first player or pair to reach 21 points, and a match is the best of three games.",
+    sections: [
+      {
+        h: "Winning a game",
+        body: [
+          "You need 21 points and a two-point lead. At 20–20, play continues until one side leads by two — but at 29–29, the next point wins, so no game goes beyond 30.",
+        ],
+      },
+      {
+        h: "Intervals and ends",
+        body: [
+          "When the leading side reaches 11 points, players get a short break of up to 60 seconds. There is up to two minutes between games. Players change ends after each game, and in a deciding third game they also change ends when the leader reaches 11.",
+        ],
+      },
+      {
+        h: "Who serves",
+        body: [
+          "The side that won the previous rally serves next. In singles, the server serves from the right service court on an even score and from the left on an odd score. In doubles, the serving pair only swap sides when they win a point on their own serve.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many points is a badminton game?",
+        a: "Twenty-one, with a two-point lead needed — up to a maximum of 30 points.",
+      },
+      {
+        q: "How many games are in a badminton match?",
+        a: "Best of three games.",
+      },
+      {
+        q: "What happens at 29–29 in badminton?",
+        a: "The next point wins the game, 30–29.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Service rules explained", href: "/badminton/learn/service-rules" },
+      { label: "BWF World Tour tiers", href: "/badminton/learn/bwf-world-tour-tiers" },
+      { label: "Take the badminton quiz", href: "/badminton/quiz" },
+    ],
+  },
+  {
+    sport: "badminton",
+    slug: "service-rules",
+    title: "Badminton service rules explained",
+    description:
+      "The rules of a legal badminton serve: the 1.15 m height limit, diagonal service courts, staying still, and the faults umpires call.",
+    answer:
+      "A badminton serve must be hit diagonally into the opponent's service court, with the whole shuttle below 1.15 metres from the floor at the moment it is struck. Both feet must stay in contact with the floor, inside the service court, until the serve is made.",
+    sections: [
+      {
+        h: "The height limit",
+        body: [
+          "The whole shuttle must be below 1.15 metres from the court surface when the server's racket hits it. Service judges check it with a fixed-height measure, which replaced the older rule based on the server's waist.",
+        ],
+      },
+      {
+        h: "Where to serve",
+        body: [
+          "The serve goes diagonally across the court. In singles the service court is long and narrow; in doubles it is short and wide, because the back tramlines are out for the serve but the side tramlines are in.",
+        ],
+      },
+      {
+        h: "Common faults",
+        body: [
+          "Lifting or dragging a foot, a serve struck above the height limit, an undue delay once both players are ready, or a feint that breaks the continuous forward swing are all service faults. A fault gives the rally, and the point, to the other side.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How high can you serve in badminton?",
+        a: "The whole shuttle must be below 1.15 metres from the floor at the moment it is hit.",
+      },
+      {
+        q: "Can you move your feet while serving in badminton?",
+        a: "No. Part of both feet must stay in contact with the floor, inside the service court, until the serve is made.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Badminton scoring explained", href: "/badminton/learn/badminton-scoring" },
+    ],
+  },
+  {
+    sport: "badminton",
+    slug: "bwf-world-tour-tiers",
+    title: "BWF World Tour tiers explained",
+    description:
+      "How badminton's tournament circuit works: Super 1000, 750, 500, 300 and 100 events, the World Tour Finals, and where the All England and India Open fit.",
+    answer:
+      "The BWF World Tour is badminton's main circuit, graded by tier: Super 1000 events are the biggest, followed by Super 750, Super 500 and Super 300, with Super 100 events below them. The season ends with the World Tour Finals for the year's top players.",
+    sections: [
+      {
+        h: "The tiers",
+        body: [
+          "Higher tiers offer more prize money and more ranking points, so the top players prioritise them. Super 1000 events include the All England Open; the India Open is a Super 750 event.",
+        ],
+      },
+      {
+        h: "The World Tour Finals",
+        body: [
+          "At the end of the season, the top eight players or pairs in each event on the World Tour standings qualify for the World Tour Finals, played in groups and then knockouts.",
+        ],
+      },
+      {
+        h: "What isn't on the Tour",
+        body: [
+          "The Olympics, the World Championships and team events such as the Thomas and Uber Cups sit outside the World Tour, though they still carry ranking points.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "What is a Super 1000 tournament in badminton?",
+        a: "The highest tier of the BWF World Tour, with the most prize money and ranking points. The All England Open is one.",
+      },
+      {
+        q: "What tier is the India Open?",
+        a: "Super 750, the second tier of the BWF World Tour.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "How BWF rankings work", href: "/badminton/learn/bwf-rankings" },
+      { label: "The All England Open", href: "/badminton/all-england-open" },
+    ],
+  },
+  {
+    sport: "badminton",
+    slug: "bwf-rankings",
+    title: "How BWF badminton rankings work",
+    description:
+      "How the BWF world rankings are calculated: points from tournament results, the best ten results over 52 weeks, and why rankings decide seedings and Olympic places.",
+    answer:
+      "BWF world rankings are based on points earned from tournament results over the previous 52 weeks. Only a player's best ten results count, so playing more events helps only if the new results beat the old ones.",
+    sections: [
+      {
+        h: "Earning points",
+        body: [
+          "Every BWF tournament awards ranking points by round reached, and bigger events award more. A World Championships or Olympic title is worth the most; winning a Super 1000 is worth more than winning a Super 300.",
+        ],
+      },
+      {
+        h: "Best ten over 52 weeks",
+        body: [
+          "Points stay on a player's record for 52 weeks. The ranking adds up the ten highest-scoring results in that window, which rewards strong results at big events over sheer volume.",
+        ],
+      },
+      {
+        h: "Why they matter",
+        body: [
+          "Rankings decide who gets into tournaments, who is seeded, and — through a separate qualifying ranking — who goes to the Olympics.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How are BWF rankings calculated?",
+        a: "By adding a player's ten best tournament results from the last 52 weeks, using the points each tournament awards for the round reached.",
+      },
+      {
+        q: "How long do BWF ranking points last?",
+        a: "Fifty-two weeks.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "BWF World Tour tiers", href: "/badminton/learn/bwf-world-tour-tiers" },
+      { label: "India badminton team", href: "/badminton/teams/india" },
+    ],
+  },
 ];
 
 export const explainersFor = (sport: string) => EXPLAINERS.filter((e) => e.sport === sport);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { quiz, type QuizQuestion } from "@/data/quiz";
+import type { QuizQuestion } from "@/data/quiz";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -14,14 +14,14 @@ function shuffle<T>(arr: T[]): T[] {
 
 type Phase = "intro" | "playing" | "done";
 
-export function Quiz() {
+export function Quiz({ questions, sport }: { questions: QuizQuestion[]; sport: string }) {
   const [phase, setPhase] = useState<Phase>("intro");
   const [order, setOrder] = useState<QuizQuestion[]>([]);
   const [idx, setIdx] = useState(0);
   const [picks, setPicks] = useState<Record<string, number>>({});
 
   function start() {
-    setOrder(shuffle(quiz));
+    setOrder(shuffle(questions));
     setIdx(0);
     setPicks({});
     setPhase("playing");
@@ -31,7 +31,7 @@ export function Quiz() {
     return (
       <Panel>
         <p className="text-muted-foreground">
-          {quiz.length} questions on Indian cricket, shuffled every round. Pick an answer to
+          {questions.length} questions on Indian {sport.toLowerCase()}, shuffled every round. Pick an answer to
           see if you got it right.
         </p>
         <PrimaryButton onClick={start}>Start quiz</PrimaryButton>
@@ -49,7 +49,7 @@ export function Quiz() {
         <div className="font-display text-5xl font-bold">
           {score}/{order.length}
         </div>
-        <p className="text-muted-foreground">{verdict(score, order.length)}</p>
+        <p className="text-muted-foreground">{verdict(score, order.length, sport)}</p>
         <PrimaryButton onClick={start}>Play again</PrimaryButton>
       </Panel>
     );
@@ -119,9 +119,9 @@ export function Quiz() {
   );
 }
 
-function verdict(score: number, total: number) {
+function verdict(score: number, total: number, sport: string) {
   const pct = score / total;
-  if (pct === 1) return "Flawless. You know your cricket.";
+  if (pct === 1) return `Flawless. You know your ${sport.toLowerCase()}.`;
   if (pct >= 0.7) return "Strong round.";
   if (pct >= 0.4) return "Not bad — go again.";
   return "Room to improve. Try again.";

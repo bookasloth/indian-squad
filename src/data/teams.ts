@@ -112,6 +112,70 @@ export const TEAMS: Team[] = [
       },
     ],
   },
+  {
+    sport: "hockey",
+    slug: "india-men",
+    name: "India men's hockey team",
+    kind: "national",
+    description:
+      "India's men's hockey team: 8 Olympic golds and 13 Olympic medals, the 1975 World Cup, five Asian Games golds and four Asia Cups. Records, honours and history.",
+    intro: [
+      "India's men are the most decorated team in Olympic hockey history, with eight gold medals between 1928 and 1980 and 13 medals in all. They won the World Cup in 1975.",
+      "After a long gap, the modern side has returned to the podium: Olympic bronze at Tokyo 2020 and Paris 2024, Asian Games gold in 2022 and 2026, and the 2025 Asia Cup.",
+    ],
+    facts: [
+      { label: "Governing body", value: "Hockey India" },
+      { label: "First Olympics", value: "1928, Amsterdam (gold)" },
+      { label: "Most caps", value: "Manpreet Singh, 430" },
+      { label: "Top scorer (modern records)", value: "Harmanpreet Singh, 240 goals" },
+    ],
+    names: ["India"],
+    otherHonours: ["Asian Champions Trophy: 5 titles", "Commonwealth Games: silver in 2010, 2014 and 2022"],
+    faq: [
+      {
+        q: "How many Olympic medals has India won in men's hockey?",
+        a: "Thirteen: eight gold, one silver and four bronze, the most of any nation.",
+      },
+      {
+        q: "Who has played the most matches for India's men's hockey team?",
+        a: "Manpreet Singh, with 430 caps as of October 2026.",
+      },
+      {
+        q: "Who has scored the most goals for India in men's hockey?",
+        a: "Among modern recorded internationals, Harmanpreet Singh, with 240 goals as of October 2026 — most of them from penalty corners.",
+      },
+    ],
+  },
+  {
+    sport: "hockey",
+    slug: "india-women",
+    name: "India women's hockey team",
+    kind: "national",
+    description:
+      "India's women's hockey team: fourth at Tokyo 2020, 1982 Asian Games champions, 2002 Commonwealth Games champions and two-time Asia Cup winners.",
+    intro: [
+      "India's women came fourth at the Tokyo 2020 Olympics, their best Olympic finish, narrowly losing the bronze-medal match to Great Britain.",
+      "Their titles include Asian Games gold in 1982, Commonwealth Games gold in 2002 and the Asia Cup in 2004 and 2017.",
+    ],
+    facts: [
+      { label: "Governing body", value: "Hockey India" },
+      { label: "Best Olympic finish", value: "4th, Tokyo 2020" },
+      { label: "Most caps", value: "Savita Punia, 326" },
+      { label: "Top scorer", value: "Rani Rampal, 120 goals" },
+    ],
+    names: ["India women"],
+    otherHonours: ["Asian Games: gold 1982", "Commonwealth Games: gold 2002", "Asia Cup: 2004, 2017"],
+    faq: [
+      {
+        q: "What is India women's best Olympic hockey result?",
+        a: "Fourth place at Tokyo 2020, after losing the bronze-medal match to Great Britain.",
+      },
+      {
+        q: "Who has the most caps for India's women's hockey team?",
+        a: "Goalkeeper Savita Punia, with 326 caps as of October 2026.",
+      },
+    ],
+  },
   ipl("chennai-super-kings", "Chennai Super Kings", "Chennai", "MA Chidambaram Stadium (Chepauk)", "2008", ["Chennai Super Kings"],
     "Chennai Super Kings are one of the IPL's two most successful sides, with five titles. They have reached more IPL finals than any other team."),
   ipl("mumbai-indians", "Mumbai Indians", "Mumbai", "Wankhede Stadium", "2008", ["Mumbai Indians"],
@@ -144,7 +208,7 @@ export function finalsOf(team: Team) {
     c.editions
       .filter((e) => team.names.includes(e.winner) || team.names.includes(e.runnerUp))
       .map((e) => ({ competition: c, year: e.year, won: team.names.includes(e.winner), opponent: team.names.includes(e.winner) ? e.runnerUp : e.winner })),
-  ).sort((a, b) => Number(b.year) - Number(a.year));
+  ).sort((a, b) => parseInt(b.year) - parseInt(a.year)); // "2024–25" sorts as 2024
 }
 
 /** Team page path for a name used in competition data, if we have one. */

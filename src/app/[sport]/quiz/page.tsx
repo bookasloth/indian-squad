@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SQUAD_SPORTS, sportLabel } from "@/lib/site";
+import { sportLabel } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
+import { quizFor } from "@/data/quiz";
 import { Quiz } from "@/components/Quiz";
 
 export async function generateMetadata({ params }: { params: Promise<{ sport: string }> }): Promise<Metadata> {
@@ -11,14 +12,17 @@ export async function generateMetadata({ params }: { params: Promise<{ sport: st
 }
 
 export default async function QuizPage({ params }: { params: Promise<{ sport: string }> }) {
-  if (!SQUAD_SPORTS.includes((await params).sport)) notFound();
+  const { sport } = await params;
+  const questions = quizFor(sport);
+  const label = sportLabel(sport);
+  if (questions.length === 0 || !label) notFound();
   return (
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Quiz</h1>
-        <p className="text-muted-foreground">Test your Indian cricket knowledge.</p>
+        <h1 className="text-3xl font-bold tracking-tight">{label} quiz</h1>
+        <p className="text-muted-foreground">Test your Indian {label.toLowerCase()} knowledge.</p>
       </header>
-      <Quiz />
+      <Quiz questions={questions} sport={label} />
     </div>
   );
 }

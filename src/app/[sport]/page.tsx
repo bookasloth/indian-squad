@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SQUAD_SPORTS, getSport } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
 import { squad } from "@/data/players";
+import { competitionsFor } from "@/data/competitions";
 import { listUpcomingEvents } from "@/lib/events";
 import { getLatestPosts } from "@/lib/community-data";
 import { timeAgo } from "@/lib/utils";
@@ -27,6 +28,7 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
   const sport = getSport((await params).sport);
   if (!sport) notFound();
   const hasSquad = SQUAD_SPORTS.includes(sport.slug);
+  const competitions = competitionsFor(sport.slug);
   const configured = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const [events, posts] = configured
     ? await Promise.all([listUpcomingEvents({ sport: sport.slug, limit: 4 }), getLatestPosts(sport.slug, 3)])
@@ -82,6 +84,28 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
           Player profiles and a squad builder for {sport.label} are on the way. Until then, the
           events and the conversation are open.
         </p>
+      )}
+
+      {competitions.length > 0 && (
+        <section className="flex flex-col gap-4">
+          <h2 className={H2}>Competitions</h2>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {competitions.map((c) => (
+              <li key={c.slug}>
+                <Link href={`/${sport.slug}/${c.slug}`} className="group block h-full">
+                  <Card className="h-full transition-ui group-hover:shadow-md">
+                    <CardHeader>
+                      <CardTitle>{c.short}</CardTitle>
+                      <CardDescription>
+                        {c.editions[0].year}: {c.editions[0].winner}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <section className="flex flex-col gap-4">

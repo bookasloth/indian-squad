@@ -18,8 +18,18 @@ async function get(path: string) {
       headers: { "x-apisports-key": key },
       next: { revalidate: REVALIDATE },
     });
-    return res.ok ? await res.json() : null;
-  } catch {
+    if (!res.ok) {
+      console.warn(`[api-football] ${path.split("?")[0]}: HTTP ${res.status}`);
+      return null;
+    }
+    const json = await res.json();
+    // Plan limits and bad parameters come back in `errors` with HTTP 200.
+    if (json?.errors && Object.keys(json.errors).length > 0) {
+      console.warn(`[api-football] ${path.split("?")[0]}: ${JSON.stringify(json.errors)}`);
+    }
+    return json;
+  } catch (e) {
+    console.warn(`[api-football] ${path.split("?")[0]}: ${(e as Error).message}`);
     return null;
   }
 }

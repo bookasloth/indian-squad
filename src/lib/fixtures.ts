@@ -19,8 +19,19 @@ type Json = Record<string, any>; // eslint-disable-line @typescript-eslint/no-ex
 export function liveSeriesIds(res: Json | null, today: string): string[] {
   const rows: Json[] = Array.isArray(res?.data) ? res.data : [];
   return rows
-    .filter((s) => typeof s.id === "string" && (!s.endDate || toIso(s.endDate) >= today))
+    .filter((s) => typeof s.id === "string" && (!s.endDate || endIso(s.startDate, s.endDate) >= today))
     .map((s) => s.id);
+}
+
+/** CricketData writes series end dates without a year ("Oct 12"); take the year from
+ * the start date, rolling into the next year for series that cross New Year. */
+function endIso(start: string | undefined, end: string): string {
+  if (/\d{4}/.test(end)) return toIso(end);
+  const startIso = toIso(start ?? "");
+  if (!startIso) return "";
+  const year = Number(startIso.slice(0, 4));
+  const sameYear = toIso(`${end} ${year}`);
+  return sameYear && sameYear < startIso ? toIso(`${end} ${year + 1}`) : sameYear;
 }
 
 /** India's matches from a `series_info` response that haven't started yet. */

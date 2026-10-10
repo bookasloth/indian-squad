@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { sport, competition } = await params;
   const c = getCompetition(sport, competition);
   if (!c) return {};
-  return pageMeta({ title: `${c.short} winners list and history`, description: c.description, path: `/${sport}/${c.slug}` });
+  return pageMeta({ title: `${c.name}: winners list and history`, description: c.description, path: `/${sport}/${c.slug}` });
 }
 
 const H2 = "font-display text-xl font-semibold tracking-tight";

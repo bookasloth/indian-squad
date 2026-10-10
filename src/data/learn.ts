@@ -393,6 +393,231 @@ export const EXPLAINERS: Explainer[] = [
       { label: "Take the cricket quiz", href: "/cricket/quiz" },
     ],
   },
+
+  // ── Hockey (checked against the FIH Rules of Hockey) ──
+  {
+    sport: "hockey",
+    slug: "hockey-rules",
+    title: "Hockey rules explained: a beginner's guide",
+    description:
+      "How field hockey works: 11 a side, four 15-minute quarters, goals only from inside the circle, the flat side of the stick, cards and shoot-outs.",
+    answer:
+      "Field hockey is played eleven a side, including a goalkeeper, over four quarters of 15 minutes. Players may only use the flat side of their stick, nobody but the goalkeeper may use their body to play the ball, and a goal only counts if the attacker touched the ball inside the shooting circle.",
+    sections: [
+      {
+        h: "The basics",
+        body: [
+          "Each team has eleven players on the pitch, one of them a goalkeeper. Substitutions are rolling: players can come off and go back on as often as the coach likes, without stopping play except for penalty corners.",
+          "An international match lasts 60 minutes, split into four quarters of 15 minutes, with short breaks between quarters and a longer one at half-time. The clock stops for goals and penalty corners.",
+        ],
+      },
+      {
+        h: "Playing the ball",
+        body: [
+          "The ball may only be played with the flat face of the stick (and its edges), never the rounded back. Outfield players can't stop or move the ball with their feet or body — doing so is a foul.",
+          "Players can't play the ball dangerously, raise it into an opponent at close range, or obstruct an opponent by putting their body or stick between the player and the ball.",
+        ],
+      },
+      {
+        h: "Scoring",
+        body: [
+          "A goal counts only if an attacker played the ball inside the shooting circle — the D-shaped area in front of goal — and it then crossed the goal line. A shot from outside the circle that goes straight in doesn't count.",
+        ],
+      },
+      {
+        h: "Free hits, corners and strokes",
+        body: [
+          "Most fouls give the other side a free hit where the foul happened, and the taker can play it to themselves. Fouls by defenders inside their circle, or deliberate ones near it, give a penalty corner. A foul that stops a probable goal gives a penalty stroke: a one-on-one shot at the goalkeeper from a spot 6.4 metres out.",
+        ],
+      },
+      {
+        h: "Cards",
+        body: [
+          "Umpires can show three cards. A green card suspends a player for two minutes, a yellow card for at least five minutes, and a red card sends them off for the rest of the match. A suspended player's team plays a player short.",
+        ],
+      },
+      {
+        h: "Shoot-outs",
+        body: [
+          "Knockout matches level at full time go to a shoot-out. A player starts 23 metres out and has eight seconds to beat the goalkeeper one-on-one; each side takes five, then sudden death.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How long is a hockey match?",
+        a: "Sixty minutes of playing time in international hockey, as four quarters of 15 minutes, plus breaks.",
+      },
+      {
+        q: "Can you score from outside the circle in hockey?",
+        a: "No. An attacker must touch the ball inside the shooting circle for a goal to count.",
+      },
+      {
+        q: "What does a green card mean in hockey?",
+        a: "A two-minute suspension. The player's team plays with one fewer player until it ends.",
+      },
+      {
+        q: "How many players are in a hockey team?",
+        a: "Eleven on the pitch, including the goalkeeper, with unlimited rolling substitutions from the bench.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Penalty corners explained", href: "/hockey/learn/penalty-corner" },
+      { label: "Hockey positions", href: "/hockey/learn/hockey-positions" },
+      { label: "Take the hockey quiz", href: "/hockey/quiz" },
+    ],
+  },
+  {
+    sport: "hockey",
+    slug: "penalty-corner",
+    title: "The penalty corner explained",
+    description:
+      "How a hockey penalty corner works: when it's given, where everyone stands, the injection, the 460 mm rule for hit shots, and why drag-flickers matter.",
+    answer:
+      "A penalty corner is hockey's set piece. The attacking side pushes the ball from the backline to teammates waiting at the edge of the circle, and the defenders — four plus the goalkeeper — rush out from behind their goal line to stop the shot. It is awarded mainly for fouls by defenders inside their own circle.",
+    sections: [
+      {
+        h: "When it's given",
+        body: [
+          "The most common reasons are an unintentional foul by a defender inside the circle, a deliberate foul by a defender in the 23-metre area, or a defender deliberately playing the ball over their own backline.",
+        ],
+      },
+      {
+        h: "Where everyone stands",
+        body: [
+          "One attacker injects the ball from a mark on the backline at least 10 metres from the goalpost. The other attackers wait outside the circle. Up to five defenders, including the goalkeeper, stand behind the backline; the rest of the defending team must be beyond the halfway line until the ball is played.",
+        ],
+      },
+      {
+        h: "Taking the shot",
+        body: [
+          "The ball must travel outside the circle before anyone can shoot, so it is usually stopped just outside and pulled back in. If the first shot is a hit, it must cross the goal line no higher than 460 mm — the height of the backboard. Flicks, pushes and drag-flicks can go higher, as long as they aren't dangerous.",
+          "That is why teams prize drag-flickers: players who sling the ball low and fast, and high if they want, from a dragging motion. India's Harmanpreet Singh is one of the best in the world.",
+        ],
+      },
+      {
+        h: "Penalty corner vs penalty stroke",
+        body: [
+          "A penalty stroke is different: a single shot from 6.4 metres against only the goalkeeper. It is given for a foul that prevents a probable goal, or a deliberate foul inside the circle.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many defenders can defend a penalty corner?",
+        a: "Five, including the goalkeeper. They start behind the backline; everyone else must be beyond the halfway line.",
+      },
+      {
+        q: "Why does the ball go out of the circle before the shot?",
+        a: "The rules require the injected ball to leave the circle before a shot can be taken. Attackers stop it just outside, then bring it back in.",
+      },
+      {
+        q: "What is the 460 mm rule?",
+        a: "If the first shot at a penalty corner is a hit, it must cross the goal line no higher than 460 mm, the height of the backboard.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Hockey rules explained", href: "/hockey/learn/hockey-rules" },
+      { label: "Video referral explained", href: "/hockey/learn/video-referral" },
+    ],
+  },
+  {
+    sport: "hockey",
+    slug: "video-referral",
+    title: "Video referral in hockey explained",
+    description:
+      "How video referral works in international hockey: who can ask for it, what it can check, and when a team keeps its referral.",
+    answer:
+      "Video referral lets a team ask the video umpire to check an on-field decision near goal — a goal, a penalty corner or a penalty stroke. Each team has one referral; if the referral succeeds the team keeps it, and if it fails the team loses it.",
+    sections: [
+      {
+        h: "What can be referred",
+        body: [
+          "Referrals are for decisions inside or near the circles: whether a goal was scored, and whether a penalty corner or penalty stroke should or shouldn't have been given. Umpires can also ask the video umpire for help themselves.",
+        ],
+      },
+      {
+        h: "How it works",
+        body: [
+          "The captain or a designated player asks for a referral straight after the decision. The video umpire reviews the replays and tells the on-field umpire what the pictures show; the on-field umpire makes the final call.",
+          "A team keeps its referral when the decision is changed in its favour. If the original decision stands, the referral is gone for the rest of the match.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many video referrals does a hockey team get?",
+        a: "One per match. A team that refers successfully keeps it; an unsuccessful referral uses it up.",
+      },
+      {
+        q: "Can a team refer any decision in hockey?",
+        a: "No. Referrals cover decisions about goals, penalty corners and penalty strokes, mostly in and around the circle.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Penalty corners explained", href: "/hockey/learn/penalty-corner" },
+      { label: "Hockey rules explained", href: "/hockey/learn/hockey-rules" },
+    ],
+  },
+  {
+    sport: "hockey",
+    slug: "hockey-positions",
+    title: "Hockey positions explained",
+    description:
+      "The positions in field hockey — goalkeeper, defenders, midfielders and forwards — what each one does, and how teams line up.",
+    answer:
+      "A hockey team has a goalkeeper and ten outfield players, usually split into defenders, midfielders and forwards. Rolling substitutions mean players rotate constantly, so roles are more fluid than in football, but each line has a clear job.",
+    sections: [
+      {
+        h: "Goalkeeper",
+        body: [
+          "The only player who can use their body and feet to stop the ball, and only inside their own circle. Goalkeepers wear full protective kit and lead the defence at penalty corners.",
+        ],
+      },
+      {
+        h: "Defenders",
+        body: [
+          "Usually three or four defenders protect the circle, mark attackers and start moves from the back. Central defenders are often the side's penalty-corner specialists, because drag-flicking takes the strength and technique that defenders tend to have.",
+        ],
+      },
+      {
+        h: "Midfielders",
+        body: [
+          "Midfielders link defence and attack, win the ball back and carry it forward. A defensive midfielder sits in front of the back line; attacking midfielders support the forwards in the circle.",
+        ],
+      },
+      {
+        h: "Forwards",
+        body: [
+          "Forwards press the opposition high up the pitch and get into the circle to score or win penalty corners. Wingers stretch the play; a centre-forward works the space in front of goal.",
+        ],
+      },
+      {
+        h: "Formations",
+        body: [
+          "Teams describe formations by outfield lines, such as 4-3-3 or 3-4-3. In practice shapes change through the match, and rolling substitutions let coaches keep fresh legs in the most demanding roles.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "How many defenders does a hockey team play?",
+        a: "Usually three or four, though formations shift during a match.",
+      },
+      {
+        q: "Who takes penalty corners in hockey?",
+        a: "A specialist drag-flicker, often a central defender. India's leading scorer, Harmanpreet Singh, is a defender and drag-flicker.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Hockey rules explained", href: "/hockey/learn/hockey-rules" },
+      { label: "India men's hockey team", href: "/hockey/teams/india-men" },
+    ],
+  },
 ];
 
 export const explainersFor = (sport: string) => EXPLAINERS.filter((e) => e.sport === sport);

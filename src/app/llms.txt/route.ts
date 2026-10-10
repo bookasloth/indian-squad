@@ -1,5 +1,10 @@
 import { SPORTS, SQUAD_SPORTS, site } from "@/lib/site";
 import { abs } from "@/lib/seo";
+import { competitionsFor } from "@/data/competitions";
+import { teamsFor } from "@/data/teams";
+import { recordsFor } from "@/data/records";
+import { explainersFor } from "@/data/learn";
+import { quizFor } from "@/data/quiz";
 
 // llms.txt (llmstxt.org): a plain-text map of the site for AI assistants.
 // Built from the same data as the pages, so it stays current on every deploy.
@@ -7,10 +12,18 @@ export const dynamic = "force-static";
 
 export function GET() {
   const sports = SPORTS.map((s) => {
-    const tools = SQUAD_SPORTS.includes(s.slug)
-      ? `\n  - [${s.label} players](${abs(`/${s.slug}/players`)}): India's men's and women's squads\n  - [${s.label} Playing XI builder](${abs(`/${s.slug}/xi`)})\n  - [${s.label} quiz](${abs(`/${s.slug}/quiz`)})`
-      : "";
-    return `- [${s.label}](${abs(`/${s.slug}`)}): ${s.blurb}${tools}`;
+    const base = `/${s.slug}`;
+    const links = [
+      ...(SQUAD_SPORTS.includes(s.slug)
+        ? [`[${s.label} players](${abs(`${base}/players`)}): India's men's and women's squads`, `[${s.label} Playing XI builder](${abs(`${base}/xi`)})`]
+        : []),
+      ...competitionsFor(s.slug).map((c) => `[${c.name}](${abs(`${base}/${c.slug}`)}): ${c.description}`),
+      ...teamsFor(s.slug).map((t) => `[${t.name}](${abs(`${base}/teams/${t.slug}`)})`),
+      ...(recordsFor(s.slug).length ? [`[${s.label} records](${abs(`${base}/records`)})`] : []),
+      ...explainersFor(s.slug).map((e) => `[${e.title}](${abs(`${base}/learn/${e.slug}`)})`),
+      ...(quizFor(s.slug).length ? [`[${s.label} quiz](${abs(`${base}/quiz`)})`] : []),
+    ];
+    return `- [${s.label}](${abs(base)}): ${s.blurb}${links.map((l) => `\n  - ${l}`).join("")}`;
   }).join("\n");
 
   const body = `# ${site.name}

@@ -21,6 +21,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 const H2 = "font-display text-xl font-semibold tracking-tight";
+const RULEBOOK: Record<string, string> = {
+  cricket: "the Laws of Cricket and ICC playing conditions",
+  hockey: "the FIH Rules of Hockey",
+};
 const reviewedLabel = (iso: string) =>
   new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
@@ -103,7 +107,7 @@ export default async function ExplainerPage({ params }: Params) {
       </nav>
 
       <p className="text-sm text-muted-foreground">
-        Written for {site.name} and checked against the Laws of Cricket and ICC playing conditions.{" "}
+        Written for {site.name} and checked against {RULEBOOK[sport] ?? "the governing body's rules"}.{" "}
         <Link href="/editorial-policy" className="underline underline-offset-4">
           Editorial policy
         </Link>

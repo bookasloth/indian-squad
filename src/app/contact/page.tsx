@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact",
   description: "How to reach Indian Sports Club about orders, tickets, your account or a complaint.",
 };

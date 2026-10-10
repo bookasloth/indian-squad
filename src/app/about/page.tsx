@@ -3,6 +3,7 @@ import { SPORTS, site } from "@/lib/site";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About",
   description:
     "Indian Sports Club is a fan club for Indian sport — the 12th Man backing Team India across cricket, hockey, kabaddi, badminton, football, and F1.",

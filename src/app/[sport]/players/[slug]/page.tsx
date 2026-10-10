@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TEAM_LABEL, getPlayer, players } from "@/data/players";
-import { SQUAD_SPORTS } from "@/lib/site";
+import { SQUAD_SPORTS, sportLabel } from "@/lib/site";
+import { abs, pageMeta } from "@/lib/seo";
 import { ROLE_LABEL } from "@/components/PlayerCard";
+import { Crumbs, JsonLd } from "@/components/seo";
 
 export const dynamicParams = false;
 
@@ -16,15 +17,16 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ sport: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { sport, slug } = await params;
   const player = getPlayer(slug);
   if (!player) return { title: "Player not found" };
-  return {
-    title: player.name,
+  return pageMeta({
+    title: `${player.name} — India ${TEAM_LABEL[player.team].toLowerCase()}'s ${sportLabel(sport)?.toLowerCase()} profile`,
     description: player.bio,
-  };
+    path: `/${sport}/players/${player.slug}`,
+  });
 }
 
 const CAP_LABELS = { test: "Tests", odi: "ODIs", t20: "T20Is" } as const;
@@ -42,14 +44,29 @@ export default async function PlayerPage({
     .map((format) => ({ label: CAP_LABELS[format], value: player.caps[format] }))
     .filter((c) => c.value !== undefined);
 
+  const label = sportLabel(sport) ?? sport;
+  const squadHref = `/${sport}/players${player.team === "women" ? "/women" : ""}`;
+
   return (
     <article className="flex flex-col gap-8">
-      <Link
-        href={`/${sport}/players${player.team === "women" ? "/women" : ""}`}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← {player.team === "women" ? "Women's" : "Men's"} squad
-      </Link>
+      <Crumbs
+        items={[
+          { label, href: `/${sport}` },
+          { label: `${TEAM_LABEL[player.team]}'s squad`, href: squadHref },
+          { label: player.name, href: `/${sport}/players/${player.slug}` },
+        ]}
+      />
+      <JsonLd
+        data={{
+          "@type": "Person",
+          name: player.name,
+          description: player.bio,
+          url: abs(`/${sport}/players/${player.slug}`),
+          nationality: { "@type": "Country", name: "India" },
+          jobTitle: `${label} ${ROLE_LABEL[player.role].toLowerCase()}`,
+          memberOf: { "@type": "SportsTeam", name: `India ${TEAM_LABEL[player.team].toLowerCase()}'s ${label.toLowerCase()} team` },
+        }}
+      />
 
       <header className="flex flex-col gap-2">
         <span className="text-sm text-muted-foreground">

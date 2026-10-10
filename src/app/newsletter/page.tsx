@@ -17,6 +17,7 @@ import { Stagger, StaggerItem, Reveal } from "@/components/motion/reveal";
 import { NewsletterForm } from "@/components/sections/newsletter-form";
 
 export const metadata = {
+  alternates: { canonical: "/newsletter" },
   title: "Newsletter",
   description:
     "The Twelfth Man — a weekly email on the Indian squad: selection calls, match previews, player form, and the best from the fan community.",

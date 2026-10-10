@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/partners" },
   title: "Partners",
   description: "Run sports events? List your tournaments, camps and watch-parties on Indian Sports Club for free.",
 };

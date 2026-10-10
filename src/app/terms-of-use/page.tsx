@@ -3,6 +3,7 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/terms-of-use" },
   title: "Terms of Use",
   description: "The rules for using Indian Sports Club and its community.",
 };

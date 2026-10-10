@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SQUAD_SPORTS, getSport } from "@/lib/site";
+import { pageMeta } from "@/lib/seo";
 import { squad } from "@/data/players";
 import { listUpcomingEvents } from "@/lib/events";
 import { getLatestPosts } from "@/lib/community-data";
@@ -16,7 +17,7 @@ export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ sport: string }> }): Promise<Metadata> {
   const sport = getSport((await params).sport);
-  return sport ? { title: sport.label, description: sport.blurb } : {};
+  return sport ? pageMeta({ title: `${sport.label} in India`, description: sport.blurb, path: `/${sport.slug}` }) : {};
 }
 
 const H2 = "font-display text-xl font-semibold tracking-tight";

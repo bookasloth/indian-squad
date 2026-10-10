@@ -47,6 +47,7 @@ function sportPaths(sport: string): string[] {
     ...rivalriesFor(sport).map((r) => `/${sport}/rivalries/${r.slug}`),
     // ponytail: keep in step with CALCULATORS in [sport]/calculator/page.tsx
     ...(["cricket", "f1"].includes(sport) ? [`/${sport}/calculator`] : []),
+    ...(sport === "cricket" && process.env.CRICKETDATA_API_KEY ? ["/cricket/schedule"] : []),
     ...(quizFor(sport).length ? [`/${sport}/quiz`] : []),
   ];
   if (squadConfig(sport)) {

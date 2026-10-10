@@ -7,6 +7,10 @@ import { sportLabel } from "@/lib/site";
 import { abs, pageMeta } from "@/lib/seo";
 import { Crumbs, Faq, JsonLd } from "@/components/seo";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { F1Standings } from "@/components/f1-standings";
+import { f1Season, withF1Champions } from "@/lib/live/f1";
+import { islStandings } from "@/lib/live/football";
+import { LeagueTable } from "@/components/league-table";
 
 export const dynamicParams = false;
 
@@ -41,8 +45,13 @@ function TeamName({ sport, name }: { sport: string; name: string }) {
 
 export default async function CompetitionPage({ params }: Params) {
   const { sport, competition } = await params;
-  const c = getCompetition(sport, competition);
-  if (!c) notFound();
+  const base = getCompetition(sport, competition);
+  if (!base) notFound();
+  const c = await withF1Champions(base);
+  const standingsKind =
+    c.slug === "drivers-championship" ? "drivers" : c.slug === "constructors-championship" ? "constructors" : null;
+  const season = sport === "f1" && standingsKind ? await f1Season() : null;
+  const isl = sport === "football" && c.slug === "indian-super-league" ? await islStandings() : null;
   const label = sportLabel(sport) ?? sport;
   const path = `/${sport}/${c.slug}`;
   const hasHost = c.editions.some((e) => e.host);
@@ -83,6 +92,12 @@ export default async function CompetitionPage({ params }: Params) {
         <h2 className={H2}>India at the {c.short}</h2>
         <p>{c.india}</p>
       </section>
+
+      {season && standingsKind && !season.complete && <F1Standings season={season} kind={standingsKind} />}
+
+      {isl && (
+        <LeagueTable title={`ISL ${isl.season}–${String(isl.season + 1).slice(-2)} table`} rows={isl.rows} source="API-Football" />
+      )}
 
       {c.medals && c.medals.length > 0 && (
         <section className="flex flex-col gap-4">

@@ -1,0 +1,49 @@
+# Weekly cricket record refresh from Cricsheet (open data, ODC-By).
+# Downloads the last 30 days of matches, adds India internationals and IPL games
+# to src/data/cricket-live.json, and commits if anything changed — which triggers
+# a Vercel deploy. The sync script exits non-zero on implausible figures, so a bad
+# download fails the job (GitHub emails the repo owner) instead of publishing.
+name: Cricket data
+
+on:
+  schedule:
+    - cron: "30 2 * * 1" # Mondays 02:30 UTC (08:00 IST), after weekend fixtures
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cricket-data
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Download recent Cricsheet matches
+        run: |
+          curl -fsSL -o recent.zip https://cricsheet.org/downloads/recently_played_30_json.zip
+          unzip -q recent.zip -d "$RUNNER_TEMP/cricsheet"
+
+      - name: Sync
+        run: node scripts/sync-cricsheet.mjs "$RUNNER_TEMP/cricsheet"
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- src/data/cricket-live.json; then
+            echo "No new matches."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/cricket-live.json
+          git commit -m "chore(data): cricket records from Cricsheet"
+          git push

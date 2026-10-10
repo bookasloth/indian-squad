@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RECORDS, getRecord, ranked, recordsFor } from "@/data/records";
+import { withLive } from "@/lib/records-live";
 import { sportLabel } from "@/lib/site";
 import { abs, pageMeta } from "@/lib/seo";
 import { Crumbs, Faq, JsonLd } from "@/components/seo";
@@ -25,7 +26,8 @@ const H2 = "font-display text-xl font-semibold tracking-tight";
 
 export default async function RecordPage({ params }: Params) {
   const { sport, slug } = await params;
-  const r = getRecord(sport, slug);
+  const base = getRecord(sport, slug);
+  const r = base && withLive(base);
   if (!r) notFound();
   const label = sportLabel(sport) ?? sport;
   const path = `/${sport}/records/${r.slug}`;
@@ -114,7 +116,11 @@ export default async function RecordPage({ params }: Params) {
           </TableBody>
         </Table>
         <p className="text-sm text-muted-foreground">
-          Figures as of {r.asOf}.{anyActive && " * Still playing — these figures will rise and may lag the latest match."}{" "}
+          Figures as of {r.asOf}.
+          {anyActive &&
+            (r.live
+              ? " * Still playing — updated weekly with new matches from Cricsheet open data."
+              : " * Still playing — these figures will rise and may lag the latest match.")}{" "}
           <Link href="/sources" className="underline underline-offset-4">
             How we source figures
           </Link>

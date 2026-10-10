@@ -9,6 +9,8 @@ import { Crumbs, Faq, JsonLd } from "@/components/seo";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { F1Standings } from "@/components/f1-standings";
 import { f1Season, withF1Champions } from "@/lib/live/f1";
+import { islStandings } from "@/lib/live/football";
+import { LeagueTable } from "@/components/league-table";
 
 export const dynamicParams = false;
 
@@ -49,6 +51,7 @@ export default async function CompetitionPage({ params }: Params) {
   const standingsKind =
     c.slug === "drivers-championship" ? "drivers" : c.slug === "constructors-championship" ? "constructors" : null;
   const season = sport === "f1" && standingsKind ? await f1Season() : null;
+  const isl = sport === "football" && c.slug === "indian-super-league" ? await islStandings() : null;
   const label = sportLabel(sport) ?? sport;
   const path = `/${sport}/${c.slug}`;
   const hasHost = c.editions.some((e) => e.host);
@@ -91,6 +94,10 @@ export default async function CompetitionPage({ params }: Params) {
       </section>
 
       {season && standingsKind && !season.complete && <F1Standings season={season} kind={standingsKind} />}
+
+      {isl && (
+        <LeagueTable title={`ISL ${isl.season}–${String(isl.season + 1).slice(-2)} table`} rows={isl.rows} source="API-Football" />
+      )}
 
       {c.medals && c.medals.length > 0 && (
         <section className="flex flex-col gap-4">

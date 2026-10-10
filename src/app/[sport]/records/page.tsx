@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RECORDS, recordsFor } from "@/data/records";
+import { withLive } from "@/lib/records-live";
 import { sportLabel } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
 import { Crumbs } from "@/components/seo";
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function RecordsIndexPage({ params }: Params) {
   const { sport } = await params;
-  const items = recordsFor(sport);
+  const items = recordsFor(sport).map((r) => withLive(r));
   if (items.length === 0) notFound();
   const label = sportLabel(sport) ?? sport;
 

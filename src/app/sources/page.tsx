@@ -42,8 +42,35 @@ export default function SourcesPage() {
           players&rsquo; are marked and refreshed after each series.
         </li>
         <li>
-          <strong>Open data where it exists.</strong> When we add computed statistics, we use openly licensed datasets
-          and credit them on the page that uses them.
+          <strong>Automatic updates.</strong> Some figures refresh on their own from these sources, credited on the
+          pages that use them:
+          <ul className="mt-2 list-[circle] space-y-1 pl-5">
+            <li>
+              <a href="https://cricsheet.org" className={A}>
+                Cricsheet
+              </a>{" "}
+              (open ball-by-ball data) — current players&rsquo; runs, wickets and appearances on our cricket record
+              pages, added weekly to the hand-checked figures.
+            </li>
+            <li>
+              <a href="https://jolpi.ca" className={A}>
+                Jolpica-F1
+              </a>{" "}
+              — Formula One standings and new world champions.
+            </li>
+            <li>
+              <a href="https://cricketdata.org" className={A}>
+                CricketData.org
+              </a>{" "}
+              — India&rsquo;s upcoming cricket fixtures.
+            </li>
+            <li>
+              <a href="https://www.api-football.com" className={A}>
+                API-Football
+              </a>{" "}
+              — the ISL table and India&rsquo;s football fixtures.
+            </li>
+          </ul>
         </li>
         <li>
           <strong>Our own words.</strong> Profiles, explainers and competition guides are written for this site.

@@ -7,6 +7,9 @@ import { rosterFor, squadConfig } from "@/data/squads";
 import { quizFor } from "@/data/quiz";
 import { f1Season } from "@/lib/live/f1";
 import { F1Standings } from "@/components/f1-standings";
+import { FixtureTable } from "@/components/fixture-table";
+import { indiaFootballFixtures } from "@/lib/live/football";
+import { indiaUpcomingFixtures } from "@/lib/live/cricket-fixtures";
 import { competitionsFor } from "@/data/competitions";
 import { teamsFor } from "@/data/teams";
 import { rivalriesFor } from "@/data/rivalries";
@@ -37,6 +40,8 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
   const hasQuiz = quizFor(sport.slug).length > 0;
   const competitions = competitionsFor(sport.slug);
   const f1 = sport.slug === "f1" ? await f1Season() : null;
+  const footballFixtures = sport.slug === "football" ? await indiaFootballFixtures() : null;
+  const cricketFixtures = sport.slug === "cricket" ? await indiaUpcomingFixtures() : null;
   const teams = teamsFor(sport.slug);
   const rivalries = rivalriesFor(sport.slug);
   const configured = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -108,6 +113,25 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
       )}
 
       {f1 && !f1.complete && <F1Standings season={f1} kind="drivers" limit={5} />}
+
+      {footballFixtures && footballFixtures.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h2 className={H2}>India&rsquo;s next matches</h2>
+          <FixtureTable fixtures={footballFixtures} source="API-Football" />
+        </div>
+      )}
+
+      {cricketFixtures && cricketFixtures.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className={H2}>India&rsquo;s next matches</h2>
+            <Link href="/cricket/schedule" className={MORE}>
+              Full schedule →
+            </Link>
+          </div>
+          <FixtureTable fixtures={cricketFixtures.slice(0, 4)} source="CricketData.org" />
+        </div>
+      )}
 
       {competitions.length > 0 && (
         <section className="flex flex-col gap-4">

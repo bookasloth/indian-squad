@@ -5,6 +5,8 @@ import { players } from "@/data/players";
 import { competitionsFor } from "@/data/competitions";
 import { explainersFor } from "@/data/learn";
 import { recordsFor } from "@/data/records";
+import { teamsFor } from "@/data/teams";
+import { rivalriesFor } from "@/data/rivalries";
 import { listUpcomingEvents } from "@/lib/events";
 import { listProducts } from "@/lib/shop";
 import { listApprovedPartners } from "@/lib/partners";
@@ -40,6 +42,8 @@ function sportPaths(sport: string): string[] {
     ...competitionsFor(sport).map((c) => `/${sport}/${c.slug}`),
     ...(learn.length ? [`/${sport}/learn`, ...learn.map((e) => `/${sport}/learn/${e.slug}`)] : []),
     ...(records.length ? [`/${sport}/records`, ...records.map((r) => `/${sport}/records/${r.slug}`)] : []),
+    ...teamsFor(sport).map((t) => `/${sport}/teams/${t.slug}`),
+    ...rivalriesFor(sport).map((r) => `/${sport}/rivalries/${r.slug}`),
     ...(sport === "cricket" ? ["/cricket/calculator"] : []),
   ];
   if (SQUAD_SPORTS.includes(sport)) {

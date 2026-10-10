@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { COMPETITIONS, competitionsFor, getCompetition, titleCounts } from "@/data/competitions";
+import { teamHref } from "@/data/teams";
 import { sportLabel } from "@/lib/site";
 import { abs, pageMeta } from "@/lib/seo";
 import { Crumbs, Faq, JsonLd } from "@/components/seo";
@@ -24,6 +25,18 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 const H2 = "font-display text-xl font-semibold tracking-tight";
+
+/** Links a team name to its page when we have one (old franchise names included). */
+function TeamName({ sport, name }: { sport: string; name: string }) {
+  const href = teamHref(sport, name);
+  return href ? (
+    <Link href={href} className="underline-offset-4 hover:underline">
+      {name}
+    </Link>
+  ) : (
+    <>{name}</>
+  );
+}
 
 export default async function CompetitionPage({ params }: Params) {
   const { sport, competition } = await params;
@@ -85,8 +98,12 @@ export default async function CompetitionPage({ params }: Params) {
             {c.editions.map((e) => (
               <TableRow key={e.year}>
                 <TableCell className="font-medium tabular-nums">{e.year}</TableCell>
-                <TableCell className="font-medium">{e.winner}</TableCell>
-                <TableCell className="text-muted-foreground">{e.runnerUp}</TableCell>
+                <TableCell className="font-medium">
+                  <TeamName sport={sport} name={e.winner} />
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  <TeamName sport={sport} name={e.runnerUp} />
+                </TableCell>
                 {hasHost && <TableCell className="text-muted-foreground">{e.host}</TableCell>}
               </TableRow>
             ))}

@@ -47,6 +47,7 @@ export default async function SportLayout({
               ? [
                   { href: `${base}/players`, label: "Players" },
                   { href: `${base}/xi`, label: squad.xiLabel },
+                  { href: `${base}/compare`, label: "Compare" },
                 ]
               : []),
             ...(quizFor(sport.slug).length > 0 ? [{ href: `${base}/quiz`, label: "Quiz" }] : []),

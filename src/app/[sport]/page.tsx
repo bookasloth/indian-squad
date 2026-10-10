@@ -5,6 +5,8 @@ import { SQUAD_SPORTS, getSport } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
 import { squad } from "@/data/players";
 import { competitionsFor } from "@/data/competitions";
+import { teamsFor } from "@/data/teams";
+import { rivalriesFor } from "@/data/rivalries";
 import { listUpcomingEvents } from "@/lib/events";
 import { getLatestPosts } from "@/lib/community-data";
 import { timeAgo } from "@/lib/utils";
@@ -23,12 +25,15 @@ export async function generateMetadata({ params }: { params: Promise<{ sport: st
 
 const H2 = "font-display text-xl font-semibold tracking-tight";
 const MORE = "text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline";
+const CHIP = "block rounded-btn border border-border px-3 py-1.5 text-sm transition-ui hover:border-brand";
 
 export default async function SportHubPage({ params }: { params: Promise<{ sport: string }> }) {
   const sport = getSport((await params).sport);
   if (!sport) notFound();
   const hasSquad = SQUAD_SPORTS.includes(sport.slug);
   const competitions = competitionsFor(sport.slug);
+  const teams = teamsFor(sport.slug);
+  const rivalries = rivalriesFor(sport.slug);
   const configured = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const [events, posts] = configured
     ? await Promise.all([listUpcomingEvents({ sport: sport.slug, limit: 4 }), getLatestPosts(sport.slug, 3)])
@@ -115,6 +120,39 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
               </li>
             ))}
           </ul>
+        </section>
+      )}
+
+      {(teams.length > 0 || rivalries.length > 0) && (
+        <section className="grid gap-8 md:grid-cols-2">
+          {teams.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h2 className={H2}>Teams</h2>
+              <ul className="flex flex-wrap gap-2">
+                {teams.map((t) => (
+                  <li key={t.slug}>
+                    <Link href={`/${sport.slug}/teams/${t.slug}`} className={CHIP}>
+                      {t.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {rivalries.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h2 className={H2}>Rivalries</h2>
+              <ul className="flex flex-wrap gap-2">
+                {rivalries.map((r) => (
+                  <li key={r.slug}>
+                    <Link href={`/${sport.slug}/rivalries/${r.slug}`} className={CHIP}>
+                      {r.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       )}
 

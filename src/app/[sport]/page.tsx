@@ -60,7 +60,7 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
               </div>
             ))}
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Link href={`/${sport.slug}/xi`} className="group">
               <Card className="h-full transition-ui group-hover:shadow-md">
                 <CardHeader>
@@ -77,6 +77,16 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
                 </CardHeader>
               </Card>
             </Link>
+            {sport.slug === "cricket" && (
+              <Link href="/cricket/calculator" className="group">
+                <Card className="h-full transition-ui group-hover:shadow-md">
+                  <CardHeader>
+                    <CardTitle>Cricket calculator</CardTitle>
+                    <CardDescription>Averages, strike rates, economy, run rate and net run rate.</CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            )}
           </div>
         </section>
       ) : (

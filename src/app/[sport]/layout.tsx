@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { SPORT_SLUGS, SQUAD_SPORTS, getSport } from "@/lib/site";
+import { SPORT_SLUGS, getSport } from "@/lib/site";
+import { squadConfig } from "@/data/squads";
 import { SportEmblem } from "@/components/community/sport-emblem";
 import { SportTabs } from "@/components/layout/sport-tabs";
 import { explainersFor } from "@/data/learn";
@@ -24,7 +25,7 @@ export default async function SportLayout({
   const sport = getSport((await params).sport);
   if (!sport) notFound();
   const base = `/${sport.slug}`;
-  const squad = SQUAD_SPORTS.includes(sport.slug);
+  const squad = squadConfig(sport.slug);
 
   return (
     <div className="flex flex-col gap-8" data-sport={sport.slug}>
@@ -45,7 +46,7 @@ export default async function SportLayout({
             ...(squad
               ? [
                   { href: `${base}/players`, label: "Players" },
-                  { href: `${base}/xi`, label: "Playing XI" },
+                  { href: `${base}/xi`, label: squad.xiLabel },
                 ]
               : []),
             ...(quizFor(sport.slug).length > 0 ? [{ href: `${base}/quiz`, label: "Quiz" }] : []),

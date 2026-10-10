@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { SPORT_SLUGS, SQUAD_SPORTS } from "@/lib/site";
+import { SPORT_SLUGS } from "@/lib/site";
 import { abs } from "@/lib/seo";
-import { players } from "@/data/players";
+import { rosterFor, squadConfig } from "@/data/squads";
 import { competitionsFor } from "@/data/competitions";
 import { explainersFor } from "@/data/learn";
 import { recordsFor } from "@/data/records";
@@ -48,13 +48,13 @@ function sportPaths(sport: string): string[] {
     ...(sport === "cricket" ? ["/cricket/calculator"] : []),
     ...(quizFor(sport).length ? [`/${sport}/quiz`] : []),
   ];
-  if (SQUAD_SPORTS.includes(sport)) {
+  if (squadConfig(sport)) {
     paths.push(
       `/${sport}/players`,
       `/${sport}/players/women`,
       `/${sport}/xi`,
       `/${sport}/xi/women`,
-      ...players.map((p) => `/${sport}/players/${p.slug}`),
+      ...rosterFor(sport).map((p) => `/${sport}/players/${p.slug}`),
     );
   }
   return paths;

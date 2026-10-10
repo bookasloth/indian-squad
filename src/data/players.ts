@@ -1,8 +1,6 @@
 export type Role = "batter" | "bowler" | "all-rounder" | "wicketkeeper";
 export type Team = "men" | "women";
 
-export const TEAM_LABEL: Record<Team, string> = { men: "Men", women: "Women" };
-
 export interface Player {
   slug: string;
   name: string;
@@ -403,14 +401,3 @@ export const players: Player[] = [
     active: true,
   },
 ];
-
-/** One team's roster, in file order. */
-export function squad(team: Team): Player[] {
-  return players.filter((p) => p.team === team);
-}
-
-export function getPlayer(slug: string): Player | undefined {
-  return players.find((p) => p.slug === slug);
-}
-
-export const ROLES: Role[] = ["batter", "all-rounder", "wicketkeeper", "bowler"];

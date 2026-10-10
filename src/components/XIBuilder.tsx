@@ -1,21 +1,16 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { squad, type Player, type Team } from "@/data/players";
-import { ROLE_LABEL } from "@/components/PlayerCard";
+import type { SquadPlayer } from "@/data/squads";
+import { XI_SIZE as MAX, xiStatus, type XIRule } from "@/lib/xi";
 
-const MAX = 11;
-// Men keep the original key so XIs saved before the women's squad existed survive.
-const STORAGE_KEY: Record<Team, string> = { men: "indian-squad:xi", women: "indian-squad:xi:women" };
-const TITLE: Record<Team, string> = { men: "My India Playing XI", women: "My India Women Playing XI" };
 const EMPTY: string[] = [];
 
 // localStorage-backed store for one team's selected XI. useSyncExternalStore reads
 // it hydration-safely (server renders empty, client swaps in the saved value with
-// no mismatch) and avoids setState-in-effect. One store per team, created once.
-function makeStore(team: Team) {
-  const key = STORAGE_KEY[team];
-  const pool = squad(team);
+// no mismatch) and avoids setState-in-effect. One store per storage key (sport +
+// team), created on first use and reused across renders.
+function makeStore(key: string, pool: SquadPlayer[]) {
   const listeners = new Set<() => void>();
   let cacheRaw: string | null = null;
   let cache: string[] = EMPTY;
@@ -26,7 +21,6 @@ function makeStore(team: Team) {
       : EMPTY;
 
   return {
-    pool,
     getSnapshot(): string[] {
       try {
         const raw = localStorage.getItem(key);
@@ -60,11 +54,27 @@ function makeStore(team: Team) {
   };
 }
 
-const STORES = { men: makeStore("men"), women: makeStore("women") };
+const STORES = new Map<string, ReturnType<typeof makeStore>>();
+function storeFor(key: string, pool: SquadPlayer[]) {
+  if (!STORES.has(key)) STORES.set(key, makeStore(key, pool));
+  return STORES.get(key)!;
+}
 
-export function XIBuilder({ team }: { team: Team }) {
-  const store = STORES[team];
-  const players = store.pool;
+export function XIBuilder({
+  players,
+  rules,
+  storageKey,
+  title,
+  fileName,
+}: {
+  players: SquadPlayer[];
+  rules: XIRule[];
+  storageKey: string;
+  /** Heading on the shared image, e.g. "My India Playing XI". */
+  title: string;
+  fileName: string;
+}) {
+  const store = storeFor(storageKey, players);
   const setXI = store.set;
   const selected = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
 
@@ -81,13 +91,15 @@ export function XIBuilder({ team }: { team: Team }) {
 
   const chosen = selected
     .map((slug) => players.find((p) => p.slug === slug))
-    .filter((p): p is Player => Boolean(p));
-  const keepers = chosen.filter((p) => p.role === "wicketkeeper").length;
-  const valid = chosen.length === MAX && keepers >= 1;
+    .filter((p): p is SquadPlayer => Boolean(p));
+  const { valid, message } = xiStatus(
+    chosen.map((p) => p.role),
+    rules,
+  );
 
   return (
     <div className="flex flex-col gap-6">
-      <StatusBar count={chosen.length} keepers={keepers} valid={valid} />
+      <StatusBar count={chosen.length} message={message} valid={valid} />
 
       <div className="grid gap-3 sm:grid-cols-2">
         {players.map((player) => {
@@ -109,7 +121,7 @@ export function XIBuilder({ team }: { team: Team }) {
               <span className="min-w-0">
                 <span className="block truncate font-semibold">{player.name}</span>
                 <span className={`block text-sm ${isSelected ? "opacity-80" : "text-muted-foreground"}`}>
-                  {ROLE_LABEL[player.role]}
+                  {player.roleLabel}
                 </span>
               </span>
               <span className="ml-3 text-lg">{isSelected ? "−" : "+"}</span>
@@ -129,7 +141,7 @@ export function XIBuilder({ team }: { team: Team }) {
         </button>
         <button
           type="button"
-          onClick={() => shareAsPng(chosen, team)}
+          onClick={() => shareAsPng(chosen, title, fileName)}
           disabled={!valid}
           className="rounded-md border border-foreground bg-foreground px-4 py-2 text-sm text-background disabled:opacity-40"
         >
@@ -140,35 +152,20 @@ export function XIBuilder({ team }: { team: Team }) {
   );
 }
 
-function StatusBar({
-  count,
-  keepers,
-  valid,
-}: {
-  count: number;
-  keepers: number;
-  valid: boolean;
-}) {
-  const msg = valid
-    ? "Valid XI — ready to share."
-    : count < MAX
-      ? `Pick ${MAX - count} more.`
-      : keepers < 1
-        ? "Add at least one wicketkeeper."
-        : "";
+function StatusBar({ count, message, valid }: { count: number; message: string; valid: boolean }) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-border bg-muted px-4 py-3">
       <span className="font-display text-lg font-bold">
         {count}/{MAX}
       </span>
-      <span className={`text-sm ${valid ? "text-foreground" : "text-muted-foreground"}`}>{msg}</span>
+      <span className={`text-sm ${valid ? "text-foreground" : "text-muted-foreground"}`}>{message}</span>
     </div>
   );
 }
 
 // ponytail: draw the XI straight onto a canvas and download it — no html2canvas
 // dependency for a plain text list. Monochrome, matches the site.
-function shareAsPng(chosen: Player[], team: Team) {
+function shareAsPng(chosen: SquadPlayer[], title: string, fileName: string) {
   const W = 640;
   const PAD = 48;
   const lineH = 44;
@@ -189,7 +186,7 @@ function shareAsPng(chosen: Player[], team: Team) {
 
   ctx.fillStyle = "#0a0a0a";
   ctx.font = "700 32px system-ui, sans-serif";
-  ctx.fillText(TITLE[team], PAD, 72);
+  ctx.fillText(title, PAD, 72);
   ctx.fillStyle = "#6b7280";
   ctx.font = "400 16px system-ui, sans-serif";
   ctx.fillText("Indian Sports Club", PAD, 104);
@@ -200,7 +197,7 @@ function shareAsPng(chosen: Player[], team: Team) {
     ctx.font = "600 20px system-ui, sans-serif";
     ctx.fillText(`${i + 1}.`, PAD, y);
     ctx.fillText(p.name, PAD + 40, y);
-    const label = ROLE_LABEL[p.role];
+    const label = p.roleLabel;
     ctx.fillStyle = "#6b7280";
     ctx.font = "400 16px system-ui, sans-serif";
     ctx.fillText(label, W - PAD - ctx.measureText(label).width, y);
@@ -211,7 +208,7 @@ function shareAsPng(chosen: Player[], team: Team) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = team === "women" ? "my-india-women-xi.png" : "my-india-xi.png";
+    a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
   }, "image/png");

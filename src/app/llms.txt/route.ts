@@ -1,4 +1,5 @@
-import { SPORTS, SQUAD_SPORTS, site } from "@/lib/site";
+import { SPORTS, site } from "@/lib/site";
+import { SQUAD_SPORTS } from "@/data/squads";
 import { abs } from "@/lib/seo";
 import { competitionsFor } from "@/data/competitions";
 import { teamsFor } from "@/data/teams";

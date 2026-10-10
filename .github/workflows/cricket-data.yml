@@ -33,17 +33,29 @@ jobs:
           curl -fsSL -o recent.zip https://cricsheet.org/downloads/recently_played_30_json.zip
           unzip -q recent.zip -d "$RUNNER_TEMP/cricsheet"
 
-      - name: Sync
+      - name: Sync record lists
         run: node scripts/sync-cricsheet.mjs "$RUNNER_TEMP/cricsheet"
+
+      # Full archives for the compare tool's per-player figures, rebuilt from
+      # scratch so Cricsheet corrections flow through.
+      - name: Download full Test, ODI and T20I archives
+        run: |
+          for f in tests odis t20s; do
+            curl -fsSL -o "$f.zip" "https://cricsheet.org/downloads/${f}_json.zip"
+            unzip -q "$f.zip" -d "$RUNNER_TEMP/archive/$f"
+          done
+
+      - name: Build player stats
+        run: node scripts/build-player-stats.mjs "$RUNNER_TEMP/archive"
 
       - name: Commit if changed
         run: |
-          if git diff --quiet -- src/data/cricket-live.json; then
+          if git diff --quiet -- src/data/cricket-live.json src/data/player-stats.json; then
             echo "No new matches."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/cricket-live.json
-          git commit -m "chore(data): cricket records from Cricsheet"
+          git add src/data/cricket-live.json src/data/player-stats.json
+          git commit -m "chore(data): cricket records and player stats from Cricsheet"
           git push

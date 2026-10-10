@@ -12,6 +12,8 @@ export interface Player {
   photoUrl?: string;
   bio: string;
   active: boolean;
+  /** Cricsheet player identifier, for ball-by-ball stats (src/data/player-stats.json). */
+  cricsheet?: string;
 }
 
 // ponytail: typed seed, hand-maintained. Caps are approximate and go stale as
@@ -20,6 +22,7 @@ export interface Player {
 export const players: Player[] = [
   {
     slug: "rohit-sharma",
+    cricsheet: "740742ef",
     name: "Rohit Sharma",
     team: "men",
     role: "batter",
@@ -30,6 +33,7 @@ export const players: Player[] = [
   },
   {
     slug: "virat-kohli",
+    cricsheet: "ba607b88",
     name: "Virat Kohli",
     team: "men",
     role: "batter",
@@ -41,6 +45,7 @@ export const players: Player[] = [
   },
   {
     slug: "shubman-gill",
+    cricsheet: "b4b99816",
     name: "Shubman Gill",
     team: "men",
     role: "batter",
@@ -51,6 +56,7 @@ export const players: Player[] = [
   },
   {
     slug: "yashasvi-jaiswal",
+    cricsheet: "6c19c6e5",
     name: "Yashasvi Jaiswal",
     team: "men",
     role: "batter",
@@ -61,6 +67,7 @@ export const players: Player[] = [
   },
   {
     slug: "suryakumar-yadav",
+    cricsheet: "271f83cd",
     name: "Suryakumar Yadav",
     team: "men",
     role: "batter",
@@ -71,6 +78,7 @@ export const players: Player[] = [
   },
   {
     slug: "shreyas-iyer",
+    cricsheet: "85ec8e33",
     name: "Shreyas Iyer",
     team: "men",
     role: "batter",
@@ -81,6 +89,7 @@ export const players: Player[] = [
   },
   {
     slug: "kl-rahul",
+    cricsheet: "b17e2f24",
     name: "KL Rahul",
     team: "men",
     role: "wicketkeeper",
@@ -91,6 +100,7 @@ export const players: Player[] = [
   },
   {
     slug: "rishabh-pant",
+    cricsheet: "919a3be2",
     name: "Rishabh Pant",
     team: "men",
     role: "wicketkeeper",
@@ -101,6 +111,7 @@ export const players: Player[] = [
   },
   {
     slug: "sanju-samson",
+    cricsheet: "a4cc73aa",
     name: "Sanju Samson",
     team: "men",
     role: "wicketkeeper",
@@ -111,6 +122,7 @@ export const players: Player[] = [
   },
   {
     slug: "ishan-kishan",
+    cricsheet: "752f7486",
     name: "Ishan Kishan",
     team: "men",
     role: "wicketkeeper",
@@ -121,6 +133,7 @@ export const players: Player[] = [
   },
   {
     slug: "hardik-pandya",
+    cricsheet: "dbe50b21",
     name: "Hardik Pandya",
     team: "men",
     role: "all-rounder",
@@ -132,6 +145,7 @@ export const players: Player[] = [
   },
   {
     slug: "ravindra-jadeja",
+    cricsheet: "fe93fd9d",
     name: "Ravindra Jadeja",
     team: "men",
     role: "all-rounder",
@@ -143,6 +157,7 @@ export const players: Player[] = [
   },
   {
     slug: "axar-patel",
+    cricsheet: "2e171977",
     name: "Axar Patel",
     team: "men",
     role: "all-rounder",
@@ -154,6 +169,7 @@ export const players: Player[] = [
   },
   {
     slug: "washington-sundar",
+    cricsheet: "f19ccfad",
     name: "Washington Sundar",
     team: "men",
     role: "all-rounder",
@@ -165,6 +181,7 @@ export const players: Player[] = [
   },
   {
     slug: "ravichandran-ashwin",
+    cricsheet: "495d42a5",
     name: "Ravichandran Ashwin",
     team: "men",
     role: "all-rounder",
@@ -176,6 +193,7 @@ export const players: Player[] = [
   },
   {
     slug: "jasprit-bumrah",
+    cricsheet: "462411b3",
     name: "Jasprit Bumrah",
     team: "men",
     role: "bowler",
@@ -187,6 +205,7 @@ export const players: Player[] = [
   },
   {
     slug: "mohammed-siraj",
+    cricsheet: "2f49c897",
     name: "Mohammed Siraj",
     team: "men",
     role: "bowler",
@@ -198,6 +217,7 @@ export const players: Player[] = [
   },
   {
     slug: "mohammed-shami",
+    cricsheet: "8cf9814c",
     name: "Mohammed Shami",
     team: "men",
     role: "bowler",
@@ -209,6 +229,7 @@ export const players: Player[] = [
   },
   {
     slug: "kuldeep-yadav",
+    cricsheet: "8d2c70ad",
     name: "Kuldeep Yadav",
     team: "men",
     role: "bowler",
@@ -220,6 +241,7 @@ export const players: Player[] = [
   },
   {
     slug: "arshdeep-singh",
+    cricsheet: "244048f6",
     name: "Arshdeep Singh",
     team: "men",
     role: "bowler",
@@ -233,6 +255,7 @@ export const players: Player[] = [
   // (docs/ROUTES.md rule); the player page hides the caps row when it's empty.
   {
     slug: "harmanpreet-kaur",
+    cricsheet: "53cd8da6",
     name: "Harmanpreet Kaur",
     team: "women",
     role: "batter",
@@ -244,6 +267,7 @@ export const players: Player[] = [
   },
   {
     slug: "smriti-mandhana",
+    cricsheet: "5d2eda89",
     name: "Smriti Mandhana",
     team: "women",
     role: "batter",
@@ -254,6 +278,7 @@ export const players: Player[] = [
   },
   {
     slug: "shafali-verma",
+    cricsheet: "d8f59089",
     name: "Shafali Verma",
     team: "women",
     role: "batter",
@@ -265,6 +290,7 @@ export const players: Player[] = [
   },
   {
     slug: "pratika-rawal",
+    cricsheet: "45a13dcf",
     name: "Pratika Rawal",
     team: "women",
     role: "batter",
@@ -275,6 +301,7 @@ export const players: Player[] = [
   },
   {
     slug: "jemimah-rodrigues",
+    cricsheet: "cb08b611",
     name: "Jemimah Rodrigues",
     team: "women",
     role: "batter",
@@ -285,6 +312,7 @@ export const players: Player[] = [
   },
   {
     slug: "harleen-deol",
+    cricsheet: "3664712e",
     name: "Harleen Deol",
     team: "women",
     role: "batter",
@@ -295,6 +323,7 @@ export const players: Player[] = [
   },
   {
     slug: "richa-ghosh",
+    cricsheet: "721e0199",
     name: "Richa Ghosh",
     team: "women",
     role: "wicketkeeper",
@@ -305,6 +334,7 @@ export const players: Player[] = [
   },
   {
     slug: "yastika-bhatia",
+    cricsheet: "9c3d4e8a",
     name: "Yastika Bhatia",
     team: "women",
     role: "wicketkeeper",
@@ -315,6 +345,7 @@ export const players: Player[] = [
   },
   {
     slug: "uma-chetry",
+    cricsheet: "8f8f94fd",
     name: "Uma Chetry",
     team: "women",
     role: "wicketkeeper",
@@ -325,6 +356,7 @@ export const players: Player[] = [
   },
   {
     slug: "deepti-sharma",
+    cricsheet: "201fef33",
     name: "Deepti Sharma",
     team: "women",
     role: "all-rounder",
@@ -336,6 +368,7 @@ export const players: Player[] = [
   },
   {
     slug: "amanjot-kaur",
+    cricsheet: "9565fda6",
     name: "Amanjot Kaur",
     team: "women",
     role: "all-rounder",
@@ -347,6 +380,7 @@ export const players: Player[] = [
   },
   {
     slug: "sneh-rana",
+    cricsheet: "c4c374d9",
     name: "Sneh Rana",
     team: "women",
     role: "all-rounder",
@@ -358,6 +392,7 @@ export const players: Player[] = [
   },
   {
     slug: "radha-yadav",
+    cricsheet: "6c3aef71",
     name: "Radha Yadav",
     team: "women",
     role: "bowler",
@@ -369,6 +404,7 @@ export const players: Player[] = [
   },
   {
     slug: "renuka-singh-thakur",
+    cricsheet: "7298db76",
     name: "Renuka Singh Thakur",
     team: "women",
     role: "bowler",
@@ -380,6 +416,7 @@ export const players: Player[] = [
   },
   {
     slug: "kranti-goud",
+    cricsheet: "4d622fee",
     name: "Kranti Goud",
     team: "women",
     role: "bowler",
@@ -391,6 +428,7 @@ export const players: Player[] = [
   },
   {
     slug: "arundhati-reddy",
+    cricsheet: "eadc8924",
     name: "Arundhati Reddy",
     team: "women",
     role: "bowler",

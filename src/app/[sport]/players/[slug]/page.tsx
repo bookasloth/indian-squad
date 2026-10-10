@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SQUADS, TEAM_LABEL, getSquadPlayer } from "@/data/squads";
+import { comparisonsFor } from "@/data/comparisons";
 import { sportLabel } from "@/lib/site";
 import { abs, pageMeta } from "@/lib/seo";
 import { Crumbs, JsonLd } from "@/components/seo";
@@ -36,6 +37,7 @@ export default async function PlayerPage({ params }: Params) {
   const squadHref = `/${sport}/players${player.team === "women" ? "/women" : ""}`;
   const teamName = `India ${TEAM_LABEL[player.team].toLowerCase()}'s ${label.toLowerCase()} team`;
   const asOf = SQUADS[sport]?.asOf;
+  const debates = comparisonsFor(sport).filter((c) => c.a === player.slug || c.b === player.slug);
 
   return (
     <article className="flex flex-col gap-8">
@@ -90,11 +92,31 @@ export default async function PlayerPage({ params }: Params) {
         </div>
       )}
 
-      <p className="text-sm">
+      <p className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        <Link href={`/${sport}/compare?a=${player.slug}`} className="underline underline-offset-4">
+          Compare {player.name} with another player
+        </Link>
         <Link href={squadHref} className="underline underline-offset-4">
           Back to the {TEAM_LABEL[player.team].toLowerCase()}&rsquo;s squad
         </Link>
       </p>
+      {debates.length > 0 && (
+        <nav className="flex flex-col gap-2">
+          <h2 className="font-display text-lg font-semibold tracking-tight">Debates</h2>
+          <ul className="flex flex-wrap gap-2">
+            {debates.map((d) => (
+              <li key={d.slug}>
+                <Link
+                  href={`/${sport}/compare/${d.slug}`}
+                  className="block rounded-btn border border-border px-3 py-1.5 text-sm transition-ui hover:border-brand"
+                >
+                  {d.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </article>
   );
 }

@@ -6,6 +6,7 @@ import { competitionsFor } from "@/data/competitions";
 import { explainersFor } from "@/data/learn";
 import { recordsFor } from "@/data/records";
 import { quizFor } from "@/data/quiz";
+import { comparisonsFor } from "@/data/comparisons";
 import { teamsFor } from "@/data/teams";
 import { rivalriesFor } from "@/data/rivalries";
 import { listUpcomingEvents } from "@/lib/events";
@@ -52,6 +53,8 @@ function sportPaths(sport: string): string[] {
   ];
   if (squadConfig(sport)) {
     paths.push(
+      `/${sport}/compare`,
+      ...comparisonsFor(sport).map((c) => `/${sport}/compare/${c.slug}`),
       `/${sport}/players`,
       `/${sport}/players/women`,
       `/${sport}/xi`,

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SPORT_SLUGS, SQUAD_SPORTS } from "@/lib/site";
 import { abs } from "@/lib/seo";
 import { players } from "@/data/players";
+import { competitionsFor } from "@/data/competitions";
 import { listUpcomingEvents } from "@/lib/events";
 import { listProducts } from "@/lib/shop";
 import { listApprovedPartners } from "@/lib/partners";
@@ -29,7 +30,7 @@ const STATIC = [
 ];
 
 function sportPaths(sport: string): string[] {
-  const paths = [`/${sport}`, `/community/${sport}`];
+  const paths = [`/${sport}`, `/community/${sport}`, ...competitionsFor(sport).map((c) => `/${sport}/${c.slug}`)];
   if (SQUAD_SPORTS.includes(sport)) {
     paths.push(
       `/${sport}/players`,

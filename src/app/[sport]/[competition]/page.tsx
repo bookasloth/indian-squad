@@ -84,7 +84,7 @@ export default async function CompetitionPage({ params }: Params) {
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className={H2}>Every {c.short} winner</h2>
+        <h2 className={H2}>{c.since ? `${c.short} winners since ${c.since}` : `Every ${c.short} winner`}</h2>
         <Table>
           <TableHeader>
             <TableRow>
@@ -111,17 +111,19 @@ export default async function CompetitionPage({ params }: Params) {
         </Table>
       </section>
 
-      <section className="flex flex-col gap-4">
-        <h2 className={H2}>Titles by team</h2>
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {titleCounts(c).map((t) => (
-            <li key={t.team} className="flex items-baseline justify-between gap-4 rounded-card border border-border px-5 py-3">
-              <span>{t.team}</span>
-              <span className="font-display text-xl font-bold tabular-nums">{t.titles}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {!c.since && (
+        <section className="flex flex-col gap-4">
+          <h2 className={H2}>Titles by team</h2>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {titleCounts(c).map((t) => (
+              <li key={t.team} className="flex items-baseline justify-between gap-4 rounded-card border border-border px-5 py-3">
+                <span>{t.team}</span>
+                <span className="font-display text-xl font-bold tabular-nums">{t.titles}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <Faq items={c.faq} />
 

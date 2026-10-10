@@ -809,6 +809,201 @@ export const EXPLAINERS: Explainer[] = [
       { label: "India men's kabaddi team", href: "/kabaddi/teams/india-men" },
     ],
   },
+
+  // ── Football (checked against the IFAB Laws of the Game and AIFF competition formats) ──
+  {
+    sport: "football",
+    slug: "how-the-isl-works",
+    title: "How the Indian Super League works",
+    description:
+      "The ISL explained: India's top division, how the champion has been decided, the League Winners' Shield, promotion from the I-League, and the cups around it.",
+    answer:
+      "The Indian Super League is the top division of Indian football. Clubs play each other home and away; for most of its history the champion was then decided by playoffs and a final, while the League Winners' Shield went to the team that topped the table. In 2025–26 the title was decided on the table alone.",
+    sections: [
+      {
+        h: "From tournament to top flight",
+        body: [
+          "The ISL began in 2014 as a short franchise competition running alongside the I-League. It grew longer each season and became the recognised top division, with the I-League below it.",
+        ],
+      },
+      {
+        h: "Playoffs and the Shield",
+        body: [
+          "Most seasons ended with knockout playoffs among the top-placed teams and a one-off final to crown the ISL champion. From 2019–20 the side finishing first in the regular season also received the League Winners' Shield, so a season could produce two different winners — as in 2021–22, when Hyderabad won the final and Jamshedpur the Shield.",
+        ],
+      },
+      {
+        h: "Promotion",
+        body: [
+          "Since 2023–24 the I-League champion has been promoted into the ISL. Punjab FC were the first club to come up that way.",
+        ],
+      },
+      {
+        h: "The cups",
+        body: [
+          "Alongside the league, Indian clubs play the Durand Cup, which usually opens the season, and the Super Cup, a knockout competition for ISL and I-League sides.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Is the ISL the top league in India?",
+        a: "Yes. The Indian Super League is the top division of Indian football, with the I-League below it.",
+      },
+      {
+        q: "What is the difference between the ISL Cup and the ISL Shield?",
+        a: "The Shield goes to the team that finishes top of the regular-season table. The ISL Cup has usually gone to the winner of the playoff final.",
+      },
+      {
+        q: "Can I-League clubs be promoted to the ISL?",
+        a: "Yes. Since 2023–24 the I-League champion has earned promotion to the ISL.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "Every ISL champion", href: "/football/indian-super-league" },
+      { label: "The Durand Cup", href: "/football/durand-cup" },
+      { label: "Take the football quiz", href: "/football/quiz" },
+    ],
+  },
+  {
+    sport: "football",
+    slug: "offside-rule",
+    title: "The offside rule explained",
+    description:
+      "Football's offside rule in plain English: when a player is in an offside position, when it becomes an offence, and the restarts you can't be offside from.",
+    answer:
+      "A player is in an offside position if, when a teammate plays the ball, any part of their head, body or feet is in the opponents' half and closer to the opponents' goal line than both the ball and the second-last defender. Being in that position is only an offence if the player then becomes involved in play.",
+    sections: [
+      {
+        h: "The position",
+        body: [
+          "The comparison is made at the moment a teammate plays or touches the ball. The \"second-last defender\" is usually the last outfield player, because the goalkeeper normally counts as the last one. Arms and hands don't count when judging position, because players can't legally play the ball with them.",
+          "Level is onside: a player level with the second-last defender, or with the ball, is not offside. Nor is anyone in their own half.",
+        ],
+      },
+      {
+        h: "When it's an offence",
+        body: [
+          "A player in an offside position is only penalised if they become involved in active play: playing or touching the ball, blocking an opponent's line of sight or movement, or gaining an advantage — for example, from a rebound off the post or the goalkeeper.",
+        ],
+      },
+      {
+        h: "Restarts you can't be offside from",
+        body: [
+          "There is no offside offence when a player receives the ball directly from a goal kick, a throw-in or a corner kick.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Is level offside in football?",
+        a: "No. A player level with the second-last defender or with the ball is onside.",
+      },
+      {
+        q: "Can you be offside from a throw-in?",
+        a: "No. There is no offside from a throw-in, a goal kick or a corner kick.",
+      },
+      {
+        q: "Can you be offside in your own half?",
+        a: "No. A player has to be in the opponents' half to be in an offside position.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "VAR explained", href: "/football/learn/var-explained" },
+      { label: "How the ISL works", href: "/football/learn/how-the-isl-works" },
+    ],
+  },
+  {
+    sport: "football",
+    slug: "var-explained",
+    title: "VAR explained: what it can and can't review",
+    description:
+      "How the video assistant referee works: the four kinds of decision VAR can check, the 'clear and obvious error' test, and on-field reviews at the monitor.",
+    answer:
+      "The video assistant referee (VAR) checks four kinds of match-changing decision: goals, penalty decisions, direct red cards and cases of mistaken identity. It only steps in for a clear and obvious error or a serious missed incident, and the on-field referee always makes the final decision.",
+    sections: [
+      {
+        h: "What VAR checks",
+        body: [
+          "Every goal, penalty and direct red card is checked automatically in the background. VAR also corrects the referee if the wrong player has been cautioned or sent off.",
+          "Everything else — corner kicks, throw-ins, second yellow cards, ordinary fouls in midfield — is outside VAR's remit.",
+        ],
+      },
+      {
+        h: "Clear and obvious",
+        body: [
+          "VAR isn't there to re-referee the match. For judgement calls it intervenes only when the original decision is clearly wrong; for factual matters, such as whether a player was offside or a foul was inside the area, it corrects the decision outright.",
+        ],
+      },
+      {
+        h: "The on-field review",
+        body: [
+          "For judgement calls, the VAR recommends that the referee looks at the pitch-side monitor. The referee watches the replay and either keeps or changes the decision. Factual decisions can be changed on the VAR's advice alone.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "What decisions can VAR review?",
+        a: "Goals, penalty decisions, direct red cards and mistaken identity — and nothing else.",
+      },
+      {
+        q: "Does VAR make the final decision?",
+        a: "No. The on-field referee always makes the final decision, sometimes after watching the replay at the pitch-side monitor.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "The offside rule explained", href: "/football/learn/offside-rule" },
+      { label: "India men's football team", href: "/football/teams/india-men" },
+    ],
+  },
+  {
+    sport: "football",
+    slug: "promotion-and-the-i-league",
+    title: "The I-League and promotion explained",
+    description:
+      "Where the I-League fits in Indian football, how its champion is promoted to the ISL, and how the national league pyramid works.",
+    answer:
+      "The I-League is the second tier of Indian football, below the Indian Super League. Since 2023–24 its champion has been promoted to the ISL, linking the two leagues into a single pyramid for the first time.",
+    sections: [
+      {
+        h: "From top flight to second tier",
+        body: [
+          "The I-League was India's top division from 2007, succeeding the National Football League. When the ISL was recognised as the top flight, the I-League became the level below it.",
+        ],
+      },
+      {
+        h: "How promotion works",
+        body: [
+          "The I-League champion earns a place in the next ISL season, subject to meeting the league's club licensing rules. Punjab FC were the first club promoted this way, joining the ISL in 2023–24.",
+        ],
+      },
+      {
+        h: "Below the I-League",
+        body: [
+          "Under the I-League sit further national divisions and the state leagues, so a club can in principle climb from regional football to the top flight.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Is the I-League the top league in India?",
+        a: "No. It is the second tier, below the Indian Super League.",
+      },
+      {
+        q: "Does the I-League champion get promoted to the ISL?",
+        a: "Yes, since 2023–24, provided the club meets the licensing requirements.",
+      },
+    ],
+    reviewed: "2026-10-10",
+    related: [
+      { label: "How the ISL works", href: "/football/learn/how-the-isl-works" },
+      { label: "Every ISL champion", href: "/football/indian-super-league" },
+    ],
+  },
 ];
 
 export const explainersFor = (sport: string) => EXPLAINERS.filter((e) => e.sport === sport);

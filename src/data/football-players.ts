@@ -1,0 +1,62 @@
+import { positional as p, type PositionalPlayer } from "@/data/positional";
+
+/** Caps and goals after India's October 2026 friendlies (men's counted 6 Oct, women's 8 Oct). */
+export const FOOTBALL_AS_OF = "early October 2026";
+
+// ponytail: the most recent squads named for each team, hand-copied. Refresh
+// after each international window.
+export const footballPlayers: PositionalPlayer[] = [
+  // Men
+  p("Gurpreet Singh Sandhu", "men", "goalkeeper", 91, 0),
+  p("Albino Gomes", "men", "goalkeeper", 2, 0),
+  p("Prabhsukhan Singh Gill", "men", "goalkeeper", 1, 0),
+  p("Som Kumar", "men", "goalkeeper", 0, 0),
+  p("Anwar Ali", "men", "defender", 38, 2),
+  p("Abhishek Singh Tekcham", "men", "defender", 7, 0),
+  p("Hmingthanmawia Ralte", "men", "defender", 8, 0),
+  p("Jay Gupta", "men", "defender", 5, 0),
+  p("Akash Mishra", "men", "defender", 37, 1),
+  p("Pramveer Singh", "men", "defender", 5, 0),
+  p("Bijoy Varghese", "men", "defender", 6, 0),
+  p("Mehtab Singh", "men", "defender", 12, 0),
+  p("Ricky Meetei Haobam", "men", "defender", 0, 0),
+  p("Anirudh Thapa", "men", "midfielder", 62, 5),
+  p("Ashique Kuruniyan", "men", "midfielder", 45, 2),
+  p("Farukh Choudhary", "men", "midfielder", 25, 3),
+  p("Lalengmawia Ralte", "men", "midfielder", 31, 0),
+  p("Macarton Nickson", "men", "midfielder", 6, 0),
+  p("Mohammed Sanan", "men", "midfielder", 7, 0),
+  p("Ricky Shabong", "men", "midfielder", 6, 0),
+  p("Sahal Abdul Samad", "men", "midfielder", 45, 3),
+  p("Edmund Lalrindika", "men", "forward", 13, 0),
+  p("Irfan Yadwad", "men", "forward", 7, 0),
+  p("Manvir Singh", "men", "forward", 52, 7),
+  p("Rahim Ali", "men", "forward", 22, 1),
+  p("Ryan Williams", "men", "forward", 5, 2),
+  p("Vikram Partap Singh", "men", "forward", 16, 1),
+  // Women
+  p("Monalisha Devi Moirangthem", "women", "goalkeeper", 3, 0),
+  p("Adrija Sarkhel", "women", "goalkeeper", 0, 0),
+  p("Nandini Mattu", "women", "goalkeeper", 0, 0),
+  p("Ranjana Chanu Sorokhaibam", "women", "defender", 49, 4),
+  p("Juli Kishan", "women", "defender", 16, 0),
+  p("Purnima Kumari", "women", "defender", 12, 0),
+  p("Kiran Pisda", "women", "defender", 11, 0),
+  p("Dhurga Perumal", "women", "defender", 1, 0),
+  p("Malati Munda", "women", "defender", 1, 0),
+  p("Mousumi Murmu", "women", "defender", 4, 0),
+  p("Shubhangi Singh", "women", "defender", 1, 0),
+  p("Sangita Basfore", "women", "midfielder", 80, 10),
+  p("Sanfida Nongrum", "women", "midfielder", 8, 3),
+  p("Priyadharshini Selladurai", "women", "midfielder", 8, 3),
+  p("Babina Devi Lisham", "women", "midfielder", 8, 0),
+  p("Babysana Devi Thingbaijam", "women", "midfielder", 1, 0),
+  p("Cindy Colney", "women", "midfielder", 1, 0),
+  p("Santosh", "women", "midfielder", 2, 0),
+  p("Lynda Kom", "women", "forward", 18, 7),
+  p("Malavika Prasad", "women", "forward", 12, 2),
+  p("Renu Gour", "women", "forward", 24, 4),
+  p("Jasoda Munda", "women", "forward", 7, 0),
+  p("Sibani Devi Nongmeikapam", "women", "forward", 2, 1),
+  p("Sushmita Jadhav", "women", "forward", 0, 0),
+];

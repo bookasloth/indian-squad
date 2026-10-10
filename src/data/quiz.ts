@@ -113,7 +113,23 @@ export const kabaddiQuiz: QuizQuestion[] = [
   { id: "k12", question: "How long is each half of a kabaddi match?", options: ["15 minutes", "20 minutes", "25 minutes", "30 minutes"], correctIndex: 1, category: "Rules" },
 ];
 
+// ponytail: hand-maintained, facts checked 10 Oct 2026. Rules follow the IFAB Laws of the Game.
+export const footballQuiz: QuizQuestion[] = [
+  { id: "f1", question: "Who is India's all-time top scorer in men's football?", options: ["Bhaichung Bhutia", "Sunil Chhetri", "I. M. Vijayan", "Jeje Lalpekhlua"], correctIndex: 1, category: "Records" },
+  { id: "f2", question: "How many SAFF Championships has India's men's team won?", options: ["5", "7", "9", "11"], correctIndex: 2, category: "India" },
+  { id: "f3", question: "In which two years did India win Asian Games football gold?", options: ["1951 and 1962", "1954 and 1966", "1958 and 1970", "1951 and 1974"], correctIndex: 0, category: "History" },
+  { id: "f4", question: "India's best Olympic football finish was fourth place at which Games?", options: ["London 1948", "Helsinki 1952", "Melbourne 1956", "Rome 1960"], correctIndex: 2, category: "History" },
+  { id: "f5", question: "What is India's best result at the men's AFC Asian Cup?", options: ["Winners", "Runners-up", "Semi-finals", "Quarter-finals"], correctIndex: 1, category: "History" },
+  { id: "f6", question: "Which club won the Indian Super League in 2025–26?", options: ["Mohun Bagan SG", "Mumbai City", "East Bengal", "Bengaluru"], correctIndex: 2, category: "ISL" },
+  { id: "f7", question: "In which year did the Indian Super League begin?", options: ["2010", "2012", "2014", "2016"], correctIndex: 2, category: "ISL" },
+  { id: "f8", question: "Which club has won the most ISL titles?", options: ["ATK", "Chennaiyin", "Kerala Blasters", "Bengaluru"], correctIndex: 0, category: "ISL" },
+  { id: "f9", question: "When was the Durand Cup first played?", options: ["1888", "1911", "1937", "1950"], correctIndex: 0, category: "History" },
+  { id: "f10", question: "From which restart can a player NOT be offside?", options: ["A free kick", "A throw-in", "A pass from midfield", "A penalty rebound"], correctIndex: 1, category: "Rules" },
+  { id: "f11", question: "Which of these can VAR NOT review?", options: ["Goals", "Penalty decisions", "Direct red cards", "Corner kicks"], correctIndex: 3, category: "Rules" },
+  { id: "f12", question: "Who has the most caps for India's women's football team?", options: ["Bala Devi", "Ashalata Devi", "Sangita Basfore", "Dangmei Grace"], correctIndex: 1, category: "Records" },
+];
+
 /** Questions per sport. A sport gets a quiz page once it has an entry here. */
-export const QUIZZES: Record<string, QuizQuestion[]> = { cricket: quiz, hockey: hockeyQuiz, kabaddi: kabaddiQuiz };
+export const QUIZZES: Record<string, QuizQuestion[]> = { cricket: quiz, hockey: hockeyQuiz, kabaddi: kabaddiQuiz, football: footballQuiz };
 
 export const quizFor = (sport: string): QuizQuestion[] => QUIZZES[sport] ?? [];

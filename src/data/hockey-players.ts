@@ -1,34 +1,11 @@
-import type { Team } from "@/data/players";
-
-export type HockeyPosition = "goalkeeper" | "defender" | "midfielder" | "forward";
-
-export interface HockeyPlayer {
-  slug: string;
-  name: string;
-  team: Team;
-  position: HockeyPosition;
-  caps: number;
-  goals: number;
-  /** Optional line of our own, only for facts we can stand behind. */
-  note?: string;
-}
+import { positional as p, type PositionalPlayer } from "@/data/positional";
 
 /** Caps and goals as of the 2026 Asian Games (men's counted 3 Oct, women's 2 Oct). */
 export const HOCKEY_AS_OF = "early October 2026";
 
 // ponytail: the 2026 Asian Games squads, hand-copied. Refresh after each tournament;
 // a player dropping out of the squad just means removing the row.
-const p = (name: string, team: Team, position: HockeyPosition, caps: number, goals: number, note?: string): HockeyPlayer => ({
-  slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-  name,
-  team,
-  position,
-  caps,
-  goals,
-  note,
-});
-
-export const hockeyPlayers: HockeyPlayer[] = [
+export const hockeyPlayers: PositionalPlayer[] = [
   // Men
   p("Suraj Karkera", "men", "goalkeeper", 102, 0),
   p("Mohith H. S.", "men", "goalkeeper", 27, 0),

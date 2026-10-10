@@ -1,5 +1,7 @@
 import { players as cricketPlayers, type Player, type Team } from "@/data/players";
-import { HOCKEY_AS_OF, hockeyPlayers, type HockeyPlayer } from "@/data/hockey-players";
+import { HOCKEY_AS_OF, hockeyPlayers } from "@/data/hockey-players";
+import { FOOTBALL_AS_OF, footballPlayers } from "@/data/football-players";
+import type { PositionalPlayer } from "@/data/positional";
 import type { XIRule } from "@/lib/xi";
 
 export type { Team };
@@ -43,7 +45,7 @@ const CRICKET_ROLES = [
   { key: "wicketkeeper", label: "Wicketkeeper" },
   { key: "bowler", label: "Bowler" },
 ];
-const HOCKEY_ROLES = [
+const POSITIONS = [
   { key: "goalkeeper", label: "Goalkeeper" },
   { key: "defender", label: "Defender" },
   { key: "midfielder", label: "Midfielder" },
@@ -74,18 +76,20 @@ function fromCricket(p: Player): SquadPlayer {
   };
 }
 
-function fromHockey(p: HockeyPlayer): SquadPlayer {
-  const roleLabel = labelOf(HOCKEY_ROLES, p.position);
+/** Hockey and football: position, caps and goals; the bio is built from those facts. */
+const fromPositional = (sport: string, asOf: string) => (p: PositionalPlayer): SquadPlayer => {
+  const roleLabel = labelOf(POSITIONS, p.position);
   const goals = p.position === "goalkeeper" ? "" : ` and ${p.goals} goal${p.goals === 1 ? "" : "s"}`;
+  const caps = p.caps === 0 ? "yet to win a cap" : `with ${p.caps} cap${p.caps === 1 ? "" : "s"}${goals}`;
   return {
-    sport: "hockey",
+    sport,
     slug: p.slug,
     name: p.name,
     team: p.team,
     role: p.position,
     roleLabel,
-    subtitle: `${roleLabel} · ${p.caps} caps`,
-    bio: `${roleLabel} for India with ${p.caps} caps${goals}, as of ${HOCKEY_AS_OF}.${p.note ? ` ${p.note}` : ""}`,
+    subtitle: `${roleLabel} · ${p.caps} cap${p.caps === 1 ? "" : "s"}`,
+    bio: `${roleLabel} in India's squad, ${caps}, as of ${asOf}.${p.note ? ` ${p.note}` : ""}`,
     facts: [{ label: "Position", value: roleLabel }],
     stats: [
       { label: "Caps", value: p.caps },
@@ -93,7 +97,15 @@ function fromHockey(p: HockeyPlayer): SquadPlayer {
     ],
     active: true,
   };
-}
+};
+
+const POSITIONAL_XI = {
+  roles: POSITIONS,
+  roleNoun: "position",
+  xiLabel: "Starting XI",
+  xiHint: "Pick exactly 11, including one goalkeeper.",
+  xiRules: [{ role: "goalkeeper", min: 1, max: 1, message: "Pick exactly one goalkeeper." }],
+};
 
 export const SQUADS: Record<string, SquadConfig> = {
   cricket: {
@@ -109,14 +121,17 @@ export const SQUADS: Record<string, SquadConfig> = {
   },
   hockey: {
     sport: "hockey",
-    roles: HOCKEY_ROLES,
-    roleNoun: "position",
-    xiLabel: "Starting XI",
-    xiHint: "Pick exactly 11, including one goalkeeper.",
-    xiRules: [{ role: "goalkeeper", min: 1, max: 1, message: "Pick exactly one goalkeeper." }],
+    ...POSITIONAL_XI,
     storageKey: { men: "indian-squad:hockey:xi", women: "indian-squad:hockey:xi:women" },
     asOf: HOCKEY_AS_OF,
-    roster: hockeyPlayers.map(fromHockey),
+    roster: hockeyPlayers.map(fromPositional("hockey", HOCKEY_AS_OF)),
+  },
+  football: {
+    sport: "football",
+    ...POSITIONAL_XI,
+    storageKey: { men: "indian-squad:football:xi", women: "indian-squad:football:xi:women" },
+    asOf: FOOTBALL_AS_OF,
+    roster: footballPlayers.map(fromPositional("football", FOOTBALL_AS_OF)),
   },
 };
 

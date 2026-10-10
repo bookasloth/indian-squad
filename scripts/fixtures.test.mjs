@@ -15,6 +15,17 @@ test("keeps series that haven't ended", () => {
   assert.deepEqual(liveSeriesIds(null, "2026-10-10"), []);
 });
 
+test("end dates without a year take the start date's year", () => {
+  const res = {
+    data: [
+      { id: "now", startDate: "2026-09-22", endDate: "Oct 12" },
+      { id: "done", startDate: "2026-08-01", endDate: "Aug 20" },
+      { id: "new-year", startDate: "2026-12-26", endDate: "Jan 07" },
+    ],
+  };
+  assert.deepEqual(liveSeriesIds(res, "2026-10-10"), ["now", "new-year"]);
+});
+
 test("India's not-yet-started matches only", () => {
   const res = {
     data: {

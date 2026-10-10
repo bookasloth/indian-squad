@@ -15,10 +15,17 @@ async function get(path: string, params: Record<string, string>) {
   const qs = new URLSearchParams({ apikey: key, offset: "0", ...params });
   try {
     const res = await fetch(`${BASE}/${path}?${qs}`, { next: { revalidate: REVALIDATE } });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.warn(`[cricketdata] ${path}: HTTP ${res.status}`);
+      return null;
+    }
     const json = await res.json();
-    return json?.status === "success" ? json : null;
-  } catch {
+    if (json?.status === "success") return json;
+    // The API reports quota and key problems in `reason`; the key itself is never logged.
+    console.warn(`[cricketdata] ${path}: ${json?.reason ?? json?.status ?? "unknown error"}`);
+    return null;
+  } catch (e) {
+    console.warn(`[cricketdata] ${path}: ${(e as Error).message}`);
     return null;
   }
 }

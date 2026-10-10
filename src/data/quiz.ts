@@ -145,6 +145,22 @@ export const badmintonQuiz: QuizQuestion[] = [
   { id: "b12", question: "What tier of the BWF World Tour is the India Open?", options: ["Super 300", "Super 500", "Super 750", "Super 1000"], correctIndex: 2, category: "Rules" },
 ];
 
+// ponytail: hand-maintained, facts checked 10 Oct 2026. Rules follow the FIA F1 regulations.
+export const f1Quiz: QuizQuestion[] = [
+  { id: "r1", question: "Who was the first Indian to race in Formula One?", options: ["Karun Chandhok", "Narain Karthikeyan", "Jehan Daruvala", "Kush Maini"], correctIndex: 1, category: "India" },
+  { id: "r2", question: "Narain Karthikeyan made his F1 debut with which team?", options: ["Jordan", "HRT", "Minardi", "Force India"], correctIndex: 0, category: "India" },
+  { id: "r3", question: "Who won all three Indian Grands Prix?", options: ["Lewis Hamilton", "Fernando Alonso", "Sebastian Vettel", "Jenson Button"], correctIndex: 2, category: "India" },
+  { id: "r4", question: "Which circuit hosted the Indian Grand Prix?", options: ["Madras Motor Race Track", "Buddh International Circuit", "Kari Motor Speedway", "Hyderabad street circuit"], correctIndex: 1, category: "India" },
+  { id: "r5", question: "What was Force India's best constructors' championship finish?", options: ["2nd", "3rd", "4th", "5th"], correctIndex: 2, category: "India" },
+  { id: "r6", question: "Who won the 2025 F1 drivers' championship?", options: ["Max Verstappen", "Oscar Piastri", "Lando Norris", "Charles Leclerc"], correctIndex: 2, category: "Recent" },
+  { id: "r7", question: "Which two drivers share the record of seven world titles?", options: ["Senna and Prost", "Hamilton and Schumacher", "Vettel and Verstappen", "Fangio and Lauda"], correctIndex: 1, category: "Records" },
+  { id: "r8", question: "Which team has won the most constructors' championships?", options: ["McLaren", "Williams", "Mercedes", "Ferrari"], correctIndex: 3, category: "Records" },
+  { id: "r9", question: "How many points does a Grand Prix win earn?", options: ["10", "20", "25", "30"], correctIndex: 2, category: "Rules" },
+  { id: "r10", question: "How many cars reach Q3 in qualifying?", options: ["8", "10", "12", "15"], correctIndex: 1, category: "Rules" },
+  { id: "r11", question: "What does a red-marked tyre mean in F1?", options: ["Hard", "Medium", "Soft", "Wet"], correctIndex: 2, category: "Rules" },
+  { id: "r12", question: "Which overtaking aid was removed for the 2026 season?", options: ["KERS", "DRS", "Push-to-pass", "Blue flags"], correctIndex: 1, category: "Rules" },
+];
+
 /** Questions per sport. A sport gets a quiz page once it has an entry here. */
 export const QUIZZES: Record<string, QuizQuestion[]> = {
   cricket: quiz,
@@ -152,6 +168,7 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
   kabaddi: kabaddiQuiz,
   football: footballQuiz,
   badminton: badmintonQuiz,
+  f1: f1Quiz,
 };
 
 export const quizFor = (sport: string): QuizQuestion[] => QUIZZES[sport] ?? [];

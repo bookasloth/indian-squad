@@ -5,6 +5,8 @@ import { getSport } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
 import { rosterFor, squadConfig } from "@/data/squads";
 import { quizFor } from "@/data/quiz";
+import { f1Season } from "@/lib/live/f1";
+import { F1Standings } from "@/components/f1-standings";
 import { competitionsFor } from "@/data/competitions";
 import { teamsFor } from "@/data/teams";
 import { rivalriesFor } from "@/data/rivalries";
@@ -34,6 +36,7 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
   const squad = squadConfig(sport.slug);
   const hasQuiz = quizFor(sport.slug).length > 0;
   const competitions = competitionsFor(sport.slug);
+  const f1 = sport.slug === "f1" ? await f1Season() : null;
   const teams = teamsFor(sport.slug);
   const rivalries = rivalriesFor(sport.slug);
   const configured = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -103,6 +106,8 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
           events and the conversation are open.
         </p>
       )}
+
+      {f1 && !f1.complete && <F1Standings season={f1} kind="drivers" limit={5} />}
 
       {competitions.length > 0 && (
         <section className="flex flex-col gap-4">

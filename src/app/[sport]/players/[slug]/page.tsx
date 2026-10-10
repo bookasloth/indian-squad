@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPlayer, players } from "@/data/players";
+import { TEAM_LABEL, getPlayer, players } from "@/data/players";
 import { SQUAD_SPORTS } from "@/lib/site";
 import { ROLE_LABEL } from "@/components/PlayerCard";
 
@@ -44,12 +44,17 @@ export default async function PlayerPage({
 
   return (
     <article className="flex flex-col gap-8">
-      <Link href={`/${sport}/players`} className="text-sm text-muted-foreground hover:text-foreground">
-        ← All players
+      <Link
+        href={`/${sport}/players${player.team === "women" ? "/women" : ""}`}
+        className="text-sm text-muted-foreground hover:text-foreground"
+      >
+        ← {player.team === "women" ? "Women's" : "Men's"} squad
       </Link>
 
       <header className="flex flex-col gap-2">
-        <span className="text-sm text-muted-foreground">{ROLE_LABEL[player.role]}</span>
+        <span className="text-sm text-muted-foreground">
+          India {TEAM_LABEL[player.team]} · {ROLE_LABEL[player.role]}
+        </span>
         <h1 className="text-4xl font-bold tracking-tight">{player.name}</h1>
       </header>
 
@@ -68,14 +73,16 @@ export default async function PlayerPage({
         )}
       </dl>
 
-      <div className="flex gap-4">
-        {caps.map((c) => (
-          <div key={c.label} className="rounded-lg border border-border px-5 py-3">
-            <div className="font-display text-2xl font-bold">{c.value}</div>
-            <div className="text-sm text-muted-foreground">{c.label}</div>
-          </div>
-        ))}
-      </div>
+      {caps.length > 0 && (
+        <div className="flex gap-4">
+          {caps.map((c) => (
+            <div key={c.label} className="rounded-lg border border-border px-5 py-3">
+              <div className="font-display text-2xl font-bold">{c.value}</div>
+              <div className="text-sm text-muted-foreground">{c.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </article>
   );
 }

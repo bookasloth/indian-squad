@@ -4,12 +4,12 @@ import { SQUAD_SPORTS } from "@/lib/site";
 import { XIView } from "@/components/squad-views";
 
 export const metadata: Metadata = {
-  title: "Men's Playing XI",
-  description: "Pick your India men's Playing XI, validate the squad, and share it as an image.",
+  title: "Women's Playing XI",
+  description: "Pick your India women's Playing XI, validate the squad, and share it as an image.",
 };
 
-export default async function XIPage({ params }: { params: Promise<{ sport: string }> }) {
+export default async function WomenXIPage({ params }: { params: Promise<{ sport: string }> }) {
   const { sport } = await params;
   if (!SQUAD_SPORTS.includes(sport)) notFound();
-  return <XIView sport={sport} team="men" />;
+  return <XIView sport={sport} team="women" />;
 }

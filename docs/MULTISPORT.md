@@ -60,6 +60,12 @@ Header "Sports" menu, footer sport links, homepage sports grid + "Around the clu
 Per-sport `blurb` in `SPORTS` is placeholder copy. Turning a sport's tools on = add it to
 `SQUAD_SPORTS` once its roster/quiz data exists (phase 3).
 
+**Phase 2 — women's squad (built 2026-10-09):** `Player.team` (`men` | `women`) in
+`src/data/players.ts`, 16 India women (no caps yet — add them from a citable source).
+Static pages `/cricket/players/women` and `/cricket/xi/women` with a Men / Women switch;
+each team's XI saved separately (men keep the original storage key). Hub shows both
+squads. Left in phase 2: women's quiz questions, squad by format, fixtures.
+
 Phase 3 is where the data model generalises — deliberately not before, so the shape
 is designed against two real sports instead of guessed from one.
 

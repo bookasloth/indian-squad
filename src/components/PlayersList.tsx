@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { players, ROLES, type Role } from "@/data/players";
+import { ROLES, type Player, type Role } from "@/data/players";
 import { PlayerCard, ROLE_LABEL } from "@/components/PlayerCard";
 
 type Filter = Role | "all";
 
-export function PlayersList() {
+export function PlayersList({ players }: { players: Player[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const shown = filter === "all" ? players : players.filter((p) => p.role === filter);
 

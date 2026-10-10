@@ -1,8 +1,12 @@
 export type Role = "batter" | "bowler" | "all-rounder" | "wicketkeeper";
+export type Team = "men" | "women";
+
+export const TEAM_LABEL: Record<Team, string> = { men: "Men", women: "Women" };
 
 export interface Player {
   slug: string;
   name: string;
+  team: Team;
   role: Role;
   battingStyle: string;
   bowlingStyle?: string;
@@ -19,6 +23,7 @@ export const players: Player[] = [
   {
     slug: "rohit-sharma",
     name: "Rohit Sharma",
+    team: "men",
     role: "batter",
     battingStyle: "Right-handed",
     caps: { test: 67, odi: 273, t20: 159 },
@@ -28,6 +33,7 @@ export const players: Player[] = [
   {
     slug: "virat-kohli",
     name: "Virat Kohli",
+    team: "men",
     role: "batter",
     battingStyle: "Right-handed",
     bowlingStyle: "Right-arm medium",
@@ -38,6 +44,7 @@ export const players: Player[] = [
   {
     slug: "shubman-gill",
     name: "Shubman Gill",
+    team: "men",
     role: "batter",
     battingStyle: "Right-handed",
     caps: { test: 32, odi: 50, t20: 22 },
@@ -47,6 +54,7 @@ export const players: Player[] = [
   {
     slug: "yashasvi-jaiswal",
     name: "Yashasvi Jaiswal",
+    team: "men",
     role: "batter",
     battingStyle: "Left-handed",
     caps: { test: 19, odi: 0, t20: 23 },
@@ -56,6 +64,7 @@ export const players: Player[] = [
   {
     slug: "suryakumar-yadav",
     name: "Suryakumar Yadav",
+    team: "men",
     role: "batter",
     battingStyle: "Right-handed",
     caps: { test: 1, odi: 37, t20: 76 },
@@ -65,6 +74,7 @@ export const players: Player[] = [
   {
     slug: "shreyas-iyer",
     name: "Shreyas Iyer",
+    team: "men",
     role: "batter",
     battingStyle: "Right-handed",
     caps: { test: 14, odi: 64, t20: 51 },
@@ -74,6 +84,7 @@ export const players: Player[] = [
   {
     slug: "kl-rahul",
     name: "KL Rahul",
+    team: "men",
     role: "wicketkeeper",
     battingStyle: "Right-handed",
     caps: { test: 58, odi: 80, t20: 72 },
@@ -83,6 +94,7 @@ export const players: Player[] = [
   {
     slug: "rishabh-pant",
     name: "Rishabh Pant",
+    team: "men",
     role: "wicketkeeper",
     battingStyle: "Left-handed",
     caps: { test: 44, odi: 31, t20: 76 },
@@ -92,6 +104,7 @@ export const players: Player[] = [
   {
     slug: "sanju-samson",
     name: "Sanju Samson",
+    team: "men",
     role: "wicketkeeper",
     battingStyle: "Right-handed",
     caps: { test: 0, odi: 16, t20: 42 },
@@ -101,6 +114,7 @@ export const players: Player[] = [
   {
     slug: "ishan-kishan",
     name: "Ishan Kishan",
+    team: "men",
     role: "wicketkeeper",
     battingStyle: "Left-handed",
     caps: { test: 2, odi: 27, t20: 32 },
@@ -110,6 +124,7 @@ export const players: Player[] = [
   {
     slug: "hardik-pandya",
     name: "Hardik Pandya",
+    team: "men",
     role: "all-rounder",
     battingStyle: "Right-handed",
     bowlingStyle: "Right-arm fast-medium",
@@ -120,6 +135,7 @@ export const players: Player[] = [
   {
     slug: "ravindra-jadeja",
     name: "Ravindra Jadeja",
+    team: "men",
     role: "all-rounder",
     battingStyle: "Left-handed",
     bowlingStyle: "Slow left-arm orthodox",
@@ -130,6 +146,7 @@ export const players: Player[] = [
   {
     slug: "axar-patel",
     name: "Axar Patel",
+    team: "men",
     role: "all-rounder",
     battingStyle: "Left-handed",
     bowlingStyle: "Slow left-arm orthodox",
@@ -140,6 +157,7 @@ export const players: Player[] = [
   {
     slug: "washington-sundar",
     name: "Washington Sundar",
+    team: "men",
     role: "all-rounder",
     battingStyle: "Left-handed",
     bowlingStyle: "Right-arm off-break",
@@ -150,6 +168,7 @@ export const players: Player[] = [
   {
     slug: "ravichandran-ashwin",
     name: "Ravichandran Ashwin",
+    team: "men",
     role: "all-rounder",
     battingStyle: "Right-handed",
     bowlingStyle: "Right-arm off-break",
@@ -160,6 +179,7 @@ export const players: Player[] = [
   {
     slug: "jasprit-bumrah",
     name: "Jasprit Bumrah",
+    team: "men",
     role: "bowler",
     battingStyle: "Right-handed",
     bowlingStyle: "Right-arm fast",
@@ -170,6 +190,7 @@ export const players: Player[] = [
   {
     slug: "mohammed-siraj",
     name: "Mohammed Siraj",
+    team: "men",
     role: "bowler",
     battingStyle: "Right-handed",
     bowlingStyle: "Right-arm fast-medium",
@@ -180,6 +201,7 @@ export const players: Player[] = [
   {
     slug: "mohammed-shami",
     name: "Mohammed Shami",
+    team: "men",
     role: "bowler",
     battingStyle: "Right-handed",
     bowlingStyle: "Right-arm fast",
@@ -190,6 +212,7 @@ export const players: Player[] = [
   {
     slug: "kuldeep-yadav",
     name: "Kuldeep Yadav",
+    team: "men",
     role: "bowler",
     battingStyle: "Left-handed",
     bowlingStyle: "Left-arm wrist-spin",
@@ -200,6 +223,7 @@ export const players: Player[] = [
   {
     slug: "arshdeep-singh",
     name: "Arshdeep Singh",
+    team: "men",
     role: "bowler",
     battingStyle: "Left-handed",
     bowlingStyle: "Left-arm medium-fast",
@@ -207,7 +231,183 @@ export const players: Player[] = [
     bio: "Left-arm seamer and death-overs specialist with a reliable yorker.",
     active: true,
   },
+  // India women. ponytail: caps left out until they come from a source we can cite
+  // (docs/ROUTES.md rule); the player page hides the caps row when it's empty.
+  {
+    slug: "harmanpreet-kaur",
+    name: "Harmanpreet Kaur",
+    team: "women",
+    role: "batter",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Right-arm off-break",
+    caps: {},
+    bio: "Captain and middle-order batter with a huge hitting range; also bowls off-spin. Led India to the 2025 ODI World Cup title.",
+    active: true,
+  },
+  {
+    slug: "smriti-mandhana",
+    name: "Smriti Mandhana",
+    team: "women",
+    role: "batter",
+    battingStyle: "Left-handed",
+    caps: {},
+    bio: "Left-handed opener and vice-captain, one of the most consistent run-scorers in the women's game.",
+    active: true,
+  },
+  {
+    slug: "shafali-verma",
+    name: "Shafali Verma",
+    team: "women",
+    role: "batter",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Right-arm off-break",
+    caps: {},
+    bio: "Explosive opener who attacks from the first ball; bowls part-time off-spin.",
+    active: true,
+  },
+  {
+    slug: "pratika-rawal",
+    name: "Pratika Rawal",
+    team: "women",
+    role: "batter",
+    battingStyle: "Right-handed",
+    caps: {},
+    bio: "Top-order batter who anchors an innings and builds long partnerships.",
+    active: true,
+  },
+  {
+    slug: "jemimah-rodrigues",
+    name: "Jemimah Rodrigues",
+    team: "women",
+    role: "batter",
+    battingStyle: "Right-handed",
+    caps: {},
+    bio: "Busy, wristy middle-order batter and a sharp fielder.",
+    active: true,
+  },
+  {
+    slug: "harleen-deol",
+    name: "Harleen Deol",
+    team: "women",
+    role: "batter",
+    battingStyle: "Right-handed",
+    caps: {},
+    bio: "Top-order batter with a classical technique and a reputation as a brilliant fielder.",
+    active: true,
+  },
+  {
+    slug: "richa-ghosh",
+    name: "Richa Ghosh",
+    team: "women",
+    role: "wicketkeeper",
+    battingStyle: "Right-handed",
+    caps: {},
+    bio: "Wicketkeeper and power-hitting finisher in the lower middle order.",
+    active: true,
+  },
+  {
+    slug: "yastika-bhatia",
+    name: "Yastika Bhatia",
+    team: "women",
+    role: "wicketkeeper",
+    battingStyle: "Left-handed",
+    caps: {},
+    bio: "Left-handed wicketkeeper-batter who can open or bat in the top order.",
+    active: true,
+  },
+  {
+    slug: "uma-chetry",
+    name: "Uma Chetry",
+    team: "women",
+    role: "wicketkeeper",
+    battingStyle: "Right-handed",
+    caps: {},
+    bio: "Wicketkeeper-batter, one of the newer faces in the squad.",
+    active: true,
+  },
+  {
+    slug: "deepti-sharma",
+    name: "Deepti Sharma",
+    team: "women",
+    role: "all-rounder",
+    battingStyle: "Left-handed",
+    bowlingStyle: "Right-arm off-break",
+    caps: {},
+    bio: "Off-spinning all-rounder and left-handed batter; one of India's most reliable wicket-takers.",
+    active: true,
+  },
+  {
+    slug: "amanjot-kaur",
+    name: "Amanjot Kaur",
+    team: "women",
+    role: "all-rounder",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Right-arm medium",
+    caps: {},
+    bio: "Seam-bowling all-rounder who adds hitting power down the order.",
+    active: true,
+  },
+  {
+    slug: "sneh-rana",
+    name: "Sneh Rana",
+    team: "women",
+    role: "all-rounder",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Right-arm off-break",
+    caps: {},
+    bio: "Off-spinning all-rounder who chips in with useful lower-order runs.",
+    active: true,
+  },
+  {
+    slug: "radha-yadav",
+    name: "Radha Yadav",
+    team: "women",
+    role: "bowler",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Slow left-arm orthodox",
+    caps: {},
+    bio: "Left-arm spinner and an electric fielder.",
+    active: true,
+  },
+  {
+    slug: "renuka-singh-thakur",
+    name: "Renuka Singh Thakur",
+    team: "women",
+    role: "bowler",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Right-arm medium",
+    caps: {},
+    bio: "Swing bowler who leads the attack with the new ball.",
+    active: true,
+  },
+  {
+    slug: "kranti-goud",
+    name: "Kranti Goud",
+    team: "women",
+    role: "bowler",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Right-arm medium-fast",
+    caps: {},
+    bio: "Fast-rising seamer who hits the deck hard.",
+    active: true,
+  },
+  {
+    slug: "arundhati-reddy",
+    name: "Arundhati Reddy",
+    team: "women",
+    role: "bowler",
+    battingStyle: "Right-handed",
+    bowlingStyle: "Right-arm medium",
+    caps: {},
+    bio: "Seamer who bowls through the middle overs and at the death.",
+    active: true,
+  },
 ];
+
+/** One team's roster, in file order. */
+export function squad(team: Team): Player[] {
+  return players.filter((p) => p.team === team);
+}
 
 export function getPlayer(slug: string): Player | undefined {
   return players.find((p) => p.slug === slug);

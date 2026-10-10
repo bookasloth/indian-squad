@@ -1,71 +1,81 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { players, type Player } from "@/data/players";
+import { squad, type Player, type Team } from "@/data/players";
 import { ROLE_LABEL } from "@/components/PlayerCard";
 
-const STORAGE_KEY = "indian-squad:xi";
 const MAX = 11;
-
-// localStorage-backed store for the selected XI. useSyncExternalStore reads it
-// hydration-safely (server renders empty, client swaps in the saved value with
-// no mismatch) and avoids setState-in-effect.
+// Men keep the original key so XIs saved before the women's squad existed survive.
+const STORAGE_KEY: Record<Team, string> = { men: "indian-squad:xi", women: "indian-squad:xi:women" };
+const TITLE: Record<Team, string> = { men: "My India Playing XI", women: "My India Women Playing XI" };
 const EMPTY: string[] = [];
-const listeners = new Set<() => void>();
-let cacheRaw: string | null = null;
-let cache: string[] = EMPTY;
 
-function sanitize(value: unknown): string[] {
-  if (!Array.isArray(value)) return EMPTY;
-  return value
-    .filter((s): s is string => typeof s === "string" && players.some((p) => p.slug === s))
-    .slice(0, MAX);
-}
+// localStorage-backed store for one team's selected XI. useSyncExternalStore reads
+// it hydration-safely (server renders empty, client swaps in the saved value with
+// no mismatch) and avoids setState-in-effect. One store per team, created once.
+function makeStore(team: Team) {
+  const key = STORAGE_KEY[team];
+  const pool = squad(team);
+  const listeners = new Set<() => void>();
+  let cacheRaw: string | null = null;
+  let cache: string[] = EMPTY;
 
-function getSnapshot(): string[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === cacheRaw) return cache; // stable ref unless storage changed
-    cacheRaw = raw;
-    cache = raw ? sanitize(JSON.parse(raw)) : EMPTY;
-  } catch {
-    cache = EMPTY; // storage blocked/corrupt → empty
-  }
-  return cache;
-}
+  const sanitize = (value: unknown): string[] =>
+    Array.isArray(value)
+      ? value.filter((s): s is string => typeof s === "string" && pool.some((p) => p.slug === s)).slice(0, MAX)
+      : EMPTY;
 
-function getServerSnapshot(): string[] {
-  return EMPTY;
-}
-
-function subscribe(cb: () => void): () => void {
-  listeners.add(cb);
-  window.addEventListener("storage", cb); // cross-tab sync
-  return () => {
-    listeners.delete(cb);
-    window.removeEventListener("storage", cb);
+  return {
+    pool,
+    getSnapshot(): string[] {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw === cacheRaw) return cache; // stable ref unless storage changed
+        cacheRaw = raw;
+        cache = raw ? sanitize(JSON.parse(raw)) : EMPTY;
+      } catch {
+        cache = EMPTY; // storage blocked/corrupt → empty
+      }
+      return cache;
+    },
+    getServerSnapshot: (): string[] => EMPTY,
+    subscribe(cb: () => void): () => void {
+      listeners.add(cb);
+      window.addEventListener("storage", cb); // cross-tab sync
+      return () => {
+        listeners.delete(cb);
+        window.removeEventListener("storage", cb);
+      };
+    },
+    set(next: string[]) {
+      cache = next;
+      cacheRaw = JSON.stringify(next);
+      try {
+        localStorage.setItem(key, cacheRaw);
+      } catch {
+        // storage blocked — selection still works for this session
+      }
+      listeners.forEach((cb) => cb());
+    },
   };
 }
 
-function setXI(next: string[]) {
-  cache = next;
-  cacheRaw = JSON.stringify(next);
-  try {
-    localStorage.setItem(STORAGE_KEY, cacheRaw);
-  } catch {
-    // storage blocked — selection still works for this session
-  }
-  listeners.forEach((cb) => cb());
-}
+const STORES = { men: makeStore("men"), women: makeStore("women") };
 
-export function XIBuilder() {
-  const selected = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+export function XIBuilder({ team }: { team: Team }) {
+  const store = STORES[team];
+  const players = store.pool;
+  const setXI = store.set;
+  const selected = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
 
   function toggle(slug: string) {
-    if (selected.includes(slug)) {
-      setXI(selected.filter((s) => s !== slug));
-    } else if (selected.length < MAX) {
-      setXI([...selected, slug]);
+    // Read the store, not the render's `selected`: two fast taps before a re-render
+    // would otherwise both start from the same list and the first pick is lost.
+    const cur = store.getSnapshot();
+    if (cur.includes(slug)) {
+      setXI(cur.filter((s) => s !== slug));
+    } else if (cur.length < MAX) {
+      setXI([...cur, slug]);
     }
   }
 
@@ -119,7 +129,7 @@ export function XIBuilder() {
         </button>
         <button
           type="button"
-          onClick={() => shareAsPng(chosen)}
+          onClick={() => shareAsPng(chosen, team)}
           disabled={!valid}
           className="rounded-md border border-foreground bg-foreground px-4 py-2 text-sm text-background disabled:opacity-40"
         >
@@ -158,7 +168,7 @@ function StatusBar({
 
 // ponytail: draw the XI straight onto a canvas and download it — no html2canvas
 // dependency for a plain text list. Monochrome, matches the site.
-function shareAsPng(chosen: Player[]) {
+function shareAsPng(chosen: Player[], team: Team) {
   const W = 640;
   const PAD = 48;
   const lineH = 44;
@@ -179,7 +189,7 @@ function shareAsPng(chosen: Player[]) {
 
   ctx.fillStyle = "#0a0a0a";
   ctx.font = "700 32px system-ui, sans-serif";
-  ctx.fillText("My India Playing XI", PAD, 72);
+  ctx.fillText(TITLE[team], PAD, 72);
   ctx.fillStyle = "#6b7280";
   ctx.font = "400 16px system-ui, sans-serif";
   ctx.fillText("Indian Sports Club", PAD, 104);
@@ -201,7 +211,7 @@ function shareAsPng(chosen: Player[]) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "my-india-xi.png";
+    a.download = team === "women" ? "my-india-women-xi.png" : "my-india-xi.png";
     a.click();
     URL.revokeObjectURL(url);
   }, "image/png");

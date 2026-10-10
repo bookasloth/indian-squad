@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SQUAD_SPORTS, getSport } from "@/lib/site";
-import { players } from "@/data/players";
+import { squad } from "@/data/players";
 import { listUpcomingEvents } from "@/lib/events";
 import { getLatestPosts } from "@/lib/community-data";
 import { timeAgo } from "@/lib/utils";
@@ -25,7 +25,7 @@ const MORE = "text-sm text-muted-foreground underline-offset-4 hover:text-foregr
 export default async function SportHubPage({ params }: { params: Promise<{ sport: string }> }) {
   const sport = getSport((await params).sport);
   if (!sport) notFound();
-  const squad = SQUAD_SPORTS.includes(sport.slug);
+  const hasSquad = SQUAD_SPORTS.includes(sport.slug);
   const configured = !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const [events, posts] = configured
     ? await Promise.all([listUpcomingEvents({ sport: sport.slug, limit: 4 }), getLatestPosts(sport.slug, 3)])
@@ -35,22 +35,27 @@ export default async function SportHubPage({ params }: { params: Promise<{ sport
     <div className="flex flex-col gap-12">
       <h1 className="sr-only">{sport.label}</h1>
 
-      {squad ? (
+      {hasSquad ? (
         <section className="flex flex-col gap-4">
-          <div className="flex items-baseline justify-between gap-4">
-            <h2 className={H2}>The squad</h2>
-            <Link href={`/${sport.slug}/players`} className={MORE}>
-              All players →
-            </Link>
-          </div>
+          <h2 className={H2}>The squads</h2>
           {/* ponytail: players.ts is the cricket roster; becomes per-sport in phase 3 (kabaddi). */}
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {players
-              .filter((p) => p.active)
-              .slice(0, 6)
-              .map((p) => (
-                <PlayerCard key={p.slug} player={p} />
-              ))}
+          <div className="grid gap-6 md:grid-cols-2">
+            {(["men", "women"] as const).map((team) => (
+              <div key={team} className="flex flex-col gap-3">
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-semibold">{team === "women" ? "Women" : "Men"}</h3>
+                  <Link href={`/${sport.slug}/players${team === "women" ? "/women" : ""}`} className={MORE}>
+                    Full squad →
+                  </Link>
+                </div>
+                {squad(team)
+                  .filter((p) => p.active)
+                  .slice(0, 3)
+                  .map((p) => (
+                    <PlayerCard key={p.slug} player={p} />
+                  ))}
+              </div>
+            ))}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Link href={`/${sport.slug}/xi`} className="group">
